@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class PerryApp {
+public class PerryAppSpringBoot {
 
   @Bean
   public Client getJerseyClient() {
@@ -20,7 +20,7 @@ public class PerryApp {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(PerryApp.class, args);
+    SpringApplication.run(PerryAppSpringBoot.class, args);
   }
 }
 

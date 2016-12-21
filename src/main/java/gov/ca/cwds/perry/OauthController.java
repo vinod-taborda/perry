@@ -36,7 +36,7 @@ public class OauthController {
   private static final Logger LOG = LoggerFactory.getLogger(OauthController.class);
 
   private static final String THIS_PROTOCOL = "http://";
-  private static final String THIS_HOST = "54.70.247.41";
+  private static final String THIS_HOST = "somehost";
   private static final String THIS_PATH = "/cwds/";
   private static final String BASE_URL = THIS_PROTOCOL + THIS_HOST + THIS_PATH;
 
@@ -53,8 +53,8 @@ public class OauthController {
   private static final String FAKE_INTAKE_REDIRECT_URL = BASE_URL + "/fake_landing";
 
   // TODO: Don't store credentials in plain text or unprotected memory.
-  private static final String SAF_CLIENT_ID = "ec591707-be4e-4de5-8fc7-7cff83b04f65";
-  private static final String SAF_CLIENT_SECRET = "5Gp7dQ6Fh7BMs0HlkiQ99";
+  private static final String SAF_CLIENT_ID = "someclientid";
+  private static final String SAF_CLIENT_SECRET = "somesecret";
 
   // Registered with SAF.
   private static final String SAF_CALLBACK = BASE_URL + "callback";
@@ -134,7 +134,6 @@ public class OauthController {
       @RequestParam(value = "code", defaultValue = "") String code,
       @RequestParam(value = "state", defaultValue = "") String state) throws IOException {
 
-    // Response retval = null;
     String retval = "Unauthorized";
     LOG.info("safCallback(): ENTER: code=" + code + ", state=" + state);
 
