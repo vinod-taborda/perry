@@ -1,0 +1,23 @@
+{
+  "reference": "X5HNJK",
+  "ended_at": "11/22/1973",
+  "incident_county": "Amador",
+  "incident_date": "11/22/1973",
+  "location_type": "Home",
+  "communication_method": "email",
+  "name": "First screening",
+  "response_time": "immediate",
+  "screening_decision": "accept_for_investigation",
+  "started_at": "10/11/2016",
+  "narrative": "first narrative",
+  "address": {
+    "street_address": "10 main st",
+    "city": "Sacramento",
+    "state": "CA",
+    "zip": 95814
+  },
+  "participant_ids": [
+    123,
+    345
+  ]
+}
