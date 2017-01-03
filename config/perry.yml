@@ -1,4 +1,4 @@
-applicationName: CWDS API
+applicationName: Perry
 version: ${APP_VERSION:-local}
 
 swagger:
@@ -10,6 +10,23 @@ swagger:
   logo: images/CWDS-API-Logo-Horizontal.png
  
  
+nsDataSourceFactory:
+  driverClass: org.postgresql.Driver
+  user: ${DB_NS_USER}
+  password: ${DB_NS_PASSWORD}
+  url: ${DB_NS_JDBC_URL}
+  validationQuery: "/* MyService Health Check */ SELECT 1"
+  logValidationErrors: true
+  initialSize: 2
+  minSize: 2
+  maxSize: 8
+  minIdleTime: 1 minute
+  properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL82Dialect
+      hibernate.id.new_generator_mappings: false
+      hibernate.show_sql: true
+
+
 cmsDataSourceFactory:
   driverClass: com.ibm.db2.jcc.DB2Driver
   user: ${DB_CMS_USER}
@@ -27,6 +44,23 @@ cmsDataSourceFactory:
       hibernate.default_schema: ${DB_CMS_SCHEMA}
 
 
+flywayFactory:
+  sqlMigrationPrefix: v
+  locations:
+    - db/ns/migrations
+    - db/ns/seeds/${ENVIRONMENT:-dev}
+
+
+elasticsearch:
+  elasticsearch.host: ${ES_HOST:-localhost}
+  elasticsearch.port: ${ES_PORT:-9300}
+  elasticsearch.cluster: ${ES_CLUSTER:-elasticsearch}
+  elasticsearch.clientnode: ${ES_CLIENTNODE:-javaclient}
+  elasticsearch.clientport: ${ES_CLIENTPORT:-10080}
+  peopleIndexName: people
+  peopleIndexType: person
+
+    
 server:
   applicationConnectors:
   - type: http 

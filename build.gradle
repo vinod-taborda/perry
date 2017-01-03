@@ -19,16 +19,15 @@ apply plugin: 'maven-publish'
 apply plugin: 'docker'
 apply plugin: 'com.github.johnrengelman.shadow'
 sourceCompatibility = 1.8
-applicationDefaultJvmArgs = ["-Djava.library.path=.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib"]
 
 project.ext {
-    apiVersion = 0.13
+    apiVersion = "0.13.SNAPSHOT"
     configPath = "$rootProject.projectDir/config/"
     dropwizardVersion = "1.0.5"
     dropwizardFlywayVersion = "1.0.0-1"
     metricsVersion = "3.1.0"
     dropwizardSwaggerVersion = "1.0.0-1"
-    mainclass = "gov.ca.cwds.rest.ApiApplication" 
+    mainclass = "gov.ca.cwds.rest.SecurityApiApplication" 
 }
 
 
@@ -45,7 +44,7 @@ repositories {
 
 shadowJar {
   classifier = 'dist'
-  baseName = 'api'
+  baseName = 'perry'
   mergeServiceFiles()	
   manifest {
     attributes 'Main-Class': mainclass
@@ -70,6 +69,9 @@ dependencies {
     compile group: 'org.elasticsearch', name: 'elasticsearch', version:  '2.3.5'
 	compile group: 'org.slf4j', name: 'slf4j-ext', version: '1.7.22'
 	compile group: 'com.hubspot.dropwizard', name: 'dropwizard-guice', version: '1.0.0.2'
+	compile group: 'org.apache.commons', name: 'commons-compress', version: '1.12'
+	compile group: 'org.bouncycastle', name: 'bcprov-jdk15', version: '1.46'
+	
 
     compile fileTree(dir: 'lib', include: ['*.jar'])
     
@@ -93,37 +95,19 @@ dependencies {
 
 tasks.withType(Test) {
     enableAssertions = true
-    
-    // These don't work. Docs mistaken?
-    // jvmArgs '-Djava.library.path=.:$rootProject.projectDir/lib/:/var/lib/jenkins/workspace/API/:/usr/local/lib/'
-    // jvmArgs '-Djava.library.path=.:./lib/:/var/lib/jenkins/workspace/API/:/usr/local/lib/'
-
-    // Set system properties for the test JVM(s).
-    // Gradle passed the literal string '$rootProject.projectDir' ???
-    // systemProperty 'java.library.path', '.:$rootProject.projectDir/lib/:/var/lib/jenkins/workspace/API/:/usr/local/lib/'
-    systemProperty 'java.library.path', '.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib'
 }
 
 test {
     exclude '**/*IT*'
-
-    // These don't work. Docs mistaken?
-    // jvmArgs '-Djava.library.path=.:$rootProject.projectDir/lib/:/var/lib/jenkins/workspace/API/:/usr/local/lib/'
-
-    // Set system properties for the test JVM(s).
-    // Gradle passed the literal string '$rootProject.projectDir' ???
-    // systemProperty 'java.library.path', '.:$rootProject.projectDir/lib/:/var/lib/jenkins/workspace/API/:/usr/local/lib/'
-    systemProperty 'java.library.path', '.:./lib:/var/lib/jenkins/workspace/API/lib:/usr/local/lib'
 }
 
 task integrationTest(type: Test, dependsOn: testClasses) {
     include '**/*IT*'
     exclude '**/*Test*'
-    //exclude '**/*'
 }
 
 run {
-    args "server", configPath + "api.yml"
+    args "server", configPath + "perry.yml"
 }
 
 cobertura {

@@ -15,6 +15,6 @@ public interface Api {
   /**
    * A {@code String} constant representing {@value #RESOURCE_USER_AUTHORIZATION} API.
    */
-  public static final String RESOURCE_USER_AUTHORIZATION = "user_authorization";
+  public static final String RESOURCE_USER_AUTHORIZATION = "authorizations";
 
 }
