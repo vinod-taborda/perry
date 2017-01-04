@@ -21,7 +21,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 sourceCompatibility = 1.8
 
 project.ext {
-    apiVersion = "0.13.SNAPSHOT"
+    apiVersion = "0.13"
     configPath = "$rootProject.projectDir/config/"
     dropwizardVersion = "1.0.5"
     dropwizardFlywayVersion = "1.0.0-1"
@@ -53,7 +53,7 @@ shadowJar {
 }
 
 dependencies {
-	compile group: "gov.ca.cwds.api", name: "api-core", version: "0.13.4"
+	compile group: "gov.ca.cwds.api", name: "api-core", version: "0.13.6"
 	compile group: "io.dropwizard", name: "dropwizard-client", version: dropwizardVersion
 	compile group: "io.dropwizard", name: "dropwizard-hibernate", version: dropwizardVersion
 	compile group: "io.dropwizard", name: "dropwizard-views", version: dropwizardVersion
