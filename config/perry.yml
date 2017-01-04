@@ -43,24 +43,6 @@ cmsDataSourceFactory:
       hibernate.show_sql: true
       hibernate.default_schema: ${DB_CMS_SCHEMA}
 
-
-flywayFactory:
-  sqlMigrationPrefix: v
-  locations:
-    - db/ns/migrations
-    - db/ns/seeds/${ENVIRONMENT:-dev}
-
-
-elasticsearch:
-  elasticsearch.host: ${ES_HOST:-localhost}
-  elasticsearch.port: ${ES_PORT:-9300}
-  elasticsearch.cluster: ${ES_CLUSTER:-elasticsearch}
-  elasticsearch.clientnode: ${ES_CLIENTNODE:-javaclient}
-  elasticsearch.clientport: ${ES_CLIENTPORT:-10080}
-  peopleIndexName: people
-  peopleIndexType: person
-
-    
 server:
   applicationConnectors:
   - type: http 
