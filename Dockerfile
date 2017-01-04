@@ -1,8 +1,8 @@
 FROM cwds/javajdk
-RUN mkdir /opt/cws-api
-RUN mkdir /opt/cws-api/logs
-ADD config/api.yml /opt/cws-api/api.yml
-ADD build/libs/api-dist.jar /opt/cws-api/api.jar
+RUN mkdir /opt/perry
+RUN mkdir /opt/perry/logs
+ADD config/perry.yml /opt/perry/perry.yml
+ADD build/libs/perry-dist.jar /opt/perry/perry.jar
 EXPOSE 8080
-WORKDIR /opt/cws-api
-CMD ["java", "-jar", "api.jar","server","api.yml"]
+WORKDIR /opt/perry
+CMD ["java", "-jar", "perry.jar","server","perry.yml"]

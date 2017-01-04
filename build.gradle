@@ -122,13 +122,13 @@ publishing {
     shadow(MavenPublication) {
       from components.shadow
       groupId 'gov.ca.cwds.api'
-      artifactId 'api'
+      artifactId 'perry'
         version version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
     }
     library(MavenPublication) {
       from components.java
       groupId 'gov.ca.cwds.api'
-      artifactId 'api'
+      artifactId 'perry'
         version version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
     }
   }
@@ -153,24 +153,24 @@ task copyDist(type: Copy, dependsOn: shadowJar) {
 task apidocker(type: Docker,  dependsOn: [copyConfig, copyDist] ) {
     dockerfile = "Dockerfile"
     project.group = "cwds"
-    applicationName = "api"
+    applicationName = "perry"
     tagVersion = version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
 }
 
 task createDockerImage(type:Exec, dependsOn: shadowJar) {
-  commandLine 'docker',  'build',  '-t',  'cwds/api', '.'
+  commandLine 'docker',  'build',  '-t',  'cwds/perry', '.'
 }
 
 task tagDockerImage(type:Exec, dependsOn: createDockerImage) {
-  commandLine 'docker',  'tag',  'cwds/api',  "cwds/api:$dockerTag"
+  commandLine 'docker',  'tag',  'cwds/perry',  "cwds/perry:$dockerTag"
 }
 
 task pushDockerLatest(type:Exec, dependsOn: createDockerImage) {
-  commandLine 'docker',  'push',  'cwds/api:latest'
+  commandLine 'docker',  'push',  'cwds/perry:latest'
 }
 
 task pushDockerVersionTagged(type:Exec, dependsOn: tagDockerImage) {
-  commandLine 'docker',  'push',  "cwds/api:$dockerTag"
+  commandLine 'docker',  'push',  "cwds/perry:$dockerTag"
 }
 task publishDocker(dependsOn: [pushDockerVersionTagged, pushDockerLatest]) {
    doLast { 
