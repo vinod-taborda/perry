@@ -34,11 +34,11 @@ Further configuration options are available in the file config/perry.yml.
 
 Perry is available as a Docker container on Dockerhub:
 
-    https://hub.docker.com/r/cwds/api/
+    https://hub.docker.com/r/cwds/perry/
 
 Run the application with Docker using a command like this:
 
-    % docker run --env-file=.env -p 8080:8080 cwds/api
+    % docker run --env-file=.env -p 8080:8080 cwds/perry
 
 ## Development Environment
 
