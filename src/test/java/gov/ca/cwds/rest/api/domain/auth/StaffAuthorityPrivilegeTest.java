@@ -13,26 +13,24 @@ import io.dropwizard.jackson.Jackson;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
-public class StaffUnitAuthorityTest {
+public class StaffAuthorityPrivilegeTest {
 
   private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
 
-  private String unitAuthorityType = "Unitwide Read";
-  private String assignedUnit = "ABC123";
-  private String county = "Sacramento";
-
+  private String authPrivilegeType = "Countywide Read";
+  private String authPrivilegeCode = "P";
+  private String county = "Placer";
 
   /*
    * Constructor Tests
    */
-
   @Test
   public void jsonCreatorConstructorTest() throws Exception {
 
-    StaffUnitAuthority domain = new StaffUnitAuthority("Unitwide Read", "ABC123", "Sacramento");
+    StaffAuthorityPrivilege domain = new StaffAuthorityPrivilege("Countywide Read", "P", "Placer");
 
-    assertThat(domain.getUnitAuthorityType(), is(equalTo(unitAuthorityType)));
-    assertThat(domain.getAssignedUnit(), is(equalTo(assignedUnit)));
+    assertThat(domain.getAuthPrivilegeType(), is(equalTo(authPrivilegeType)));
+    assertThat(domain.getAuthPrivilegeCode(), is(equalTo(authPrivilegeCode)));
     assertThat(domain.getCounty(), is(equalTo(county)));
   }
 
@@ -42,10 +40,10 @@ public class StaffUnitAuthorityTest {
   @Test
   public void serializesToJSON() throws Exception {
     final String expected = MAPPER.writeValueAsString(
-        MAPPER.readValue(fixture("fixtures/domain/auth/StaffUnitAuthority/valid/valid.json"),
-            StaffUnitAuthority.class));
+        MAPPER.readValue(fixture("fixtures/domain/auth/StaffAuthorityPrivilege/valid/valid.json"),
+            StaffAuthorityPrivilege.class));
 
-    assertThat(MAPPER.writeValueAsString(validStaffUnitAuthority()), is(equalTo(expected)));
+    assertThat(MAPPER.writeValueAsString(validStaffAuthorityPrivilege()), is(equalTo(expected)));
   }
 
   /*
@@ -53,8 +51,10 @@ public class StaffUnitAuthorityTest {
    */
   @Test
   public void deserializesFromJSON() throws Exception {
-    assertThat(MAPPER.readValue(fixture("fixtures/domain/auth/StaffUnitAuthority/valid/valid.json"),
-        StaffUnitAuthority.class), is(equalTo(validStaffUnitAuthority())));
+    assertThat(
+        MAPPER.readValue(fixture("fixtures/domain/auth/StaffAuthorityPrivilege/valid/valid.json"),
+            StaffAuthorityPrivilege.class),
+        is(equalTo(validStaffAuthorityPrivilege())));
   }
 
   /*
@@ -68,7 +68,8 @@ public class StaffUnitAuthorityTest {
   /*
    * Utils
    */
-  private StaffUnitAuthority validStaffUnitAuthority() {
-    return new StaffUnitAuthority("Unitwide Read", "ABC123", "Sacramento");
+  private StaffAuthorityPrivilege validStaffAuthorityPrivilege() {
+    return new StaffAuthorityPrivilege("Countywide Read", "P", "Placer");
   }
+
 }
