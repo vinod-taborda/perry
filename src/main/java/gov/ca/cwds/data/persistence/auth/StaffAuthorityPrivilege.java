@@ -89,9 +89,11 @@ public class StaffAuthorityPrivilege extends CmsPersistentObject {
   }
 
   /**
-   * @param countySpecificCode The countySpecificCode
-   * @param endDate The endDate
-   * @param endTime The endDate
+   * Constructor. Build from fields.
+   * 
+   * @param countySpecificCode county code
+   * @param endDate end date. null = active
+   * @param endTime end time
    * @param fkuseridT FK to user id table
    * @param id The id
    * @param levelOfAuthPrivilegeCode The levelOfAuthPrivilegeCode
@@ -125,35 +127,35 @@ public class StaffAuthorityPrivilege extends CmsPersistentObject {
   }
 
   /**
-   * @return the countySpecificCode
+   * @return county code
    */
   public String getCountySpecificCode() {
     return StringUtils.trimToEmpty(countySpecificCode);
   }
 
   /**
-   * @return the endDate
+   * @return the end date. Null = currently active.
    */
   public Date getEndDate() {
     return endDate;
   }
 
   /**
-   * @return the endTime
+   * @return the end time
    */
   public Date getEndTime() {
     return endTime;
   }
 
   /**
-   * @return the fkuseridT
+   * @return foreign key to the user table
    */
   public String getFkuseridT() {
     return StringUtils.trimToEmpty(fkuseridT);
   }
 
   /**
-   * @return the id
+   * @return the primary key
    */
   public String getId() {
     return StringUtils.trimToEmpty(id);

@@ -8,22 +8,236 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @author CWDS API Team
  */
-public class CmsUserAuthPrivilege {
+public final class CmsUserAuthPrivilege {
 
-  private static final Map<Long, UserAuthPriv> privBySysId = new ConcurrentHashMap<>();
+  private static final CmsUserAuthPrivilege singleton = new CmsUserAuthPrivilege();
 
-  private static final void register(UserAuthPriv en) {
-    privBySysId.put(en.sysId, en);
+  private final Map<String, UnitAuthority> unitAuthorityByCode = buildUnitAuthorityRegistry();
+  private final Map<Long, UserAuthPriv> privBySysId = buildUserPrivRegistry();
+  private final Map<Long, AuthorizationLevel> authLvlBySysId = buildAuthLevelRegistry();
+
+  private static final Map<String, UnitAuthority> buildUnitAuthorityRegistry() {
+    Map<String, UnitAuthority> ret = new ConcurrentHashMap<>();
+    for (UnitAuthority unitAuth : UnitAuthority.values()) {
+      ret.put(unitAuth.getUnitAuthCode(), unitAuth);
+    }
+
+    return ret;
+  }
+
+  private static final Map<Long, UserAuthPriv> buildUserPrivRegistry() {
+    Map<Long, UserAuthPriv> ret = new ConcurrentHashMap<>();
+    for (UserAuthPriv priv : UserAuthPriv.values()) {
+      ret.put(priv.getSysId(), priv);
+    }
+
+    return ret;
+  }
+
+  private static final Map<Long, AuthorizationLevel> buildAuthLevelRegistry() {
+    Map<Long, AuthorizationLevel> ret = new ConcurrentHashMap<>();
+    for (AuthorizationLevel authLvl : AuthorizationLevel.values()) {
+      ret.put(authLvl.getSysId(), authLvl);
+    }
+
+    return ret;
   }
 
   /**
-   * Look up user level privileges by sys id.
+   * An evil singleton.
+   * 
+   * <p>
+   * Immutable enum service. Probably fine.
+   * </p>
+   * 
+   * @return singleton instance
+   */
+  public static final CmsUserAuthPrivilege getInstance() {
+    return singleton;
+  }
+
+  /**
+   * Look up unit authority code.
+   * 
+   * @param code single character unit authority code
+   * @return matching unit authority
+   */
+  public final UnitAuthority findUnitAuthorityByCode(final String code) {
+    return unitAuthorityByCode.get(code);
+  }
+
+  /**
+   * Look up user level privileges by SYS_ID.
    * 
    * @param sysId system code id, per table SYS_CD_C
    * @return matching user privilege
    */
-  public static final UserAuthPriv findUserPrivBySysId(long sysId) {
+  public final UserAuthPriv findUserPrivBySysId(long sysId) {
     return privBySysId.get(sysId);
+  }
+
+  /**
+   * Look up authorization level by SYS_ID.
+   * 
+   * @param sysId system code id, per table SYS_CD_C
+   * @return matching user privilege
+   */
+  public final AuthorizationLevel findAuthLvlBySysId(long sysId) {
+    return authLvlBySysId.get(sysId);
+  }
+
+  /**
+   * Find a system code description by SYS_ID either user authorization privilege,
+   * {@link UserAuthPriv}, or authorization level (state, county, global, etc.),
+   * {@link AuthorizationLevel}.
+   * 
+   * @param sysId code to look up
+   * @return the code's description
+   */
+  public final String findSysIdDescription(long sysId) {
+    String ret = null;
+    final UserAuthPriv priv = findUserPrivBySysId(sysId);
+    if (priv != null) {
+      ret = priv.getDescription();
+    } else {
+      final AuthorizationLevel authLvl = findAuthLvlBySysId(sysId);
+      if (authLvl != null) {
+        ret = authLvl.getDescription();
+      }
+    }
+
+    return ret;
+  }
+
+  /**
+   * AUTHORITY_CODE - This represents the type of authority a designated STAFF PERSON has for a
+   * particular ASSIGNMENT UNIT. The valid values are (S = Supervisor, A = Approval Authority, T =
+   * Assignment Transfer Authority, B = Both the Approval and Assignment
+   * 
+   * <p>
+   * Taken from table STAFF_PERSON_UNIT_AUTHORITY.
+   * </p>
+   * 
+   * @author CWDS API Team
+   */
+  public enum UnitAuthority {
+
+    /**
+     * Unit supervisor.
+     */
+    UNIT_AUTH_SUPERVISOR("S", "Supervisor"),
+
+    /**
+     * Approve case changes within unit.
+     */
+    UNIT_AUTH_APPROVAL("A", "Approval Authority"),
+
+    /**
+     * Transfer assignments within unit.
+     */
+    UNIT_AUTH_ASSIGNMENT_TRANSFER("T", "Assignment Transfer Authority"),
+
+    /**
+     * Both approve and assign.
+     */
+    UNIT_AUTH_BOTH_APPROVE_AND_ASSIGN("B", "Both the Approval and Assignment");
+
+    private final String unitAuthCode;
+    private final String description;
+
+    private UnitAuthority(String unitAuthCode, String description) {
+      this.unitAuthCode = unitAuthCode;
+      this.description = description;
+    }
+
+    /**
+     * Get the single char unit authority code.
+     * 
+     * @return unit authority code
+     */
+    public String getUnitAuthCode() {
+      return unitAuthCode;
+    }
+
+    /**
+     * Get description of the unit authority code.
+     * 
+     * @return the unit auth code description.
+     */
+    public String getDescription() {
+      return description;
+    }
+  }
+
+  /**
+   * Enumerated types for user authorization privileges, for FKS_META_T = LVL_ATHC.
+   * 
+   * @author CWDS API Team
+   */
+  public enum AuthorizationLevel {
+
+    /**
+     * County Administration
+     */
+    AUTH_LVL_COUNTY(1298, "County Administration", "0001"),
+
+    /**
+     * Office Administration
+     */
+    AUTH_LVL_OFFICE(1299, "Office Administration", "0002"),
+
+    /**
+     * State Administration
+     */
+    AUTH_LVL_STATE(1300, "State Administration", "0003"),
+
+    /**
+     * User
+     */
+    AUTH_LVL_USER(1301, "User", "0004"),
+
+    /**
+     * Global Administration
+     */
+    AUTH_LVL_GLOBAL(2201, "Global Administration", "0005");
+
+    private final long sysId;
+    private final String description;
+    private final String orderInCategory;
+
+    private AuthorizationLevel(long sysId, String shortDsc, String lgcId) {
+      this.sysId = sysId;
+      this.description = shortDsc;
+      this.orderInCategory = lgcId;
+    }
+
+    /**
+     * Primary key of CMS system code table.
+     * 
+     * @return system code PK
+     */
+    public long getSysId() {
+      return this.sysId;
+    }
+
+    /**
+     * Description of this system code.
+     * 
+     * @return system code description
+     */
+    public String getDescription() {
+      return description;
+    }
+
+    /**
+     * Relative order of system code in category. Authorization level only has one category.
+     * 
+     * @return system code order
+     */
+    public String getOrderInCategory() {
+      return orderInCategory;
+    }
+
   }
 
   /**
@@ -56,7 +270,7 @@ public class CmsUserAuthPrivilege {
     /**
      * Assignment Match
      */
-    USR_PRV_ASSIGNMENT_MATCH(1464, "Assignment Match", 1460, "0005"),
+    USR_PRV_ASSIGNMENT_MATCH(1464, "Assignment Match", 1460, "0005", false),
 
     /**
      * Bulletin Administrator
@@ -71,7 +285,7 @@ public class CmsUserAuthPrivilege {
     /**
      * Code Table Maintenance
      */
-    USR_PRV_CODE_TABLE_MAINTENANCE(1467, "Code Table Maintenance", 1460, "0008"),
+    USR_PRV_CODE_TABLE_MAINTENANCE(1467, "Code Table Maintenance", 1460, "0008", false),
 
     /**
      * County License Case Management
@@ -136,12 +350,12 @@ public class CmsUserAuthPrivilege {
     /**
      * Authority
      */
-    USR_PRV_AUTHORITY(2672, "Authority", 1462, "0022"),
+    USR_PRV_AUTHORITY(2672, "Authority", 1462, "0022", false),
 
     /**
      * Probation
      */
-    USR_PRV_PROBATION(1480, "Probation", 1462, "0023"),
+    USR_PRV_PROBATION(1480, "Probation", 1462, "0023", false),
 
     /**
      * Sealed
@@ -166,7 +380,7 @@ public class CmsUserAuthPrivilege {
     /**
      * State Read Assignment
      */
-    USR_PRV_STATE_READ_ASSIGNMENT(1485, "State Read Assignment", 1463, "0028"),
+    USR_PRV_STATE_READ_ASSIGNMENT(1485, "State Read Assignment", 1463, "0028", false),
 
     /**
      * Statewide Read
@@ -222,13 +436,23 @@ public class CmsUserAuthPrivilege {
     private final long categoryId;
     private final String description;
     private final String orderInCategory;
+    private final boolean active;
 
-    private UserAuthPriv(long sysId, String shortDsc, long categoryId, String lgcId) {
+    private UserAuthPriv(long sysId, String shortDsc, long categoryId, String orderInCategory) {
       this.sysId = sysId;
       this.description = shortDsc;
       this.categoryId = categoryId;
-      this.orderInCategory = lgcId;
-      register(this);
+      this.orderInCategory = orderInCategory;
+      this.active = true;
+    }
+
+    private UserAuthPriv(long sysId, String shortDsc, long categoryId, String orderInCategory,
+        boolean active) {
+      this.sysId = sysId;
+      this.description = shortDsc;
+      this.categoryId = categoryId;
+      this.orderInCategory = orderInCategory;
+      this.active = active;
     }
 
     /**
@@ -265,6 +489,15 @@ public class CmsUserAuthPrivilege {
      */
     public String getOrderInCategory() {
       return orderInCategory;
+    }
+
+    /**
+     * A handful of privileges are marked as inactive.
+     * 
+     * @return whether the privilege is active
+     */
+    public boolean isActive() {
+      return active;
     }
 
   }
