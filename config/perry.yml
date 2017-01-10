@@ -1,6 +1,24 @@
 applicationName: Perry
 version: ${APP_VERSION:-local}
 
+saf:
+  baseUrl: https://sectest.dss.ca.gov/web1/dss_saf
+  authPath: /auth/v2/oauth2/authorize
+  retrieveTokenPath: /auth/v2/token
+  validateTokenPath: /data/v2/api/client/41/auth/validatetoken
+  clientId: ec591707-be4e-4de5-8fc7-7cff83b04f65
+  clientSecret: 5Gp7dQ6Fh7BMs0HlkiQ99
+  callbackUrl: http://54.70.247.41/cwds/callback
+  scope: basic_profile
+
+jerseyClient:
+  minThreads: 1
+  maxThreads: 128
+  workQueueSize: 8
+  gzipEnabled: true
+  gzipEnabledForRequests: true
+  chunkedEncodingEnabled: true
+
 swagger:
   templateName: swagger.mustache
   assetsPath: /static
