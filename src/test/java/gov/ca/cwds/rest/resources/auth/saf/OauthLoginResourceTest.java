@@ -1,5 +1,7 @@
 package gov.ca.cwds.rest.resources.auth.saf;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -7,9 +9,13 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.ws.rs.client.Client;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -54,8 +60,9 @@ public class OauthLoginResourceTest {
   // private static SAFConfiguration config = mock(SAFConfiguration.class);
 
   @ClassRule
-  public static ResourceTestRule inMemoryResource =
-      ResourceTestRule.builder().addResource(new OauthLoginResource(config, client)).build();
+  public static final ResourceTestRule RULE =
+      ResourceTestRule.builder().setTestContainerFactory(new GrizzlyWebTestContainerFactory())
+          .addResource(new OauthLoginResource(config, client)).build();
 
   @BeforeClass
   public static void setUp() throws JsonParseException, JsonMappingException, IOException {
@@ -64,17 +71,17 @@ public class OauthLoginResourceTest {
     when(config.getClientId()).thenReturn(clientId);
     when(config.getCallbackUrl()).thenReturn(callbackUrl);
     when(config.getScope()).thenReturn(scope);
-    // inMemoryResource =
-    // ResourceTestRule.builder().addResource(new OauthLoginResource(config, client)).build();
   }
-  /*
-   * @Test public void testLogin() throws Exception {
-   * 
-   * javax.ws.rs.core.Response response = inMemoryResource.client().target(LOGIN_RESOURCE).request()
-   * .accept(MediaType.APPLICATION_JSON).get(); int expectedStatus = 200;
-   * assertThat(response.getStatus(), is(expectedStatus));
-   * 
-   * }
-   */
+
+  @Test
+  public void testLogin() throws Exception {
+    // DRS: Grizzly magic. :-)
+    final Response response =
+        RULE.getJerseyTest().target(LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
+
+    // The response status on a redirect is 302, not 200.
+    final Response expected = Response.status(Response.Status.FOUND).entity(null).build();
+    assertThat(response.getStatus(), is(expected.getStatus()));
+  }
 
 }

@@ -133,7 +133,6 @@ public class OauthLoginResource {
     }
 
     return response;
-
   }
 
   @GET
@@ -149,9 +148,14 @@ public class OauthLoginResource {
 
     try {
       // TODO : clean this up
-      fullUrl = authUrl + "?" + "client_id=" + clientId + "&response_type=" + RESPONSE_TYPE
-          + "&redirect_uri=" + URLEncoder.encode(callbackUrl, ENCODING) + "&scope=" + scope
-          + "&state=" + state;
+      StringBuilder buf = new StringBuilder();
+      buf.append(authUrl).append("?client_id=").append(clientId).append("&response_type=")
+          .append(RESPONSE_TYPE).append("&redirect_uri=")
+          .append(URLEncoder.encode(callbackUrl, ENCODING)).append("&scope=").append(scope);
+      fullUrl = buf.toString();
+      // fullUrl = authUrl + "?" + "client_id=" + clientId + "&response_type=" + RESPONSE_TYPE
+      // + "&redirect_uri=" + URLEncoder.encode(callbackUrl, ENCODING) + "&scope=" + scope
+      // + "&state=" + state;
 
       response.sendRedirect(fullUrl);
     } catch (UnsupportedEncodingException e) {
