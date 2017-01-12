@@ -12,8 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -34,10 +36,16 @@ import com.google.inject.Inject;
 import gov.ca.cwds.rest.SAFConfiguration;
 import gov.ca.cwds.rest.api.ApiException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Api(value = RESOURCE_USER_AUTHENTICATION, tags = {RESOURCE_USER_AUTHENTICATION})
 @Path(value = RESOURCE_USER_AUTHENTICATION)
 public class OauthLoginResource {
+
+  private static final String UNAUTHORIZED = "Unauthorized";
+
+  private static final String BEARER = "bearer ";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OauthLoginResource.class);
 
@@ -94,10 +102,10 @@ public class OauthLoginResource {
    * @param token
    * @return
    */
-  protected boolean validateToken(String token) {
-    Response response = client.target(validateTokenUrl).request()
-        .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
-        .post(Entity.entity("bearer " + token, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+  protected boolean validateTokenForAPI(String token) {
+    Response response =
+        client.target(validateTokenUrl).request().header(HttpHeaders.AUTHORIZATION, BEARER + token)
+            .post(Entity.entity(BEARER + token, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
     if (response.getStatus() != (Status.OK.getStatusCode())) {
       LOGGER.info("TOKEN VALIDATION FAILED! " + response);
@@ -105,6 +113,27 @@ public class OauthLoginResource {
     }
 
     return true;
+  }
+
+  @SuppressWarnings("static-access")
+  @GET
+  @Path("/validateToken")
+  @Consumes(value = MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "validate Token by accesstoken")
+  public Response validateToken(@ApiParam(required = true, name = "token",
+      value = "the value of the accesstoken") String token) {
+    Response response =
+        client.target(validateTokenUrl).request().header(HttpHeaders.AUTHORIZATION, BEARER + token)
+            .post(Entity.entity(BEARER + token, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+    if (response.getStatus() != (Status.OK.getStatusCode())) {
+      LOGGER.info("TOKEN VALIDATION FAILED! " + response);
+      return response.status(Status.UNAUTHORIZED).build();
+    }
+
+    return response;
+
   }
 
   @GET
@@ -139,7 +168,7 @@ public class OauthLoginResource {
       @Context HttpServletResponse response, @QueryParam(value = "code") String code,
       @QueryParam(value = "state") String state) {
 
-    String retval = "Unauthorized";
+    String retval = UNAUTHORIZED;
     LOGGER.info("safCallback(): ENTER: code=" + code + ", state=" + state);
 
     if (code.isEmpty() || state.isEmpty() || !pendingAuthByState.containsKey(state)) {
@@ -166,7 +195,7 @@ public class OauthLoginResource {
 
     if (StringUtils.isBlank(oauth.getAccessToken())) {
       LOGGER.error("NO ACCESS TOKEN! state=" + state + ", code=" + code);
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
+      return Response.status(Status.UNAUTHORIZED).entity(UNAUTHORIZED).build();
     }
 
     LOGGER.warn("ACCESS GRANT! state=" + state + ", code=" + code + ", access token="
@@ -192,30 +221,11 @@ public class OauthLoginResource {
       pendingAuthByState.remove(state);
       authByAccessToken.put(auth.getAccessToken(), auth);
 
-      // ANSWER: SAF does not obey redirects.
-      // Instead, return HTML to the browser with redirect
-      // instructions.
-
-      // Absolute URL:
-      // response.sendRedirect(INTAKE_REDIRECT_URL);
-
-      // Relative URI:
-      // LOGGER.info("redirect to *relative* URI ...");
-      // final String landingPage = response.encodeURL("landing");
-      // response.setCharacterEncoding("UTF-8");
-      // response.sendRedirect(landingPage);
-
-      // final int status = response.getStatus();
-      // LOGGER.info("After redirect ... status=" + status);
-
-      // retval =
-      // Response.seeOther(UriBuilder.fromPath("landing").build())
-      // .header("CWDS_AUTH", authHeader).build();
       retval = redirectToLanding(request, response);
       return Response.ok(retval).build();
     } catch (Exception e) {
       LOGGER.error("EXCEPTION: " + e.getMessage(), e);
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
+      return Response.status(Status.UNAUTHORIZED).entity(UNAUTHORIZED).build();
     }
 
   }
