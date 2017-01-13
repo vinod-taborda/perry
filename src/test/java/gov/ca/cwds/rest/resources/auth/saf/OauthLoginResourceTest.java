@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
@@ -14,12 +13,9 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -30,6 +26,7 @@ import io.dropwizard.testing.junit.ResourceTestRule;
 public class OauthLoginResourceTest {
 
   private static final String LOGIN_RESOURCE = "/authn/login";
+  private static final String NO_LOGIN_RESOURCE = "/authn/logins";
   private static final Client client;
   private static final File file;
   private static final ObjectMapper objectMapper;
@@ -74,36 +71,37 @@ public class OauthLoginResourceTest {
   public static ResourceTestRule RULE = ResourceTestRule.builder()
       .setTestContainerFactory(new GrizzlyWebTestContainerFactory()).addResource(target).build();
 
-  @BeforeClass
-  public static void setUp() throws JsonParseException, JsonMappingException, IOException {
-    when(config.getBaseUrl()).thenReturn(baseUrl);
-    when(config.getAuthPath()).thenReturn(authPath);
-    when(config.getClientId()).thenReturn(clientId);
-    when(config.getCallbackUrl()).thenReturn(callbackUrl);
-    when(config.getScope()).thenReturn(scope);
-  }
 
   @Test
-  public void testLogin() throws Exception {
-    // DRS: Grizzly magic. :-)
+  public void testLoginForSuccessRedirect() throws Exception {
     final Response response =
         RULE.getJerseyTest().target(LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
 
-    // The response status on a redirect is 302, not 200.
     final Response expected = Response.status(Response.Status.FOUND).entity(null).build();
     assertThat(response.getStatus(), is(expected.getStatus()));
   }
 
+  public void testLoginForInvalidResource() throws Exception {
+    final Response response =
+        RULE.getJerseyTest().target(NO_LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
+    final Response expected = Response.status(Response.Status.NOT_FOUND).entity(null).build();
+    assertThat(response.getStatus(), is(expected.getStatus()));
+  }
+
   @Test
-  public void testLogin_change_settings() throws Exception {
-    // when(config.getAuthPath()).thenReturn("google.com");
+  public void testLoginForInvalidMethod() throws Exception {
+    final Response response =
+        RULE.getJerseyTest().target(LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).post(null);
+    final Response expected =
+        Response.status(Response.Status.METHOD_NOT_ALLOWED).entity(null).build();
+    assertThat(response.getStatus(), is(expected.getStatus()));
+  }
 
-    target.setAuthUrl("yahoo.com");
-
+  @Test
+  public void testLoginWithInvalidUri() throws Exception {
+    target.setAuthUrl("Dummy");
     final Response response =
         RULE.getJerseyTest().target(LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
-
-    // The response status on a redirect is 302, not 200.
     final Response expected = Response.status(Response.Status.NOT_FOUND).entity(null).build();
     assertThat(response.getStatus(), is(expected.getStatus()));
   }
