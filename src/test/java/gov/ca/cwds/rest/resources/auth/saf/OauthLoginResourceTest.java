@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -32,6 +33,8 @@ public class OauthLoginResourceTest {
   private static final Client client;
   private static final File file;
   private static final ObjectMapper objectMapper;
+
+
   private static SAFConfiguration config = mock(SAFConfiguration.class);
   private static SecurityApiConfiguration securityconfig;
 
@@ -46,23 +49,30 @@ public class OauthLoginResourceTest {
   // TODO : More Clean up is required
 
   static {
-    when(config.getBaseUrl()).thenReturn(baseUrl);
-    when(config.getAuthPath()).thenReturn(authPath);
-    when(config.getClientId()).thenReturn(clientId);
-    when(config.getCallbackUrl()).thenReturn(callbackUrl);
     client = mock(Client.class);
     file = new File("config/perry.yml");
     objectMapper = new ObjectMapper(new YAMLFactory());
 
+    when(config.getBaseUrl()).thenReturn(baseUrl);
+    when(config.getAuthPath()).thenReturn(authPath);
+    when(config.getClientId()).thenReturn(clientId);
+    when(config.getCallbackUrl()).thenReturn(callbackUrl);
+  }
+
+  @Before
+  public void setup() {
+    when(config.getBaseUrl()).thenReturn(baseUrl);
+    when(config.getAuthPath()).thenReturn(authPath);
+    when(config.getClientId()).thenReturn(clientId);
+    when(config.getCallbackUrl()).thenReturn(callbackUrl);
     // config = securityconfig.getSafConfiguration();
   }
 
-  // private static SAFConfiguration config = mock(SAFConfiguration.class);
+  private static OauthLoginResource target = new OauthLoginResource(config, client);
 
   @ClassRule
-  public static final ResourceTestRule RULE =
-      ResourceTestRule.builder().setTestContainerFactory(new GrizzlyWebTestContainerFactory())
-          .addResource(new OauthLoginResource(config, client)).build();
+  public static ResourceTestRule RULE = ResourceTestRule.builder()
+      .setTestContainerFactory(new GrizzlyWebTestContainerFactory()).addResource(target).build();
 
   @BeforeClass
   public static void setUp() throws JsonParseException, JsonMappingException, IOException {
@@ -81,6 +91,20 @@ public class OauthLoginResourceTest {
 
     // The response status on a redirect is 302, not 200.
     final Response expected = Response.status(Response.Status.FOUND).entity(null).build();
+    assertThat(response.getStatus(), is(expected.getStatus()));
+  }
+
+  @Test
+  public void testLogin_change_settings() throws Exception {
+    // when(config.getAuthPath()).thenReturn("google.com");
+
+    target.setAuthUrl("yahoo.com");
+
+    final Response response =
+        RULE.getJerseyTest().target(LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
+
+    // The response status on a redirect is 302, not 200.
+    final Response expected = Response.status(Response.Status.NOT_FOUND).entity(null).build();
     assertThat(response.getStatus(), is(expected.getStatus()));
   }
 

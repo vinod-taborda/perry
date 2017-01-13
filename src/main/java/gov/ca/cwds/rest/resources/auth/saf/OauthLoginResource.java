@@ -247,4 +247,12 @@ public class OauthLoginResource {
     return UUID.randomUUID().toString();
   }
 
+  public String getAuthUrl() {
+    return authUrl;
+  }
+
+  public synchronized void setAuthUrl(String authUrl) {
+    this.authUrl = authUrl;
+  }
+
 }
