@@ -122,7 +122,7 @@ public class OauthLoginResource {
   @Produces(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "validate Token by accesstoken")
   public Response validateToken(@ApiParam(required = true, name = "token",
-      value = "the value of the accesstoken") String token) {
+      value = "the value of the accesstoken") @QueryParam("token") String token) {
     Response response =
         client.target(validateTokenUrl).request().header(HttpHeaders.AUTHORIZATION, BEARER + token)
             .post(Entity.entity(BEARER + token, MediaType.APPLICATION_FORM_URLENCODED_TYPE));

@@ -81,6 +81,7 @@ public class OauthLoginResourceTest {
     assertThat(response.getStatus(), is(expected.getStatus()));
   }
 
+  @Test
   public void testLoginForInvalidResource() throws Exception {
     final Response response =
         RULE.getJerseyTest().target(NO_LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
