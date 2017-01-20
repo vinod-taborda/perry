@@ -151,7 +151,8 @@ public class OauthLoginResource {
       StringBuilder buf = new StringBuilder();
       buf.append(authUrl).append("?client_id=").append(clientId).append("&response_type=")
           .append(RESPONSE_TYPE).append("&redirect_uri=")
-          .append(URLEncoder.encode(callbackUrl, ENCODING)).append("&scope=").append(scope);
+          .append(URLEncoder.encode(callbackUrl, ENCODING)).append("&scope=").append(scope)
+          .append("&state=").append(state);
       fullUrl = buf.toString();
       // fullUrl = authUrl + "?" + "client_id=" + clientId + "&response_type=" + RESPONSE_TYPE
       // + "&redirect_uri=" + URLEncoder.encode(callbackUrl, ENCODING) + "&scope=" + scope
