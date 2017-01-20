@@ -6,10 +6,10 @@ saf:
   authPath: ${SAF_AUTH_PATH:-/auth/v2/oauth2/authorize}
   retrieveTokenPath: ${SAF_RETRIEVE_TOKEN_PATH:-/auth/v2/token}
   validateTokenPath: ${SAF_VALIDATE_TOKEN_PATH:-/data/v2/api/client/41/auth/validatetoken}
-  clientId: ${SAF_BASE_URL:-XXXXXX}
-  clientSecret: ${SAF_CLIENT_ID:-XXXXXX}
-  callbackUrl: ${SAF_CLIENT_SECRET:-http://localhost:8080/authn/callback}
-  scope: ${SAF_CALLBACK_URL:-basic_profile}
+  clientId: ${SAF_CLIENT_ID:-XXXXXX}
+  clientSecret: ${SAF_CLIENT_SECRET:-XXXXXX}
+  callbackUrl: ${SAF_CALLBACK_URL:-http://localhost:8080/authn/callback}
+  scope: ${SAF_SCOPE:-basic_profile}
 
 jerseyClient:
   minThreads: 1
