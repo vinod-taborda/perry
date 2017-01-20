@@ -2,14 +2,14 @@ applicationName: Perry
 version: ${APP_VERSION:-local}
 
 saf:
-  baseUrl: https://sectest.dss.ca.gov/web1/dss_saf
-  authPath: /auth/v2/oauth2/authorize
-  retrieveTokenPath: /auth/v2/token
-  validateTokenPath: /data/v2/api/client/41/auth/validatetoken
-  clientId: ec591707-be4e-4de5-8fc7-7cff83b04f65
-  clientSecret: 5Gp7dQ6Fh7BMs0HlkiQ99
-  callbackUrl: http://54.70.247.41/cwds/callback
-  scope: basic_profile
+  baseUrl: ${SAF_BASE_URL:-https://sectest.dss.ca.gov/web1/dss_saf}
+  authPath: ${SAF_AUTH_PATH:-/auth/v2/oauth2/authorize}
+  retrieveTokenPath: ${SAF_RETRIEVE_TOKEN_PATH:-/auth/v2/token}
+  validateTokenPath: ${SAF_VALIDATE_TOKEN_PATH:-/data/v2/api/client/41/auth/validatetoken}
+  clientId: ${SAF_BASE_URL:-XXXXXX}
+  clientSecret: ${SAF_CLIENT_ID:-XXXXXX}
+  callbackUrl: ${SAF_CLIENT_SECRET:-http://localhost:8080/authn/callback}
+  scope: ${SAF_CALLBACK_URL:-basic_profile}
 
 jerseyClient:
   minThreads: 1
