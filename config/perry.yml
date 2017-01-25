@@ -1,5 +1,6 @@
 applicationName: Perry
 version: ${APP_VERSION:-local}
+loginResourceHelper: gov.ca.cwds.rest.resources.auth.SimpleAccountLoginResourceHelper
 
 saf:
   baseUrl: ${SAF_BASE_URL:-https://sectest.dss.ca.gov/web1/dss_saf}
@@ -8,8 +9,11 @@ saf:
   validateTokenPath: ${SAF_VALIDATE_TOKEN_PATH:-/data/v2/api/client/41/auth/validatetoken}
   clientId: ${SAF_CLIENT_ID:-XXXXXX}
   clientSecret: ${SAF_CLIENT_SECRET:-XXXXXX}
-  callbackUrl: ${SAF_CALLBACK_URL:-http://localhost:8080/authn/callback}
+  callbackUrl: ${SAF_CALLBACK_URL:-http://localhost:8090/authn/callback}
   scope: ${SAF_SCOPE:-basic_profile}
+
+shiro:
+  iniConfigs: ["file:${SHIRO_CONFIG_PATH:-config/shiro.ini}"]
 
 jerseyClient:
   minThreads: 1
@@ -18,6 +22,9 @@ jerseyClient:
   gzipEnabled: true
   gzipEnabledForRequests: true
   chunkedEncodingEnabled: true
+
+simpleAccountLogin:
+  templateName: simpleAccountLogin.mustache
 
 swagger:
   templateName: swagger.mustache
@@ -64,10 +71,10 @@ cmsDataSourceFactory:
 server:
   applicationConnectors:
   - type: http 
-    port: ${APP_STD_PORT:-8080}
+    port: ${APP_STD_PORT:-8090}
   adminConnectors:
   - type: http
-    port: ${APP_ADMIN_PORT:-8081}
+    port: ${APP_ADMIN_PORT:-8091}
     
   requestLog:
     appenders:

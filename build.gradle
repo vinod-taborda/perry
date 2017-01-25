@@ -53,7 +53,9 @@ shadowJar {
 }
 
 dependencies {
-	compile group: "gov.ca.cwds.api", name: "api-core", version: "0.13.6"
+	compile ('gov.ca.cwds.api:api-core:0.13.55') {
+		exclude group: 'org.glassfish.jersey.core'
+	}
 	compile group: "io.dropwizard", name: "dropwizard-client", version: dropwizardVersion
 	compile group: "io.dropwizard", name: "dropwizard-hibernate", version: dropwizardVersion
 	compile group: "io.dropwizard", name: "dropwizard-views", version: dropwizardVersion
@@ -71,7 +73,8 @@ dependencies {
 	compile group: 'com.hubspot.dropwizard', name: 'dropwizard-guice', version: '1.0.0.2'
 	compile group: 'org.apache.commons', name: 'commons-compress', version: '1.12'
 	compile group: 'org.bouncycastle', name: 'bcprov-jdk15', version: '1.46'
-	
+	compile group: 'org.apache.shiro', name: 'shiro-core', version: '1.4.0-RC2'
+	compile group: 'org.secnod.dropwizard', name: 'dropwizard-shiro', version: '0.2.0'
 
     compile fileTree(dir: 'lib', include: ['*.jar'])
     
@@ -82,7 +85,6 @@ dependencies {
 
     testCompile 'org.mockito:mockito-core:2.0.54-beta'
  	testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
- 	
 	testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {
 		exclude group: 'javax.servlet', module: 'javax.servlet-api'
 		exclude group: 'junit', module: 'junit'

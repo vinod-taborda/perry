@@ -1,7 +1,5 @@
 package gov.ca.cwds.rest.resources.auth.saf;
 
-import static gov.ca.cwds.rest.core.Api.RESOURCE_USER_AUTHENTICATION;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -12,21 +10,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +28,11 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.rest.SAFConfiguration;
 import gov.ca.cwds.rest.api.ApiException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import gov.ca.cwds.rest.resources.auth.LoginResourceHelper;
+import gov.ca.cwds.rest.views.SimpleAccountLoginView;
+import io.dropwizard.views.View;
 
-@Api(value = RESOURCE_USER_AUTHENTICATION, tags = {RESOURCE_USER_AUTHENTICATION})
-@Path(value = RESOURCE_USER_AUTHENTICATION)
-public class OauthLoginResource {
+public class OauthLoginResource implements LoginResourceHelper {
 
   private static final String UNAUTHORIZED = "Unauthorized";
 
@@ -115,29 +106,22 @@ public class OauthLoginResource {
     return true;
   }
 
-  @SuppressWarnings("static-access")
-  @GET
-  @Path("/validateToken")
-  @Consumes(value = MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @ApiOperation(value = "validate Token by accesstoken")
-  public Response validateToken(@ApiParam(required = true, name = "token",
-      value = "the value of the accesstoken") @QueryParam("token") String token) {
+  @Override
+  public Response validateToken(String token) {
     Response response =
         client.target(validateTokenUrl).request().header(HttpHeaders.AUTHORIZATION, BEARER + token)
             .post(Entity.entity(BEARER + token, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
     if (response.getStatus() != (Status.OK.getStatusCode())) {
       LOGGER.info("TOKEN VALIDATION FAILED! " + response);
-      return response.status(Status.UNAUTHORIZED).build();
+      return Response.status(Status.UNAUTHORIZED).build();
     }
 
     return response;
   }
 
-  @GET
-  @Path("/login")
-  public void login(@Context final HttpServletResponse response) {
+  @Override
+  public View loginGet(HttpServletRequest request, HttpServletResponse response, String callback) {
 
     final String state = state();
     SAFAuthBean auth = new SAFAuthBean();
@@ -147,31 +131,32 @@ public class OauthLoginResource {
     String fullUrl = "";
 
     try {
-      // TODO : clean this up
       StringBuilder buf = new StringBuilder();
       buf.append(authUrl).append("?client_id=").append(clientId).append("&response_type=")
           .append(RESPONSE_TYPE).append("&redirect_uri=")
           .append(URLEncoder.encode(callbackUrl, ENCODING)).append("&scope=").append(scope)
           .append("&state=").append(state);
       fullUrl = buf.toString();
-      // fullUrl = authUrl + "?" + "client_id=" + clientId + "&response_type=" + RESPONSE_TYPE
-      // + "&redirect_uri=" + URLEncoder.encode(callbackUrl, ENCODING) + "&scope=" + scope
-      // + "&state=" + state;
 
       response.sendRedirect(fullUrl);
     } catch (UnsupportedEncodingException e) {
-      LOGGER.error("Uknown Encoding {}", ENCODING);
+      LOGGER.error("Unknown Encoding {}", ENCODING);
       throw new ApiException("Unknown Encoding", e);
     } catch (IOException e) {
-      throw new ApiException("unalbe to redirect to the url:" + fullUrl, e);
+      throw new ApiException("unable to redirect to the url:" + fullUrl, e);
     }
+    return null;
   }
 
-  @GET
-  @Path("/callback")
-  public Response safCallback(@Context HttpServletRequest request,
-      @Context HttpServletResponse response, @QueryParam(value = "code") String code,
-      @QueryParam(value = "state") String state) {
+  @Override
+  public SimpleAccountLoginView loginPost(HttpServletRequest request, HttpServletResponse response,
+      String username, String password, String callback) {
+    throw new NotImplementedException("Method not implemented");
+  }
+
+  @Override
+  public Response callback(HttpServletRequest request, HttpServletResponse response, String code,
+      String state) {
 
     String retval = UNAUTHORIZED;
     LOGGER.info("safCallback(): ENTER: code=" + code + ", state=" + state);
@@ -255,5 +240,4 @@ public class OauthLoginResource {
   public synchronized void setAuthUrl(String authUrl) {
     this.authUrl = authUrl;
   }
-
 }

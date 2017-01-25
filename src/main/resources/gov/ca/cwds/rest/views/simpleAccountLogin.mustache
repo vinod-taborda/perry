@@ -1,0 +1,24 @@
+<HTML>
+<HEAD>
+<TITLE>CWDS Login</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<HR>
+
+<form method="POST" action="/authn/login">
+	<b>{{message}}</b>
+    <br/>
+    <label><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="username" required>
+	<br/>
+    <label><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+	<input type="hidden" name="callback" value="{{callback}}">
+    <button type="submit">Login</button>
+  </div>
+
+</form>
+
+
+</BODY>
+</HTML>

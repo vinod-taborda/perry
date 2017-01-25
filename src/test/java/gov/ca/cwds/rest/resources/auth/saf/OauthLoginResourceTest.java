@@ -21,6 +21,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import gov.ca.cwds.rest.SAFConfiguration;
 import gov.ca.cwds.rest.SecurityApiConfiguration;
+import gov.ca.cwds.rest.resources.auth.LoginResource;
 import io.dropwizard.testing.junit.ResourceTestRule;
 
 public class OauthLoginResourceTest {
@@ -65,8 +66,8 @@ public class OauthLoginResourceTest {
     // config = securityconfig.getSafConfiguration();
   }
 
-  private static OauthLoginResource target = new OauthLoginResource(config, client);
-
+  private static OauthLoginResource targetHelper = new OauthLoginResource(config, client);
+  private static LoginResource target = new LoginResource(targetHelper);
   @ClassRule
   public static ResourceTestRule RULE = ResourceTestRule.builder()
       .setTestContainerFactory(new GrizzlyWebTestContainerFactory()).addResource(target).build();
@@ -74,8 +75,8 @@ public class OauthLoginResourceTest {
 
   @Test
   public void testLoginForSuccessRedirect() throws Exception {
-    final Response response =
-        RULE.getJerseyTest().target(LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
+    final Response response = RULE.getJerseyTest().target(LOGIN_RESOURCE)
+        .queryParam("callback", "/foo").request(MediaType.APPLICATION_JSON).get();
 
     final Response expected = Response.status(Response.Status.FOUND).entity(null).build();
     assertThat(response.getStatus(), is(expected.getStatus()));
@@ -91,8 +92,7 @@ public class OauthLoginResourceTest {
 
   @Test
   public void testLoginForInvalidMethod() throws Exception {
-    final Response response =
-        RULE.getJerseyTest().target(LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).post(null);
+    final Response response = RULE.getJerseyTest().target(LOGIN_RESOURCE).request().delete();
     final Response expected =
         Response.status(Response.Status.METHOD_NOT_ALLOWED).entity(null).build();
     assertThat(response.getStatus(), is(expected.getStatus()));
@@ -100,9 +100,8 @@ public class OauthLoginResourceTest {
 
   @Test
   public void testLoginWithInvalidUri() throws Exception {
-    target.setAuthUrl("Dummy");
     final Response response =
-        RULE.getJerseyTest().target(LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
+        RULE.getJerseyTest().target(NO_LOGIN_RESOURCE).request(MediaType.APPLICATION_JSON).get();
     final Response expected = Response.status(Response.Status.NOT_FOUND).entity(null).build();
     assertThat(response.getStatus(), is(expected.getStatus()));
   }
