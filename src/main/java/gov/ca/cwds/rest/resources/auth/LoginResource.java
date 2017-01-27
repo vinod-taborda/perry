@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -50,13 +51,14 @@ public class LoginResource {
 
   @GET
   @Path("/login")
+  @ApiOperation(
+      value = "Login. Applications should direct users to this endpoint for login.  When authentication complete, user will be redirected back to callback with auth 'token' as a query parameter",
+      code = 200)
   public View loginGet(@Context final HttpServletRequest request,
-      @Context final HttpServletResponse response, @QueryParam("callback") String callback) {
-    if (StringUtils.isEmpty(callback)) {
-      throw new WebApplicationException(Response.status(HttpURLConnection.HTTP_BAD_REQUEST)
-          .entity("callback parameter is mandatory").build());
-    }
-    return loginResourceHelper.loginGet(request, response, callback);
+      @NotNull @Context final HttpServletResponse response,
+      @ApiParam(required = true, name = "callback",
+          value = "URL to send the user back to after authentication") @QueryParam("callback") String callback) {
+    return loginResourceHelper.loginPage(callback);
   }
 
   @POST
@@ -76,10 +78,11 @@ public class LoginResource {
 
   @GET
   @Path("/validate")
-  @ApiOperation(value = "Validate a token", code = 200)
-  @ApiResponses(value = {@ApiResponse(code = 401, message = "Unauthorized")})
-  public Response validateToken(@ApiParam(required = true, name = "token",
-      value = "the token") @QueryParam("token") String token) {
+  @ApiOperation(value = "Validate an authentication token", code = 200)
+  @ApiResponses(value = {@ApiResponse(code = 200, message = "authorized"),
+      @ApiResponse(code = 401, message = "Unauthorized")})
+  public Response validateToken(@NotNull @ApiParam(required = true, name = "token",
+      value = "The token to validate") @QueryParam("token") String token) {
     return loginResourceHelper.validateToken(token);
   }
 

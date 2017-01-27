@@ -28,11 +28,10 @@ import com.google.inject.Inject;
 
 import gov.ca.cwds.rest.SAFConfiguration;
 import gov.ca.cwds.rest.api.ApiException;
-import gov.ca.cwds.rest.resources.auth.LoginResourceHelper;
 import gov.ca.cwds.rest.views.SimpleAccountLoginView;
 import io.dropwizard.views.View;
 
-public class OauthLoginResource implements LoginResourceHelper {
+public class OauthLoginResource {// implements LoginResourceHelper {
 
   private static final String UNAUTHORIZED = "Unauthorized";
 
@@ -106,7 +105,7 @@ public class OauthLoginResource implements LoginResourceHelper {
     return true;
   }
 
-  @Override
+  // @Override
   public Response validateToken(String token) {
     Response response =
         client.target(validateTokenUrl).request().header(HttpHeaders.AUTHORIZATION, BEARER + token)
@@ -120,7 +119,7 @@ public class OauthLoginResource implements LoginResourceHelper {
     return response;
   }
 
-  @Override
+  // @Override
   public View loginGet(HttpServletRequest request, HttpServletResponse response, String callback) {
 
     final String state = state();
@@ -148,13 +147,13 @@ public class OauthLoginResource implements LoginResourceHelper {
     return null;
   }
 
-  @Override
+  // @Override
   public SimpleAccountLoginView loginPost(HttpServletRequest request, HttpServletResponse response,
       String username, String password, String callback) {
     throw new NotImplementedException("Method not implemented");
   }
 
-  @Override
+  // @Override
   public Response callback(HttpServletRequest request, HttpServletResponse response, String code,
       String state) {
 

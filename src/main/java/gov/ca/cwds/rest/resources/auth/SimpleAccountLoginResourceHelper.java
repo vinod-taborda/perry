@@ -61,18 +61,7 @@ public class SimpleAccountLoginResourceHelper implements LoginResourceHelper {
   }
 
   @Override
-  public SimpleAccountLoginView loginGet(HttpServletRequest request, HttpServletResponse response,
-      String callback) {
-    Subject subject = SecurityUtils.getSubject();
-    if (subject.isAuthenticated()) {
-      try {
-        response.sendRedirect(callback);
-        return null;
-      } catch (IOException e) {
-        throw new ApiException(MessageFormat.format("Unable to redirect to callback {0}", callback),
-            e);
-      }
-    }
+  public SimpleAccountLoginView loginPage(String callback) {
     return new SimpleAccountLoginView(simpleAccountLoginConfiguration, null, callback);
   }
 

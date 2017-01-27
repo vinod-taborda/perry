@@ -14,7 +14,7 @@ import io.dropwizard.views.View;
  */
 public interface LoginResourceHelper {
 
-  public View loginGet(HttpServletRequest request, HttpServletResponse response, String callback);
+  public View loginPage(String callback);
 
   public SimpleAccountLoginView loginPost(HttpServletRequest request, HttpServletResponse response,
       String username, String password, String callback);
