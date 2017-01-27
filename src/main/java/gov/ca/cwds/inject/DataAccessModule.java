@@ -12,8 +12,8 @@ import gov.ca.cwds.data.auth.UserIdDao;
 import gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege;
 import gov.ca.cwds.data.persistence.auth.StaffUnitAuthority;
 import gov.ca.cwds.data.persistence.auth.UserId;
-import gov.ca.cwds.rest.SecurityApiConfiguration;
 import gov.ca.cwds.rest.ElasticsearchConfiguration;
+import gov.ca.cwds.rest.SecurityApiConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -39,7 +39,8 @@ public class DataAccessModule extends AbstractModule {
       };
 
   public DataAccessModule(Bootstrap<SecurityApiConfiguration> bootstrap) {
-    bootstrap.addBundle(cmsHibernateBundle);
+    // RDB - data access out of scope for R1. Removing from bootstrap for simplicity
+    // bootstrap.addBundle(cmsHibernateBundle);
   }
 
   /**

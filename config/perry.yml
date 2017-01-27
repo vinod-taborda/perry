@@ -33,40 +33,6 @@ swagger:
   title: CWDS API
   description: RESTful API definitions for the CWS New System.
   logo: images/CWDS-API-Logo-Horizontal.png
- 
- 
-nsDataSourceFactory:
-  driverClass: org.postgresql.Driver
-  user: ${DB_NS_USER}
-  password: ${DB_NS_PASSWORD}
-  url: ${DB_NS_JDBC_URL}
-  validationQuery: "/* MyService Health Check */ SELECT 1"
-  logValidationErrors: true
-  initialSize: 2
-  minSize: 2
-  maxSize: 8
-  minIdleTime: 1 minute
-  properties:
-      hibernate.dialect: org.hibernate.dialect.PostgreSQL82Dialect
-      hibernate.id.new_generator_mappings: false
-      hibernate.show_sql: true
-
-
-cmsDataSourceFactory:
-  driverClass: com.ibm.db2.jcc.DB2Driver
-  user: ${DB_CMS_USER}
-  password: ${DB_CMS_PASSWORD}
-  url: ${DB_CMS_JDBC_URL}
-  validationQuery: "/* MyService Health Check */ SELECT 1 FROM sysibm.sysdummy1 for read only"
-  logValidationErrors: true
-  initialSize: 2
-  minSize: 2
-  maxSize: 8
-  minIdleTime: 1 minute
-  properties:
-      hibernate.dialect: org.hibernate.dialect.DB2Dialect
-      hibernate.show_sql: true
-      hibernate.default_schema: ${DB_CMS_SCHEMA}
 
 server:
   applicationConnectors:
