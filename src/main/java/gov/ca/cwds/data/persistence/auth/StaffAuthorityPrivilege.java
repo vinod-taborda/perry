@@ -36,7 +36,7 @@ import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
             + "S.levelOfAuthPrivilegeType = '1468' AND "
             + "S.levelOfAuthPrivilegeCode = 'P' AND S.endDate is null")})
 @Entity
-@Table(schema = "CWSINT", name = "STF_PVLT")
+@Table(name = "STF_PVLT")
 public class StaffAuthorityPrivilege extends CmsPersistentObject {
 
   /**

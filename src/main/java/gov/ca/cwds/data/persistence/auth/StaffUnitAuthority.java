@@ -26,9 +26,8 @@ import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
         query = "FROM StaffUnitAuthority WHERE FKSTFPERST = :staffId"),
     @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.StaffUnitAuthority.findAllUpdatedAfter",
         query = "FROM StaffUnitAuthority WHERE lastUpdatedTime > :after")})
-
 @Entity
-@Table(schema = "CWSINT", name = "STFUATHT")
+@Table(name = "STFUATHT")
 public class StaffUnitAuthority extends CmsPersistentObject {
 
   /**

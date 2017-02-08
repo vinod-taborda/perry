@@ -29,7 +29,7 @@ import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
     @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.UserId.findUserFromLogonId",
         query = "FROM UserId U where U.logonId = :logonId")})
 @Entity
-@Table(schema = "CWSINT", name = "USERID_T")
+@Table(name = "USERID_T")
 public class UserId extends CmsPersistentObject {
 
   /**
