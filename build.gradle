@@ -53,7 +53,7 @@ shadowJar {
 }
 
 dependencies {
-	compile ('gov.ca.cwds.api:api-core:0.13.55') {
+	compile ('gov.ca.cwds.api:api-core:0.15.80') {
 		exclude group: 'org.glassfish.jersey.core'
 	}
 	compile group: "io.dropwizard", name: "dropwizard-client", version: dropwizardVersion
