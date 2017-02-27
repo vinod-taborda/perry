@@ -1,24 +1,81 @@
-<HTML>
-<HEAD>
-<TITLE>CWDS Login</TITLE>
-</HEAD>
-<BODY BGCOLOR="FFFFFF">
-<HR>
+<html>
+<head>
+<title>CWDS Login</title>
 
-<form method="POST" action="/authn/login">
-	<b>{{message}}</b>
-    <br/>
-    <label><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="username" required>
-	<br/>
-    <label><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="password" required>
-	<input type="hidden" name="callback" value="{{callback}}">
-    <button type="submit">Login</button>
-  </div>
+<link href="/static/css/california.css" rel="stylesheet" />
 
-</form>
+<style>
+html, body {
+	background-color: #fff;
+}
 
+.login-image, .login-panel {
+	height: 100vh;
+	float: left;
+	width: 50%;
+}
 
-</BODY>
-</HTML>
+.login-panel {
+	padding: 12.5vh;
+	background-color: #f1f1f1;
+}
+
+.login-panel h1 {
+	margin-top: 0;
+}
+
+.login-box {
+	width: 100%;
+}
+
+.login-message {
+	color: #FF0000;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	font-weight: bold;
+}
+
+@media ( max-width : 768px) {
+	.login-image {
+		display: none;
+	}
+	.login-panel {
+		width: 100%;
+		padding: 5vh;
+	}
+	.button {
+		width: 100%;
+	}
+}
+</style>
+
+</head>
+
+<body class='login-page'>
+	<div class='login-image'></div>
+	<div class='login-panel'>
+		<div class='login-box'>
+			<form method="POST" action="/authn/login">
+				<div class='login-message'>{{message}}</div>
+			
+				<img src="/static/images/CWDS-Logo---Color-Horizontal.png" /> 
+				
+				<label>Email address</label> 
+				<input name="username" type="text"> 
+				
+				<label>Password</label>
+				<input name="password" type="password"> 
+				
+				<input type="hidden" name="callback" value="{{callback}}">
+
+				<div class='gap-top'>
+					<a href='dashboard_1.html'>
+						<button type="submit" class='btn btn-primary'>Sign In</button>
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
+

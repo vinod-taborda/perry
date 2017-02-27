@@ -25,6 +25,7 @@ jerseyClient:
 
 simpleAccountLogin:
   templateName: simpleAccountLogin.mustache
+  assetsPath: /static 
 
 swagger:
   templateName: swagger.mustache

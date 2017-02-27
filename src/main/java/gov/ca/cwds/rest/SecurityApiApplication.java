@@ -1,14 +1,15 @@
 package gov.ca.cwds.rest;
 
+import gov.ca.cwds.inject.ApplicationModule;
+import gov.ca.cwds.rest.resources.auth.LoginResourceHelper;
+import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Module;
-
-import gov.ca.cwds.inject.ApplicationModule;
-import gov.ca.cwds.rest.resources.auth.LoginResourceHelper;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
 
 /**
  * Core execution class of CWDS REST API server application.
@@ -45,6 +46,10 @@ public class SecurityApiApplication extends BaseApiApplication<SecurityApiConfig
     super.runInternal(configuration, environment);
     // ensure our login resource helper is setup
     guiceBundle.getInjector().getInstance(LoginResourceHelper.class);
+
+    new AssetsBundle(configuration.getSimpleAccountLoginConfiguration().getAssetsPath(),
+        configuration.getSimpleAccountLoginConfiguration().getAssetsPath(), null,
+        "simpleAccountLogin").run(environment);
   }
 
 
