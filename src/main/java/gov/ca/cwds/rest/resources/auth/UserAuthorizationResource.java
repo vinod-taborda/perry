@@ -39,7 +39,7 @@ import io.swagger.annotations.ApiResponses;
  * 
  * @author CWDS API Team
  */
-@Api(hidden = true, value = RESOURCE_USER_AUTHORIZATION, tags = {RESOURCE_USER_AUTHORIZATION})
+@Api(value = RESOURCE_USER_AUTHORIZATION, tags = {RESOURCE_USER_AUTHORIZATION})
 @Path(value = RESOURCE_USER_AUTHORIZATION)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

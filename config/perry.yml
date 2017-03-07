@@ -1,6 +1,7 @@
 applicationName: Perry
 version: ${APP_VERSION:-local}
 loginResourceHelper: gov.ca.cwds.rest.resources.auth.SimpleAccountLoginResourceHelper
+#loginResourceHelper: gov.ca.cwds.rest.resources.auth.saf.SafLoginResourceHelper
 
 saf:
   baseUrl: ${SAF_BASE_URL:-https://sectest.dss.ca.gov/web1/dss_saf}
@@ -48,7 +49,7 @@ server:
       - type: console
 
 logging:
-  level: ${LOGLEVEL:-DEBUG}
+  level: ${LOGLEVEL:-WARN}
   loggers:
     "org.hibernate.SQL":
       level: ALL
@@ -56,9 +57,11 @@ logging:
       level: ALL
     "AUDIT":
       level: ALL
+    "gov.ca.cwds":
+      level: DEBUG
   appenders:
     - type: console
       threshold: ALL
       timeZone: UTC
       target: stdout
-      logFormat: '%d %level %X{remoteAddress} [%thread] %logger{0}: userid:"%X{userid}" sessionid:"%X{sessionid}" uniqueId:="%X{uniqueId}" "%message%n"'  
+      logFormat: '%d %level %X{remoteAddress} [%thread] %logger{0}: uniqueId:="%X{uniqueId}" "%message%n"'  

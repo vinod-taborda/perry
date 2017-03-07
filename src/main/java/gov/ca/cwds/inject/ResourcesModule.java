@@ -1,7 +1,14 @@
 package gov.ca.cwds.inject;
 
-import javax.ws.rs.client.Client;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.spi.ExecutorServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +29,10 @@ import gov.ca.cwds.rest.resources.SwaggerResource;
 import gov.ca.cwds.rest.resources.auth.LoginResourceHelper;
 import gov.ca.cwds.rest.resources.auth.SimpleAccountLoginResourceHelper;
 import gov.ca.cwds.rest.resources.auth.UserAuthorizationResource;
-import gov.ca.cwds.rest.resources.auth.saf.OauthLoginResource;
+import gov.ca.cwds.rest.resources.auth.saf.SafLoginResourceHelper;
 import gov.ca.cwds.rest.services.auth.UserAuthorizationService;
-import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.jersey.jackson.JacksonMessageBodyProvider;
+import io.dropwizard.jersey.validation.HibernateValidationFeature;
 import io.dropwizard.setup.Environment;
 
 public class ResourcesModule extends AbstractModule {
@@ -37,7 +45,7 @@ public class ResourcesModule extends AbstractModule {
     bind(ApplicationResource.class);
     bind(SwaggerResource.class);
     bind(UserAuthorizationResource.class);
-    bind(OauthLoginResource.class);
+    bind(SafLoginResourceHelper.class);
     bind(SimpleAccountLoginResourceHelper.class);
   }
 
@@ -90,8 +98,60 @@ public class ResourcesModule extends AbstractModule {
   @Provides
   public Client client(SecurityApiConfiguration apiConfiguration, Environment environment) {
     if (client == null) {
-      client = new JerseyClientBuilder(environment)
-          .using(apiConfiguration.getJerseyClientConfiguration()).build("client");
+
+      // NOTE : There are issues with the connector provider when configuring with
+      // JerseyClientBuilder.
+      // I've tried .using(myownconnectorprovider) but haven't yet figured out what the issue is to
+      // fix the problem. Work around is below - will just use default connector provider.
+      // client = new JerseyClientBuilder(environment)
+      // .using(apiConfiguration.getJerseyClientConfiguration())
+      // .build("client");
+
+      // NOTE: Mimicing what JerseyClientBuilder is doing below except for making a connector
+      // provider.
+      // this should be fine for R1.
+      ClientConfig config = new ClientConfig();
+      config.register(new JacksonMessageBodyProvider(environment.getObjectMapper()));
+      config.register(new HibernateValidationFeature(environment.getValidator()));
+
+      ExecutorService executorService =
+          environment.lifecycle().executorService("jersey-client-client-%d")
+              .minThreads(apiConfiguration.getJerseyClientConfiguration().getMinThreads())
+              .maxThreads(apiConfiguration.getJerseyClientConfiguration().getMinThreads())
+              .workQueue(new ArrayBlockingQueue<>(
+                  apiConfiguration.getJerseyClientConfiguration().getWorkQueueSize()))
+              .build();
+
+      ExecutorServiceProvider executorServiceProvider = new ExecutorServiceProvider() {
+        private final ExecutorService threadPool = executorService;
+
+        @Override
+        public ExecutorService getExecutorService() {
+          return this.threadPool;
+        }
+
+        @Override
+        public void dispose(ExecutorService executorService) {}
+      };
+
+      config.register(executorServiceProvider);
+      // HttpClientBuilder apacheHttpClientBuilder = new HttpClientBuilder(environment);
+      // final ConfiguredCloseableHttpClient apacheHttpClient =
+      // apacheHttpClientBuilder.buildWithDefaultRequestConfiguration("client");
+      //
+      //
+      //
+      // ConnectorProvider connectorProvider =
+      // (client, runtimeConfig) -> new DropwizardApacheConnector(apacheHttpClient.getClient(),
+      // apacheHttpClient.getDefaultRequestConfig(),
+      // apiConfiguration.getJerseyClientConfiguration().isChunkedEncodingEnabled());
+      // config.connectorProvider(connectorProvider);
+      client = ClientBuilder.newClient(config);
+      client.property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_SERVER, "FINEST");
+
+
+
+      System.out.println("FOO");
     }
     return client;
   }

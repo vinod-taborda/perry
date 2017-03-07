@@ -15,8 +15,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -36,6 +40,8 @@ import io.swagger.annotations.ApiResponses;
 @Api(value = RESOURCE_USER_AUTHENTICATION, tags = {RESOURCE_USER_AUTHENTICATION})
 @Path(value = RESOURCE_USER_AUTHENTICATION)
 public class LoginResource {
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoginResource.class);
+
   private LoginResourceHelper loginResourceHelper;
 
   /**
@@ -57,8 +63,8 @@ public class LoginResource {
   public View loginGet(@Context final HttpServletRequest request,
       @NotNull @Context final HttpServletResponse response,
       @ApiParam(required = true, name = "callback",
-          value = "URL to send the user back to after authentication") @QueryParam("callback") String callback) {
-    return loginResourceHelper.loginPage(callback);
+          value = "URL to send the user back to after authentication") @QueryParam("callback") @NotNull String callback) {
+    return loginResourceHelper.login(request, response, callback);
   }
 
   @POST
@@ -83,7 +89,13 @@ public class LoginResource {
       @ApiResponse(code = 401, message = "Unauthorized")})
   public Response validateToken(@NotNull @ApiParam(required = true, name = "token",
       value = "The token to validate") @QueryParam("token") String token) {
-    return loginResourceHelper.validateToken(token);
+    Subject subject = loginResourceHelper.subjectForToken(token);
+    if (subject != null) {
+      return Response.status(Status.OK).entity(subject.getPrincipal()).build();
+    } else {
+      LOGGER.info("Invalid token : {}", token);
+      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
+    }
   }
 
   @GET

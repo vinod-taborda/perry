@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import gov.ca.cwds.rest.SimpleAccountLoginConfiguration;
 import gov.ca.cwds.rest.api.ApiException;
 import gov.ca.cwds.rest.views.SimpleAccountLoginView;
+import io.dropwizard.views.View;
 
 /**
  * A {@link LoginResourceHelper} implementation which uses a simple Shiro IniRealm for a user store.
@@ -31,6 +32,9 @@ import gov.ca.cwds.rest.views.SimpleAccountLoginView;
  * @author CWDS API Team
  */
 public class SimpleAccountLoginResourceHelper implements LoginResourceHelper {
+
+  private static final String INVALID_LOGIN_CREDENTIALS = "Invalid login credentials";
+
   private static final Logger LOGGER =
       LoggerFactory.getLogger(SimpleAccountLoginResourceHelper.class);
 
@@ -49,20 +53,31 @@ public class SimpleAccountLoginResourceHelper implements LoginResourceHelper {
     this.simpleAccountLoginConfiguration = simpleAccountLoginConfiguration;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see gov.ca.cwds.rest.resources.auth.LoginResourceHelper#login(javax.servlet.http.
+   * HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
+   */
   @Override
-  public Response validateToken(String token) {
-    Subject subject = (Subject) tokensToSubjects.get(token);
-    if (subject != null && subject.isAuthenticated()) {
-      return Response.status(Status.OK).entity(subject.getPrincipal()).build();
-    } else {
-      LOGGER.info("Invalid token : {}", token);
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
-    }
+  public View login(HttpServletRequest request, HttpServletResponse response, String callback) {
+    return new SimpleAccountLoginView(simpleAccountLoginConfiguration, null, callback);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see gov.ca.cwds.rest.resources.auth.LoginResourceHelper#subjectForToken(java.lang.String)
+   */
   @Override
-  public SimpleAccountLoginView loginPage(String callback) {
-    return new SimpleAccountLoginView(simpleAccountLoginConfiguration, null, callback);
+  public Subject subjectForToken(String token) {
+    Subject subject = (Subject) tokensToSubjects.get(token);
+    if (subject != null && subject.isAuthenticated()) {
+      return subject;
+    } else {
+      LOGGER.info("Invalid token : {}", token);
+      return null;
+    }
   }
 
   @Override
@@ -88,18 +103,18 @@ public class SimpleAccountLoginResourceHelper implements LoginResourceHelper {
         return null;
       } else {
         return new SimpleAccountLoginView(simpleAccountLoginConfiguration,
-            "Invalid login credentials", callback);
+            INVALID_LOGIN_CREDENTIALS, callback);
       }
     } catch (UnknownAccountException e) {
-      LOGGER.warn("Unknown account login attempt : {}", username);
-      return new SimpleAccountLoginView(simpleAccountLoginConfiguration,
-          "Invalid login credentials", callback);
+      LOGGER.warn(MessageFormat.format("Unknown account login attempt : {0}", username), e);
+      return new SimpleAccountLoginView(simpleAccountLoginConfiguration, INVALID_LOGIN_CREDENTIALS,
+          callback);
     } catch (IncorrectCredentialsException e) {
-      LOGGER.warn("Invalid credentials attempt : {}", username);
-      return new SimpleAccountLoginView(simpleAccountLoginConfiguration,
-          "Invalid login credentials", callback);
+      LOGGER.warn(MessageFormat.format("Invalid credentials attempt : {0}", username), e);
+      return new SimpleAccountLoginView(simpleAccountLoginConfiguration, INVALID_LOGIN_CREDENTIALS,
+          callback);
     } catch (IOException e) {
-      throw new ApiException(MessageFormat.format("Unable to redirect to callback '{0}'", callback),
+      throw new ApiException(MessageFormat.format("Unable to redirect to callback {0}", callback),
           e);
     }
   }
