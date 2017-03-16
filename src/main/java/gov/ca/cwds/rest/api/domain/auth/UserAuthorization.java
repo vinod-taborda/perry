@@ -1,15 +1,15 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.DomainObject;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * {@link DomainObject} representing a request for User Authorization.
@@ -19,6 +19,11 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel
 @JsonSnakeCase
 public final class UserAuthorization extends DomainObject implements Request, Response {
+
+  /**
+   * default
+   */
+  private static final long serialVersionUID = 1L;
 
   @ApiModelProperty(example = "ABC")
   @JsonProperty("user_id")
@@ -48,10 +53,16 @@ public final class UserAuthorization extends DomainObject implements Request, Re
   @JsonProperty("unit_authority")
   private Set<StaffUnitAuthority> unitAuthority;
 
+  @ApiModelProperty(required = false, readOnly = false)
+  @JsonProperty("cws_office")
+  private Set<CwsOffice> cwsOffice;
+
   /**
    * Default, no-param, no-op constructor Required by frameworks.
    */
-  public UserAuthorization() {}
+  public UserAuthorization() {
+    // required by framework
+  }
 
   /**
    * JSON Constructor
@@ -63,7 +74,7 @@ public final class UserAuthorization extends DomainObject implements Request, Re
    * @param overrideAuthority does user have override authority
    * @param authPrivilege the authorityPrivilege
    * @param unitAuthority the unitAuthority
-   * 
+   * @param cwsOffice the cwsOffice
    */
   public UserAuthorization(@JsonProperty("user_id") String userId,
       @JsonProperty("staff_person_id") String staffPersonId,
@@ -71,7 +82,8 @@ public final class UserAuthorization extends DomainObject implements Request, Re
       @JsonProperty("supervisor") Boolean supervisor,
       @JsonProperty("override_authority") Boolean overrideAuthority,
       @JsonProperty("authority_privilege") Set<StaffAuthorityPrivilege> authPrivilege,
-      @JsonProperty("unit_authority") Set<StaffUnitAuthority> unitAuthority) {
+      @JsonProperty("unit_authority") Set<StaffUnitAuthority> unitAuthority,
+      @JsonProperty("cws_office") Set<CwsOffice> cwsOffice) {
     super();
     this.userId = userId;
     this.staffPersonId = staffPersonId;
@@ -80,6 +92,7 @@ public final class UserAuthorization extends DomainObject implements Request, Re
     this.overrideAuthority = overrideAuthority;
     this.authorityPrivilege = authPrivilege;
     this.unitAuthority = unitAuthority;
+    this.cwsOffice = cwsOffice;
   }
 
   /**
@@ -132,7 +145,14 @@ public final class UserAuthorization extends DomainObject implements Request, Re
   }
 
   /**
-   * {@inheritDoc}
+   * @return the unitAuthority
+   */
+  public Set<CwsOffice> getCwsOffice() {
+    return cwsOffice;
+  }
+
+  /*
+   * (non-Javadoc)
    * 
    * @see java.lang.Object#hashCode()
    */
@@ -141,6 +161,7 @@ public final class UserAuthorization extends DomainObject implements Request, Re
     final int prime = 31;
     int result = 1;
     result = prime * result + ((authorityPrivilege == null) ? 0 : authorityPrivilege.hashCode());
+    result = prime * result + ((cwsOffice == null) ? 0 : cwsOffice.hashCode());
     result = prime * result + ((overrideAuthority == null) ? 0 : overrideAuthority.hashCode());
     result = prime * result + ((socialWorker == null) ? 0 : socialWorker.hashCode());
     result = prime * result + ((staffPersonId == null) ? 0 : staffPersonId.hashCode());
@@ -150,8 +171,8 @@ public final class UserAuthorization extends DomainObject implements Request, Re
     return result;
   }
 
-  /**
-   * {@inheritDoc}
+  /*
+   * (non-Javadoc)
    * 
    * @see java.lang.Object#equals(java.lang.Object)
    */
@@ -172,6 +193,13 @@ public final class UserAuthorization extends DomainObject implements Request, Re
         return false;
       }
     } else if (!authorityPrivilege.equals(other.authorityPrivilege)) {
+      return false;
+    }
+    if (cwsOffice == null) {
+      if (other.cwsOffice != null) {
+        return false;
+      }
+    } else if (!cwsOffice.equals(other.cwsOffice)) {
       return false;
     }
     if (overrideAuthority == null) {
@@ -218,5 +246,6 @@ public final class UserAuthorization extends DomainObject implements Request, Re
     }
     return true;
   }
+
 
 }

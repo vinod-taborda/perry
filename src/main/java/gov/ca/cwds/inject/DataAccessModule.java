@@ -1,14 +1,11 @@
 package gov.ca.cwds.inject;
 
-import org.hibernate.SessionFactory;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-
+import gov.ca.cwds.data.auth.CwsOfficeDao;
 import gov.ca.cwds.data.auth.StaffAuthorityPrivilegeDao;
 import gov.ca.cwds.data.auth.StaffUnitAuthorityDao;
 import gov.ca.cwds.data.auth.UserAuthorizationDao;
 import gov.ca.cwds.data.auth.UserIdDao;
+import gov.ca.cwds.data.persistence.auth.CwsOffice;
 import gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege;
 import gov.ca.cwds.data.persistence.auth.StaffUnitAuthority;
 import gov.ca.cwds.data.persistence.auth.UserId;
@@ -18,6 +15,11 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 
+import org.hibernate.SessionFactory;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+
 /**
  * DI (dependency injection) setup for data access objects (DAO).
  * 
@@ -26,7 +28,7 @@ import io.dropwizard.setup.Bootstrap;
 public class DataAccessModule extends AbstractModule {
   private final HibernateBundle<SecurityApiConfiguration> cmsHibernateBundle =
       new HibernateBundle<SecurityApiConfiguration>(UserId.class, StaffAuthorityPrivilege.class,
-          StaffUnitAuthority.class) {
+          StaffUnitAuthority.class, CwsOffice.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(SecurityApiConfiguration configuration) {
           return configuration.getCmsDataSourceFactory();
@@ -39,8 +41,7 @@ public class DataAccessModule extends AbstractModule {
       };
 
   public DataAccessModule(Bootstrap<SecurityApiConfiguration> bootstrap) {
-    // RDB - data access out of scope for R1. Removing from bootstrap for simplicity
-    // bootstrap.addBundle(cmsHibernateBundle);
+    bootstrap.addBundle(cmsHibernateBundle);
   }
 
   /**
@@ -54,6 +55,7 @@ public class DataAccessModule extends AbstractModule {
     bind(UserIdDao.class);
     bind(StaffAuthorityPrivilegeDao.class);
     bind(StaffUnitAuthorityDao.class);
+    bind(CwsOfficeDao.class);
   }
 
   @Provides

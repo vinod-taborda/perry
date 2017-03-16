@@ -42,10 +42,13 @@ public class UserAuthorizationTest {
       "Sacramento");
   private StaffAuthorityPrivilege authorityPrivilege = new StaffAuthorityPrivilege(
       "Countywide Read", "P", "Placer");
+  private CwsOffice cwsOffice = new CwsOffice("ABcDmKx00E", "1088", "Sacramento");
   private ImmutableSet<StaffUnitAuthority> testuserUnitAuthority = ImmutableSet
       .<StaffUnitAuthority>builder().add(staffUnitAuthority).build();
   private ImmutableSet<StaffAuthorityPrivilege> testuserAuthorityPrivilege = ImmutableSet
       .<StaffAuthorityPrivilege>builder().add(authorityPrivilege).build();
+  private ImmutableSet<CwsOffice> testCwsOffice = ImmutableSet.<CwsOffice>builder().add(cwsOffice)
+      .build();
 
 
   @ClassRule
@@ -72,16 +75,16 @@ public class UserAuthorizationTest {
 
     UserAuthorization domain =
         new UserAuthorization(userId, staffPersonId, socialWorker, supervisor, overrideAuthority,
-            testuserAuthorityPrivilege, testuserUnitAuthority);
+            testuserAuthorityPrivilege, testuserUnitAuthority, testCwsOffice);
 
     assertThat(domain.getUserId(), is(equalTo(userId)));
     assertThat(domain.getStaffPersonId(), is(equalTo(staffPersonId)));
     assertThat(domain.getSupervisor(), is(equalTo(supervisor)));
     assertThat(domain.getOverrideAuthority(), is(equalTo(overrideAuthority)));
     assertThat(domain.getSocialWorker(), is(equalTo(socialWorker)));
-    // assertThat(domain.getAuthorityPrivilege(), is(equalTo(testuserAuthorityPrivilege)));
-    // assertThat(domain.getUnitAuthority(), is(equalTo(testuserUnitAuthority)));
-
+    assertThat(domain.getAuthorityPrivilege(), is(equalTo(testuserAuthorityPrivilege)));
+    assertThat(domain.getUnitAuthority(), is(equalTo(testuserUnitAuthority)));
+    assertThat(domain.getCwsOffice(), is(equalTo(testCwsOffice)));
   }
 
   @Test
@@ -123,16 +126,7 @@ public class UserAuthorizationTest {
    * Utils
    */
   private UserAuthorization validUserAuthorization() {
-    StaffUnitAuthority staffUnitAuthority =
-        new StaffUnitAuthority("Unitwide Read", "ABC123", "Sacramento");
-    StaffAuthorityPrivilege authorityPrivilege =
-        new StaffAuthorityPrivilege("Countywide Read", "P", "Placer");
-    ImmutableSet<StaffUnitAuthority> testuserUnitAuthority =
-        ImmutableSet.<StaffUnitAuthority>builder().add(staffUnitAuthority).build();
-    ImmutableSet<StaffAuthorityPrivilege> testuserAuthorityPrivilege =
-        ImmutableSet.<StaffAuthorityPrivilege>builder().add(authorityPrivilege).build();
-
     return new UserAuthorization("userabc", "q1p", true, false, true, testuserAuthorityPrivilege,
-        testuserUnitAuthority);
+        testuserUnitAuthority, testCwsOffice);
   }
 }

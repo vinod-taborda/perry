@@ -17,5 +17,12 @@
       "assigned_unit": "ABC123",
       "county": "Sacramento"
     }
+  ],
+  "cws_office": [
+    {
+      "office_id": "ABcDmKx00E",
+      "government_entity_type": "1088",
+      "county": "Sacramento"
+    }
   ]
 }

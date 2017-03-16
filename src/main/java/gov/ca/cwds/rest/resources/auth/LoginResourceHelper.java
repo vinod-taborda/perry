@@ -1,13 +1,13 @@
 package gov.ca.cwds.rest.resources.auth;
 
+import gov.ca.cwds.rest.views.SimpleAccountLoginView;
+import io.dropwizard.views.View;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
 import org.apache.shiro.subject.Subject;
-
-import gov.ca.cwds.rest.views.SimpleAccountLoginView;
-import io.dropwizard.views.View;
 
 /**
  * A helper class for {@link LoginResource} to delegate implementation to.
@@ -66,11 +66,11 @@ public interface LoginResourceHelper {
    * Callback endpoint for the OAuth provided to communicate back on.
    * 
    * @param request The request
-   * @param response The resopnse
+   * @param response The response
    * @param code The code
    * @param state The state
    * 
-   * @return
+   * @return The response
    */
   public Response callback(HttpServletRequest request, HttpServletResponse response, String code,
       String state);

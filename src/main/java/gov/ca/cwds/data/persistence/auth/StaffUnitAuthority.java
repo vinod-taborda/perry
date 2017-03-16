@@ -1,5 +1,7 @@
 package gov.ca.cwds.data.persistence.auth;
 
+import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,8 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
-
-import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 
 /**
  * {@link CmsPersistentObject} representing a StaffPersonUnitAuthority.
@@ -45,14 +45,12 @@ public class StaffUnitAuthority extends CmsPersistentObject {
   @Column(name = "END_DT")
   private Date endDate;
 
-  // @Id
   @Column(name = "FKASG_UNIT")
   private String fkasgUnit;
 
   @Column(name = "FKSTFPERST")
   private String staffPersonId;
 
-  // @Id
   @Type(type = "date")
   @Column(name = "START_DT")
   private Date startDate;
@@ -166,10 +164,12 @@ public class StaffUnitAuthority extends CmsPersistentObject {
     result = prime * result + ((staffPersonId == null) ? 0 : staffPersonId.hashCode());
     result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
     result = prime * result + ((thirdId == null) ? 0 : thirdId.hashCode());
-    result = prime * result
-        + ((super.getLastUpdatedId() == null) ? 0 : super.getLastUpdatedId().hashCode());
-    result = prime * result
-        + ((super.getLastUpdatedTime() == null) ? 0 : super.getLastUpdatedTime().hashCode());
+    result =
+        prime * result
+            + ((super.getLastUpdatedId() == null) ? 0 : super.getLastUpdatedId().hashCode());
+    result =
+        prime * result
+            + ((super.getLastUpdatedTime() == null) ? 0 : super.getLastUpdatedTime().hashCode());
     return result;
   }
 

@@ -1,5 +1,17 @@
 package gov.ca.cwds.rest.services.auth;
 
+import gov.ca.cwds.data.auth.CwsOfficeDao;
+import gov.ca.cwds.data.auth.StaffAuthorityPrivilegeDao;
+import gov.ca.cwds.data.auth.StaffUnitAuthorityDao;
+import gov.ca.cwds.data.auth.UserIdDao;
+import gov.ca.cwds.data.persistence.auth.UserId;
+import gov.ca.cwds.rest.api.Request;
+import gov.ca.cwds.rest.api.domain.auth.CwsOffice;
+import gov.ca.cwds.rest.api.domain.auth.StaffAuthorityPrivilege;
+import gov.ca.cwds.rest.api.domain.auth.StaffUnitAuthority;
+import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
+import gov.ca.cwds.rest.services.CrudsService;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -10,16 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-
-import gov.ca.cwds.data.auth.StaffAuthorityPrivilegeDao;
-import gov.ca.cwds.data.auth.StaffUnitAuthorityDao;
-import gov.ca.cwds.data.auth.UserIdDao;
-import gov.ca.cwds.data.persistence.auth.UserId;
-import gov.ca.cwds.rest.api.Request;
-import gov.ca.cwds.rest.api.domain.auth.StaffAuthorityPrivilege;
-import gov.ca.cwds.rest.api.domain.auth.StaffUnitAuthority;
-import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
-import gov.ca.cwds.rest.services.CrudsService;
 
 
 /**
@@ -34,6 +36,7 @@ public class UserAuthorizationService implements CrudsService {
   private UserIdDao userIdDao;
   private StaffAuthorityPrivilegeDao staffAuthorityPrivilegeDao;
   private StaffUnitAuthorityDao staffUnitAuthorityDao;
+  private CwsOfficeDao cwsOfficeDao;
 
   /**
    * Constructor
@@ -41,14 +44,16 @@ public class UserAuthorizationService implements CrudsService {
    * @param userIdDao The User Id DAO
    * @param staffAuthorityPrivilegeDao The Staff Authority Privilege DAO
    * @param staffUnitAuthorityDao DAO for Staff Unit Authority
+   * @param cwsOfficeDao DAO for CWS Office
    */
   @Inject
   public UserAuthorizationService(UserIdDao userIdDao,
       StaffAuthorityPrivilegeDao staffAuthorityPrivilegeDao,
-      StaffUnitAuthorityDao staffUnitAuthorityDao) {
+      StaffUnitAuthorityDao staffUnitAuthorityDao, CwsOfficeDao cwsOfficeDao) {
     this.userIdDao = userIdDao;
     this.staffAuthorityPrivilegeDao = staffAuthorityPrivilegeDao;
     this.staffUnitAuthorityDao = staffUnitAuthorityDao;
+    this.cwsOfficeDao = cwsOfficeDao;
   }
 
   /**
@@ -76,8 +81,9 @@ public class UserAuthorizationService implements CrudsService {
 
       Set<StaffAuthorityPrivilege> userAuthPrivs = new HashSet<>();
       for (gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege priv : staffAuthPrivs) {
-        userAuthPrivs.add(new StaffAuthorityPrivilege(priv.getLevelOfAuthPrivilegeType().toString(),
-            priv.getLevelOfAuthPrivilegeCode(), priv.getCountySpecificCode()));
+        userAuthPrivs.add(new StaffAuthorityPrivilege(
+            priv.getLevelOfAuthPrivilegeType().toString(), priv.getLevelOfAuthPrivilegeCode(), priv
+                .getCountySpecificCode()));
       }
 
       // Staff unit authorizations:
@@ -86,12 +92,20 @@ public class UserAuthorizationService implements CrudsService {
 
       Set<StaffUnitAuthority> setStaffUnitAuths = new HashSet<>();
       for (gov.ca.cwds.data.persistence.auth.StaffUnitAuthority p : staffUnitAuths) {
-        setStaffUnitAuths.add(new StaffUnitAuthority(p.getAuthorityCode(), p.getFkasgUnit(),
-            p.getCountySpecificCode()));
+        setStaffUnitAuths.add(new StaffUnitAuthority(p.getAuthorityCode(), p.getFkasgUnit(), p
+            .getCountySpecificCode()));
       }
 
-      return new UserAuthorization(user.getLogonId(), user.getStaffPersonId(), socialWorker != null,
-          false, true, userAuthPrivs, setStaffUnitAuths);
+      final gov.ca.cwds.data.persistence.auth.CwsOffice[] cwsOffices =
+          this.cwsOfficeDao.findByStaff(user.getStaffPersonId());
+
+      Set<CwsOffice> setCwsOffices = new HashSet<>();
+      for (gov.ca.cwds.data.persistence.auth.CwsOffice cwsOffice : cwsOffices) {
+        setCwsOffices.add(new CwsOffice(cwsOffice.getOfficeId(), cwsOffice
+            .getGovernmentEntityType().toString(), cwsOffice.getCountySpecificCode()));
+      }
+      return new UserAuthorization(user.getLogonId(), user.getStaffPersonId(),
+          socialWorker != null, false, true, userAuthPrivs, setStaffUnitAuths, setCwsOffices);
     } else {
       LOGGER.warn("No user id found for " + primaryKey);
     }
