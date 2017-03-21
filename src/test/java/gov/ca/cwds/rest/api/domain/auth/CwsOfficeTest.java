@@ -19,7 +19,7 @@ public class CwsOfficeTest {
 
   private String officeId = "ABcDmKx00E";
   private String governmentEntityType = "1088";
-  private String county = "Sacramento";
+  private String countyCode = "21";
 
 
   /*
@@ -29,11 +29,11 @@ public class CwsOfficeTest {
   @Test
   public void jsonCreatorConstructorTest() throws Exception {
 
-    CwsOffice domain = new CwsOffice("ABcDmKx00E", "1088", "Sacramento");
+    CwsOffice domain = new CwsOffice("ABcDmKx00E", "1088", "21");
 
     assertThat(domain.getOfficeId(), is(equalTo(officeId)));
     assertThat(domain.getGovernmentEntityType(), is(equalTo(governmentEntityType)));
-    assertThat(domain.getCounty(), is(equalTo(county)));
+    assertThat(domain.getCountyCode(), is(equalTo(countyCode)));
   }
 
   /*
@@ -69,6 +69,6 @@ public class CwsOfficeTest {
    * Utils
    */
   private CwsOffice validCwsOffice() {
-    return new CwsOffice("ABcDmKx00E", "1088", "Sacramento");
+    return new CwsOffice("ABcDmKx00E", "1088", "21");
   }
 }

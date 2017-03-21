@@ -1,10 +1,10 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -16,39 +16,62 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonSnakeCase
 public class StaffUnitAuthority {
 
+  @ApiModelProperty(example = "R")
+  @JsonProperty("unit_authority_code")
+  private String unitAuthorityCode;
+
   @ApiModelProperty(example = "Unitwide Read")
-  @JsonProperty("unit_authority_type")
-  private String unitAuthorityType;
+  @JsonProperty("unit_authority_code_desc")
+  private String unitAuthorityCodeDesc;
 
   @ApiModelProperty(example = "O2ABcDe00F")
   @JsonProperty("assigned_unit")
   private String assignedUnit;
 
-  @ApiModelProperty(example = "Sacramento")
+  @ApiModelProperty(example = "21")
+  @JsonProperty("county_code")
+  private String countyCode;
+
+  @ApiModelProperty(example = "Marin")
   @JsonProperty("county")
   private String county;
+
 
   /**
    * JSON Constructor
    * 
    * @param unitAuthorityType the unit authority
    * @param assignedUnit the assigned unit
-   * @param county the county
+   * @param countyCode the county code
    */
-  public StaffUnitAuthority(@JsonProperty("unit_authority_type") String unitAuthorityType,
-      @JsonProperty("assigned_unit") String assignedUnit, @JsonProperty("county") String county) {
+  public StaffUnitAuthority(@JsonProperty("unit_authority_code") String unitAuthorityType,
+      @JsonProperty("assigned_unit") String assignedUnit,
+      @JsonProperty("county_code") String countyCode) {
     super();
-    this.unitAuthorityType = unitAuthorityType;
+    this.unitAuthorityCode = unitAuthorityType;
+    this.unitAuthorityCodeDesc =
+        UnitAuthority.findByUnitAuthorityCode(unitAuthorityType).getDescription();
     this.assignedUnit = assignedUnit;
-    this.county = county;
+    this.countyCode = countyCode;
+    this.county = GovernmentEntityType.findByCountyCd(countyCode).getDescription();
   }
+
 
   /**
    * @return the unitAuthorityType
    */
-  public String getUnitAuthorityType() {
-    return unitAuthorityType;
+  public String getUnitAuthorityCode() {
+    return unitAuthorityCode;
   }
+
+
+  /**
+   * @return the unitAuthorityTypeDesc
+   */
+  public String getUnitAuthorityCodeDesc() {
+    return unitAuthorityCodeDesc;
+  }
+
 
   /**
    * @return the assignedUnit
@@ -57,6 +80,15 @@ public class StaffUnitAuthority {
     return assignedUnit;
   }
 
+
+  /**
+   * @return the countyCode
+   */
+  public String getCountyCode() {
+    return countyCode;
+  }
+
+
   /**
    * @return the county
    */
@@ -64,8 +96,9 @@ public class StaffUnitAuthority {
     return county;
   }
 
-  /**
-   * {@inheritDoc}
+
+  /*
+   * (non-Javadoc)
    * 
    * @see java.lang.Object#hashCode()
    */
@@ -75,12 +108,16 @@ public class StaffUnitAuthority {
     int result = 1;
     result = prime * result + ((assignedUnit == null) ? 0 : assignedUnit.hashCode());
     result = prime * result + ((county == null) ? 0 : county.hashCode());
-    result = prime * result + ((unitAuthorityType == null) ? 0 : unitAuthorityType.hashCode());
+    result = prime * result + ((countyCode == null) ? 0 : countyCode.hashCode());
+    result = prime * result + ((unitAuthorityCode == null) ? 0 : unitAuthorityCode.hashCode());
+    result =
+        prime * result + ((unitAuthorityCodeDesc == null) ? 0 : unitAuthorityCodeDesc.hashCode());
     return result;
   }
 
-  /**
-   * {@inheritDoc}
+
+  /*
+   * (non-Javadoc)
    * 
    * @see java.lang.Object#equals(java.lang.Object)
    */
@@ -110,14 +147,29 @@ public class StaffUnitAuthority {
     } else if (!county.equals(other.county)) {
       return false;
     }
-    if (unitAuthorityType == null) {
-      if (other.unitAuthorityType != null) {
+    if (countyCode == null) {
+      if (other.countyCode != null) {
         return false;
       }
-    } else if (!unitAuthorityType.equals(other.unitAuthorityType)) {
+    } else if (!countyCode.equals(other.countyCode)) {
+      return false;
+    }
+    if (unitAuthorityCode == null) {
+      if (other.unitAuthorityCode != null) {
+        return false;
+      }
+    } else if (!unitAuthorityCode.equals(other.unitAuthorityCode)) {
+      return false;
+    }
+    if (unitAuthorityCodeDesc == null) {
+      if (other.unitAuthorityCodeDesc != null) {
+        return false;
+      }
+    } else if (!unitAuthorityCodeDesc.equals(other.unitAuthorityCodeDesc)) {
       return false;
     }
     return true;
   }
+
 
 }

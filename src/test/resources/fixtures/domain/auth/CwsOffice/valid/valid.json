@@ -1,5 +1,7 @@
 {
   "office_id": "ABcDmKx00E",
   "government_entity_type": "1088",
-  "county": "Sacramento"
+  "county_code": "21",
+  "government_entity_type_desc": "Marin",
+  "county": "Marin"
 }

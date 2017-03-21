@@ -4,23 +4,21 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import io.dropwizard.jackson.Jackson;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.dropwizard.jackson.Jackson;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
 public class StaffUnitAuthorityTest {
 
   private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
 
-  private String unitAuthorityType = "Unitwide Read";
+  private String unitAuthorityType = "S";
   private String assignedUnit = "ABC123";
-  private String county = "Sacramento";
-
+  private String countyCode = "21";
 
   /*
    * Constructor Tests
@@ -29,11 +27,11 @@ public class StaffUnitAuthorityTest {
   @Test
   public void jsonCreatorConstructorTest() throws Exception {
 
-    StaffUnitAuthority domain = new StaffUnitAuthority("Unitwide Read", "ABC123", "Sacramento");
+    StaffUnitAuthority domain = new StaffUnitAuthority("S", "ABC123", "21");
 
-    assertThat(domain.getUnitAuthorityType(), is(equalTo(unitAuthorityType)));
+    assertThat(domain.getUnitAuthorityCode(), is(equalTo(unitAuthorityType)));
     assertThat(domain.getAssignedUnit(), is(equalTo(assignedUnit)));
-    assertThat(domain.getCounty(), is(equalTo(county)));
+    assertThat(domain.getCountyCode(), is(equalTo(countyCode)));
   }
 
   /*
@@ -41,8 +39,9 @@ public class StaffUnitAuthorityTest {
    */
   @Test
   public void serializesToJSON() throws Exception {
-    final String expected = MAPPER.writeValueAsString(
-        MAPPER.readValue(fixture("fixtures/domain/auth/StaffUnitAuthority/valid/valid.json"),
+    final String expected =
+        MAPPER.writeValueAsString(MAPPER.readValue(
+            fixture("fixtures/domain/auth/StaffUnitAuthority/valid/valid.json"),
             StaffUnitAuthority.class));
 
     assertThat(MAPPER.writeValueAsString(validStaffUnitAuthority()), is(equalTo(expected)));
@@ -53,7 +52,8 @@ public class StaffUnitAuthorityTest {
    */
   @Test
   public void deserializesFromJSON() throws Exception {
-    assertThat(MAPPER.readValue(fixture("fixtures/domain/auth/StaffUnitAuthority/valid/valid.json"),
+    assertThat(MAPPER.readValue(
+        fixture("fixtures/domain/auth/StaffUnitAuthority/valid/valid.json"),
         StaffUnitAuthority.class), is(equalTo(validStaffUnitAuthority())));
   }
 
@@ -69,6 +69,6 @@ public class StaffUnitAuthorityTest {
    * Utils
    */
   private StaffUnitAuthority validStaffUnitAuthority() {
-    return new StaffUnitAuthority("Unitwide Read", "ABC123", "Sacramento");
+    return new StaffUnitAuthority("S", "ABC123", "21");
   }
 }

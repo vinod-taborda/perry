@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
- * Class representing a Staff Person Authority Privilege.
+ * Class representing a CWS Office.
  * 
  * @author CWDS API Team
  */
@@ -21,11 +21,19 @@ public class CwsOffice {
   @JsonProperty("office_id")
   private String officeId;
 
-  @ApiModelProperty(example = "State")
+  @ApiModelProperty(example = "1011")
   @JsonProperty("government_entity_type")
   private String governmentEntityType;
 
-  @ApiModelProperty(example = "Fresno")
+  @ApiModelProperty(example = "State of California")
+  @JsonProperty("government_entity_type_desc")
+  private String governmentEntityTypeDesc;
+
+  @ApiModelProperty(example = "21")
+  @JsonProperty("county_code")
+  private String countyCode;
+
+  @ApiModelProperty(example = "Marin")
   @JsonProperty("county")
   private String county;
 
@@ -35,15 +43,30 @@ public class CwsOffice {
    * 
    * @param officeId the office Id
    * @param governmentEntityType the government entity type
-   * @param county the county
+   * @param countyCode the county code
    */
   public CwsOffice(@JsonProperty("office_id") String officeId,
       @JsonProperty("government_entity_type") String governmentEntityType,
-      @JsonProperty("county") String county) {
+      @JsonProperty("county_code") String countyCode) {
     super();
     this.officeId = officeId;
     this.governmentEntityType = governmentEntityType;
-    this.county = county;
+    this.governmentEntityTypeDesc = getGovernmentEntityTypeDescription(governmentEntityType);
+    this.countyCode = countyCode;
+    this.county = GovernmentEntityType.findByCountyCd(countyCode).getDescription();
+  }
+
+
+
+  private String getGovernmentEntityTypeDescription(String type) {
+    String description = "";
+    try {
+      Integer sysId = Integer.parseInt(type);
+      description = GovernmentEntityType.getGovernmentEntityTypeBySysId(sysId).getDescription();
+    } catch (Exception e) {
+
+    }
+    return description;
   }
 
 
@@ -64,8 +87,28 @@ public class CwsOffice {
     return governmentEntityType;
   }
 
+
+
+  /**
+   * @return the governmentEntityTypeDesc
+   */
+  public String getGovernmentEntityTypeDesc() {
+    return governmentEntityTypeDesc;
+  }
+
+
+
   /**
    * @return the county
+   */
+  public String getCountyCode() {
+    return countyCode;
+  }
+
+
+
+  /**
+   * @return the countyDesc
    */
   public String getCounty() {
     return county;
@@ -82,9 +125,13 @@ public class CwsOffice {
   public final int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((countyCode == null) ? 0 : countyCode.hashCode());
     result = prime * result + ((county == null) ? 0 : county.hashCode());
     result =
         prime * result + ((governmentEntityType == null) ? 0 : governmentEntityType.hashCode());
+    result =
+        prime * result
+            + ((governmentEntityTypeDesc == null) ? 0 : governmentEntityTypeDesc.hashCode());
     result = prime * result + ((officeId == null) ? 0 : officeId.hashCode());
     return result;
   }
@@ -108,6 +155,13 @@ public class CwsOffice {
       return false;
     }
     CwsOffice other = (CwsOffice) obj;
+    if (countyCode == null) {
+      if (other.countyCode != null) {
+        return false;
+      }
+    } else if (!countyCode.equals(other.countyCode)) {
+      return false;
+    }
     if (county == null) {
       if (other.county != null) {
         return false;
@@ -120,6 +174,13 @@ public class CwsOffice {
         return false;
       }
     } else if (!governmentEntityType.equals(other.governmentEntityType)) {
+      return false;
+    }
+    if (governmentEntityTypeDesc == null) {
+      if (other.governmentEntityTypeDesc != null) {
+        return false;
+      }
+    } else if (!governmentEntityTypeDesc.equals(other.governmentEntityTypeDesc)) {
       return false;
     }
     if (officeId == null) {

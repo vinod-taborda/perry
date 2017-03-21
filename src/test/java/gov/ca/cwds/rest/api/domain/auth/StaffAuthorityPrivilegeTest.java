@@ -4,22 +4,21 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import io.dropwizard.jackson.Jackson;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.dropwizard.jackson.Jackson;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
 public class StaffAuthorityPrivilegeTest {
 
   private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
 
-  private String authPrivilegeType = "Countywide Read";
+  private String authPrivilegeType = "1483";
   private String authPrivilegeCode = "P";
-  private String county = "Placer";
+  private String countyCode = "21";
 
   /*
    * Constructor Tests
@@ -27,11 +26,11 @@ public class StaffAuthorityPrivilegeTest {
   @Test
   public void jsonCreatorConstructorTest() throws Exception {
 
-    StaffAuthorityPrivilege domain = new StaffAuthorityPrivilege("Countywide Read", "P", "Placer");
+    StaffAuthorityPrivilege domain = new StaffAuthorityPrivilege("1483", "P", "21");
 
     assertThat(domain.getAuthPrivilegeType(), is(equalTo(authPrivilegeType)));
     assertThat(domain.getAuthPrivilegeCode(), is(equalTo(authPrivilegeCode)));
-    assertThat(domain.getCounty(), is(equalTo(county)));
+    assertThat(domain.getCountyCode(), is(equalTo(countyCode)));
   }
 
   /*
@@ -39,8 +38,9 @@ public class StaffAuthorityPrivilegeTest {
    */
   @Test
   public void serializesToJSON() throws Exception {
-    final String expected = MAPPER.writeValueAsString(
-        MAPPER.readValue(fixture("fixtures/domain/auth/StaffAuthorityPrivilege/valid/valid.json"),
+    final String expected =
+        MAPPER.writeValueAsString(MAPPER.readValue(
+            fixture("fixtures/domain/auth/StaffAuthorityPrivilege/valid/valid.json"),
             StaffAuthorityPrivilege.class));
 
     assertThat(MAPPER.writeValueAsString(validStaffAuthorityPrivilege()), is(equalTo(expected)));
@@ -51,10 +51,9 @@ public class StaffAuthorityPrivilegeTest {
    */
   @Test
   public void deserializesFromJSON() throws Exception {
-    assertThat(
-        MAPPER.readValue(fixture("fixtures/domain/auth/StaffAuthorityPrivilege/valid/valid.json"),
-            StaffAuthorityPrivilege.class),
-        is(equalTo(validStaffAuthorityPrivilege())));
+    assertThat(MAPPER.readValue(
+        fixture("fixtures/domain/auth/StaffAuthorityPrivilege/valid/valid.json"),
+        StaffAuthorityPrivilege.class), is(equalTo(validStaffAuthorityPrivilege())));
   }
 
   /*
@@ -69,7 +68,7 @@ public class StaffAuthorityPrivilegeTest {
    * Utils
    */
   private StaffAuthorityPrivilege validStaffAuthorityPrivilege() {
-    return new StaffAuthorityPrivilege("Countywide Read", "P", "Placer");
+    return new StaffAuthorityPrivilege("1483", "P", "21");
   }
 
 }

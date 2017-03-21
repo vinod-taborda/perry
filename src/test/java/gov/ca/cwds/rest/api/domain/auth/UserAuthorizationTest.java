@@ -38,11 +38,10 @@ public class UserAuthorizationTest {
   private Boolean socialWorker = true;
   private Boolean supervisor = false;
   private Boolean overrideAuthority = true;
-  private StaffUnitAuthority staffUnitAuthority = new StaffUnitAuthority("Unitwide Read", "ABC123",
-      "Sacramento");
-  private StaffAuthorityPrivilege authorityPrivilege = new StaffAuthorityPrivilege(
-      "Countywide Read", "P", "Placer");
-  private CwsOffice cwsOffice = new CwsOffice("ABcDmKx00E", "1088", "Sacramento");
+  private StaffUnitAuthority staffUnitAuthority = new StaffUnitAuthority("S", "ABC123", "21");
+  private StaffAuthorityPrivilege authorityPrivilege = new StaffAuthorityPrivilege("1483", "P",
+      "21");
+  private CwsOffice cwsOffice = new CwsOffice("ABcDmKx00E", "1088", "21");
   private ImmutableSet<StaffUnitAuthority> testuserUnitAuthority = ImmutableSet
       .<StaffUnitAuthority>builder().add(staffUnitAuthority).build();
   private ImmutableSet<StaffAuthorityPrivilege> testuserAuthorityPrivilege = ImmutableSet

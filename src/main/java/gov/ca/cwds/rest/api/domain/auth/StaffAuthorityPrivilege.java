@@ -1,12 +1,11 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import gov.ca.cwds.data.persistence.auth.CmsUserAuthPrivilege;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Class representing a Staff Person Authority Privilege.
@@ -17,33 +16,52 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonSnakeCase
 public class StaffAuthorityPrivilege {
 
-  @ApiModelProperty(example = "Sensitive Persons")
+  @ApiModelProperty(example = "1482")
   @JsonProperty("auth_privilege_type")
   private String authPrivilegeType;
+
+  @ApiModelProperty(example = "Sensitive Persons")
+  @JsonProperty("auth_privilege_type_desc")
+  private String authPrivilegeTypeDesc;
 
   @ApiModelProperty(example = "P")
   @JsonProperty("auth_privilege_code")
   private String authPrivilegeCode;
 
-  @ApiModelProperty(example = "Fresno")
+  @ApiModelProperty(example = "Staff Person Privilege Type")
+  @JsonProperty("auth_privilege_code_desc")
+  private String authPrivilegeCodeDesc;
+
+
+  @ApiModelProperty(example = "21")
+  @JsonProperty("county_code")
+  private String countyCode;
+
+  @ApiModelProperty(example = "Marin")
   @JsonProperty("county")
   private String county;
+
 
   /**
    * JSON Constructor
    * 
    * @param authPrivilegeType the authority privilege type
    * @param authPrivilegeCode the authority privilege code
-   * @param county the county
+   * @param countyCode the county code
    */
   public StaffAuthorityPrivilege(@JsonProperty("auth_privilege_type") String authPrivilegeType,
       @JsonProperty("auth_privilege_code") String authPrivilegeCode,
-      @JsonProperty("county") String county) {
+      @JsonProperty("county_code") String countyCode) {
     super();
     this.authPrivilegeType = authPrivilegeType;
+    this.authPrivilegeTypeDesc =
+        CmsUserAuthPrivilege.getInstance().getUserAuthPrivDescription(authPrivilegeType);
     this.authPrivilegeCode = authPrivilegeCode;
-    this.county = county;
+    this.authPrivilegeCodeDesc = AuthPrivilege.getAuthPrivilegeDescription(authPrivilegeCode);
+    this.countyCode = countyCode;
+    this.county = GovernmentEntityType.findByCountyCd(countyCode).getDescription();
   }
+
 
   /**
    * @return the authPrivilegeType
@@ -52,12 +70,38 @@ public class StaffAuthorityPrivilege {
     return authPrivilegeType;
   }
 
+
+  /**
+   * @return the authPrivilegeTypeDesc
+   */
+  public String getAuthPrivilegeTypeDesc() {
+    return authPrivilegeTypeDesc;
+  }
+
+
   /**
    * @return the authPrivilegeCode
    */
   public String getAuthPrivilegeCode() {
     return authPrivilegeCode;
   }
+
+
+  /**
+   * @return the authPrivilegeCodeDesc
+   */
+  public String getAuthPrivilegeCodeDesc() {
+    return authPrivilegeCodeDesc;
+  }
+
+
+  /**
+   * @return the countyCode
+   */
+  public String getCountyCode() {
+    return countyCode;
+  }
+
 
   /**
    * @return the county
@@ -66,8 +110,9 @@ public class StaffAuthorityPrivilege {
     return county;
   }
 
-  /**
-   * {@inheritDoc}
+
+  /*
+   * (non-Javadoc)
    * 
    * @see java.lang.Object#hashCode()
    */
@@ -76,13 +121,19 @@ public class StaffAuthorityPrivilege {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((authPrivilegeCode == null) ? 0 : authPrivilegeCode.hashCode());
+    result =
+        prime * result + ((authPrivilegeCodeDesc == null) ? 0 : authPrivilegeCodeDesc.hashCode());
     result = prime * result + ((authPrivilegeType == null) ? 0 : authPrivilegeType.hashCode());
+    result =
+        prime * result + ((authPrivilegeTypeDesc == null) ? 0 : authPrivilegeTypeDesc.hashCode());
     result = prime * result + ((county == null) ? 0 : county.hashCode());
+    result = prime * result + ((countyCode == null) ? 0 : countyCode.hashCode());
     return result;
   }
 
-  /**
-   * {@inheritDoc}
+
+  /*
+   * (non-Javadoc)
    * 
    * @see java.lang.Object#equals(java.lang.Object)
    */
@@ -105,11 +156,25 @@ public class StaffAuthorityPrivilege {
     } else if (!authPrivilegeCode.equals(other.authPrivilegeCode)) {
       return false;
     }
+    if (authPrivilegeCodeDesc == null) {
+      if (other.authPrivilegeCodeDesc != null) {
+        return false;
+      }
+    } else if (!authPrivilegeCodeDesc.equals(other.authPrivilegeCodeDesc)) {
+      return false;
+    }
     if (authPrivilegeType == null) {
       if (other.authPrivilegeType != null) {
         return false;
       }
     } else if (!authPrivilegeType.equals(other.authPrivilegeType)) {
+      return false;
+    }
+    if (authPrivilegeTypeDesc == null) {
+      if (other.authPrivilegeTypeDesc != null) {
+        return false;
+      }
+    } else if (!authPrivilegeTypeDesc.equals(other.authPrivilegeTypeDesc)) {
       return false;
     }
     if (county == null) {
@@ -119,7 +184,15 @@ public class StaffAuthorityPrivilege {
     } else if (!county.equals(other.county)) {
       return false;
     }
+    if (countyCode == null) {
+      if (other.countyCode != null) {
+        return false;
+      }
+    } else if (!countyCode.equals(other.countyCode)) {
+      return false;
+    }
     return true;
   }
+
 
 }

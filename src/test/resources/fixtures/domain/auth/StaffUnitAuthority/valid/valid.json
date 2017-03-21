@@ -1,5 +1,7 @@
 {
-    "unit_authority_type": "Unitwide Read",
+    "unit_authority_code": "S",
     "assigned_unit": "ABC123",
-    "county": "Sacramento"
+    "county_code": "21",
+    "unit_authority_code_desc": "Supervisor",
+    "county": "Marin"
 }

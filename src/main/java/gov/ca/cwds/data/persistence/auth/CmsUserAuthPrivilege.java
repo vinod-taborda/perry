@@ -87,6 +87,22 @@ public final class CmsUserAuthPrivilege {
   }
 
   /**
+   * Look up description of authorization privilege type
+   * 
+   * @param type the sysId String value
+   * @return the description
+   */
+  public String getUserAuthPrivDescription(String type) {
+    String description = "";
+    try {
+      Long sysId = Long.parseLong(type);
+      description = findSysIdDescription(sysId);
+    } catch (Exception e) {
+    }
+    return description;
+  }
+
+  /**
    * Find a system code description by SYS_ID either user authorization privilege,
    * {@link UserAuthPriv}, or authorization level (state, county, global, etc.),
    * {@link AuthorizationLevel}.
@@ -320,7 +336,8 @@ public final class CmsUserAuthPrivilege {
     /**
      * Resource Management Placement Facility Maintenance
      */
-    USR_PRV_RESOURCE_MGMT_PLACEMENT_FACILITY_MAINT(1473, "Resource Mgmt Placement Facility Maint", 1460, "0015"),
+    USR_PRV_RESOURCE_MGMT_PLACEMENT_FACILITY_MAINT(1473, "Resource Mgmt Placement Facility Maint",
+        1460, "0015"),
 
     /**
      * System Administration

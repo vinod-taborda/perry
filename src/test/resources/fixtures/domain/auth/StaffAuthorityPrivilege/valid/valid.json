@@ -1,5 +1,8 @@
 {
-    "auth_privilege_type": "Countywide Read",
+    "auth_privilege_type": "1483",
     "auth_privilege_code": "P",
-    "county": "Placer"
+    "county_code": "21",
+    "auth_privilege_type_desc": "Countywide Read",
+    "auth_privilege_code_desc": "Staff Person Privilege Type",
+    "county": "Marin"
 }
