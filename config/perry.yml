@@ -1,7 +1,7 @@
 applicationName: Perry
 version: ${APP_VERSION:-local}
 #loginResourceHelper: gov.ca.cwds.rest.resources.auth.SimpleAccountLoginResourceHelper
-loginResourceHelper: gov.ca.cwds.rest.resources.auth.saf.SafLoginResourceHelper
+loginResourceHelper: ${LOGIN_RESOURCE_HELPER:-gov.ca.cwds.rest.resources.auth.saf.SafLoginResourceHelper}
 
 saf:
   baseUrl: ${SAF_BASE_URL:-https://sectest.dss.ca.gov/web1/dss_saf}
