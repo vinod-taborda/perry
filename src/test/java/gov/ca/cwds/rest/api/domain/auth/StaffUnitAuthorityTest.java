@@ -27,7 +27,7 @@ public class StaffUnitAuthorityTest {
   @Test
   public void jsonCreatorConstructorTest() throws Exception {
 
-    StaffUnitAuthority domain = new StaffUnitAuthority("S", "ABC123", "21");
+    StaffUnitAuthority domain = new StaffUnitAuthority("S", "ABC123", "21", null);
 
     assertThat(domain.getUnitAuthorityCode(), is(equalTo(unitAuthorityType)));
     assertThat(domain.getAssignedUnit(), is(equalTo(assignedUnit)));
@@ -69,6 +69,6 @@ public class StaffUnitAuthorityTest {
    * Utils
    */
   private StaffUnitAuthority validStaffUnitAuthority() {
-    return new StaffUnitAuthority("S", "ABC123", "21");
+    return new StaffUnitAuthority("S", "ABC123", "21", null);
   }
 }

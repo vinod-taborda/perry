@@ -6,6 +6,7 @@ import gov.ca.cwds.data.auth.StaffUnitAuthorityDao;
 import gov.ca.cwds.data.auth.UserIdDao;
 import gov.ca.cwds.data.persistence.auth.UserId;
 import gov.ca.cwds.rest.api.Request;
+import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.auth.CwsOffice;
 import gov.ca.cwds.rest.api.domain.auth.StaffAuthorityPrivilege;
 import gov.ca.cwds.rest.api.domain.auth.StaffUnitAuthority;
@@ -81,9 +82,10 @@ public class UserAuthorizationService implements CrudsService {
 
       Set<StaffAuthorityPrivilege> userAuthPrivs = new HashSet<>();
       for (gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege priv : staffAuthPrivs) {
+        String endDate = DomainChef.cookDate(priv.getEndDate());
         userAuthPrivs.add(new StaffAuthorityPrivilege(
             priv.getLevelOfAuthPrivilegeType().toString(), priv.getLevelOfAuthPrivilegeCode(), priv
-                .getCountySpecificCode()));
+                .getCountySpecificCode(), endDate));
       }
 
       // Staff unit authorizations:
@@ -92,8 +94,9 @@ public class UserAuthorizationService implements CrudsService {
 
       Set<StaffUnitAuthority> setStaffUnitAuths = new HashSet<>();
       for (gov.ca.cwds.data.persistence.auth.StaffUnitAuthority p : staffUnitAuths) {
+        String endDate = DomainChef.cookDate(p.getEndDate());
         setStaffUnitAuths.add(new StaffUnitAuthority(p.getAuthorityCode(), p.getFkasgUnit(), p
-            .getCountySpecificCode()));
+            .getCountySpecificCode(), endDate));
       }
 
       final gov.ca.cwds.data.persistence.auth.CwsOffice[] cwsOffices =

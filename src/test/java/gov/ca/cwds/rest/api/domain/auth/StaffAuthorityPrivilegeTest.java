@@ -26,7 +26,7 @@ public class StaffAuthorityPrivilegeTest {
   @Test
   public void jsonCreatorConstructorTest() throws Exception {
 
-    StaffAuthorityPrivilege domain = new StaffAuthorityPrivilege("1483", "P", "21");
+    StaffAuthorityPrivilege domain = new StaffAuthorityPrivilege("1483", "P", "21", null);
 
     assertThat(domain.getAuthPrivilegeType(), is(equalTo(authPrivilegeType)));
     assertThat(domain.getAuthPrivilegeCode(), is(equalTo(authPrivilegeCode)));
@@ -68,7 +68,7 @@ public class StaffAuthorityPrivilegeTest {
    * Utils
    */
   private StaffAuthorityPrivilege validStaffAuthorityPrivilege() {
-    return new StaffAuthorityPrivilege("1483", "P", "21");
+    return new StaffAuthorityPrivilege("1483", "P", "21", null);
   }
 
 }

@@ -36,6 +36,9 @@ public class StaffUnitAuthority {
   @JsonProperty("county")
   private String county;
 
+  @ApiModelProperty(example = "2012-04-01")
+  @JsonProperty("end_date")
+  private String endDate;
 
   /**
    * JSON Constructor
@@ -43,10 +46,11 @@ public class StaffUnitAuthority {
    * @param unitAuthorityType the unit authority
    * @param assignedUnit the assigned unit
    * @param countyCode the county code
+   * @param endDate the endDate
    */
   public StaffUnitAuthority(@JsonProperty("unit_authority_code") String unitAuthorityType,
       @JsonProperty("assigned_unit") String assignedUnit,
-      @JsonProperty("county_code") String countyCode) {
+      @JsonProperty("county_code") String countyCode, @JsonProperty("end_date") String endDate) {
     super();
     this.unitAuthorityCode = unitAuthorityType;
     this.unitAuthorityCodeDesc =
@@ -54,6 +58,7 @@ public class StaffUnitAuthority {
     this.assignedUnit = assignedUnit;
     this.countyCode = countyCode;
     this.county = GovernmentEntityType.findByCountyCd(countyCode).getDescription();
+    this.endDate = endDate;
   }
 
 
@@ -97,6 +102,14 @@ public class StaffUnitAuthority {
   }
 
 
+  /**
+   * @return the endDate
+   */
+  public String getEndDate() {
+    return endDate;
+  }
+
+
   /*
    * (non-Javadoc)
    * 
@@ -109,6 +122,7 @@ public class StaffUnitAuthority {
     result = prime * result + ((assignedUnit == null) ? 0 : assignedUnit.hashCode());
     result = prime * result + ((county == null) ? 0 : county.hashCode());
     result = prime * result + ((countyCode == null) ? 0 : countyCode.hashCode());
+    result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
     result = prime * result + ((unitAuthorityCode == null) ? 0 : unitAuthorityCode.hashCode());
     result =
         prime * result + ((unitAuthorityCodeDesc == null) ? 0 : unitAuthorityCodeDesc.hashCode());
@@ -145,6 +159,13 @@ public class StaffUnitAuthority {
         return false;
       }
     } else if (!county.equals(other.county)) {
+      return false;
+    }
+    if (endDate == null) {
+      if (other.endDate != null) {
+        return false;
+      }
+    } else if (!endDate.equals(other.endDate)) {
       return false;
     }
     if (countyCode == null) {
