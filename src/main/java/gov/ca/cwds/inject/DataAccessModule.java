@@ -1,10 +1,12 @@
 package gov.ca.cwds.inject;
 
+import gov.ca.cwds.data.auth.AssignmentUnitDao;
 import gov.ca.cwds.data.auth.CwsOfficeDao;
 import gov.ca.cwds.data.auth.StaffAuthorityPrivilegeDao;
 import gov.ca.cwds.data.auth.StaffUnitAuthorityDao;
 import gov.ca.cwds.data.auth.UserAuthorizationDao;
 import gov.ca.cwds.data.auth.UserIdDao;
+import gov.ca.cwds.data.persistence.auth.AssignmentUnit;
 import gov.ca.cwds.data.persistence.auth.CwsOffice;
 import gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege;
 import gov.ca.cwds.data.persistence.auth.StaffUnitAuthority;
@@ -28,7 +30,7 @@ import com.google.inject.Provides;
 public class DataAccessModule extends AbstractModule {
   private final HibernateBundle<SecurityApiConfiguration> cmsHibernateBundle =
       new HibernateBundle<SecurityApiConfiguration>(UserId.class, StaffAuthorityPrivilege.class,
-          StaffUnitAuthority.class, CwsOffice.class) {
+          StaffUnitAuthority.class, CwsOffice.class, AssignmentUnit.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(SecurityApiConfiguration configuration) {
           return configuration.getCmsDataSourceFactory();
@@ -56,6 +58,7 @@ public class DataAccessModule extends AbstractModule {
     bind(StaffAuthorityPrivilegeDao.class);
     bind(StaffUnitAuthorityDao.class);
     bind(CwsOfficeDao.class);
+    bind(AssignmentUnitDao.class);
   }
 
   @Provides

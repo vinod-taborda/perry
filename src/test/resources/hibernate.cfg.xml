@@ -20,6 +20,7 @@
 		<mapping class="gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege"/>
 		<mapping class="gov.ca.cwds.data.persistence.auth.CwsOffice"/>
 		<mapping class="gov.ca.cwds.data.persistence.auth.StaffUnitAuthority"/>
+		<mapping class="gov.ca.cwds.data.persistence.auth.AssignmentUnit"/>
 		<mapping class="gov.ca.cwds.data.persistence.auth.UserId"/>
 		
 	</session-factory>

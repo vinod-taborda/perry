@@ -28,6 +28,10 @@ public class StaffUnitAuthority {
   @JsonProperty("assigned_unit")
   private String assignedUnit;
 
+  @ApiModelProperty(example = "2012-04-01")
+  @JsonProperty("assigned_unit_end_date")
+  private String assignedUnitEndDate;
+
   @ApiModelProperty(example = "21")
   @JsonProperty("county_code")
   private String countyCode;
@@ -45,17 +49,20 @@ public class StaffUnitAuthority {
    * 
    * @param unitAuthorityType the unit authority
    * @param assignedUnit the assigned unit
+   * @param assignedUnitEndDate the end date for the assigned unit
    * @param countyCode the county code
    * @param endDate the endDate
    */
   public StaffUnitAuthority(@JsonProperty("unit_authority_code") String unitAuthorityType,
       @JsonProperty("assigned_unit") String assignedUnit,
+      @JsonProperty("assigned_unit_end_date") String assignedUnitEndDate,
       @JsonProperty("county_code") String countyCode, @JsonProperty("end_date") String endDate) {
     super();
     this.unitAuthorityCode = unitAuthorityType;
     this.unitAuthorityCodeDesc =
         UnitAuthority.findByUnitAuthorityCode(unitAuthorityType).getDescription();
     this.assignedUnit = assignedUnit;
+    this.assignedUnitEndDate = assignedUnitEndDate;
     this.countyCode = countyCode;
     this.county = GovernmentEntityType.findByCountyCd(countyCode).getDescription();
     this.endDate = endDate;
@@ -83,6 +90,14 @@ public class StaffUnitAuthority {
    */
   public String getAssignedUnit() {
     return assignedUnit;
+  }
+
+
+  /**
+   * @return the assignedUnitEndDate
+   */
+  public String getAssignedUnitEndDate() {
+    return assignedUnitEndDate;
   }
 
 
@@ -120,6 +135,7 @@ public class StaffUnitAuthority {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((assignedUnit == null) ? 0 : assignedUnit.hashCode());
+    result = prime * result + ((assignedUnitEndDate == null) ? 0 : assignedUnitEndDate.hashCode());
     result = prime * result + ((county == null) ? 0 : county.hashCode());
     result = prime * result + ((countyCode == null) ? 0 : countyCode.hashCode());
     result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
@@ -152,6 +168,13 @@ public class StaffUnitAuthority {
         return false;
       }
     } else if (!assignedUnit.equals(other.assignedUnit)) {
+      return false;
+    }
+    if (assignedUnitEndDate == null) {
+      if (other.assignedUnitEndDate != null) {
+        return false;
+      }
+    } else if (!assignedUnitEndDate.equals(other.assignedUnitEndDate)) {
       return false;
     }
     if (county == null) {

@@ -38,7 +38,8 @@ public class UserAuthorizationTest {
   private Boolean socialWorker = true;
   private Boolean supervisor = false;
   private Boolean overrideAuthority = true;
-  private StaffUnitAuthority staffUnitAuthority = new StaffUnitAuthority("S", "ABC123", "21", null);
+  private StaffUnitAuthority staffUnitAuthority = new StaffUnitAuthority("S", "ABC123", null, "21",
+      null);
   private StaffAuthorityPrivilege authorityPrivilege = new StaffAuthorityPrivilege("1483", "P",
       "21", null);
   private CwsOffice cwsOffice = new CwsOffice("ABcDmKx00E", "1088", "21");
