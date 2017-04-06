@@ -10,6 +10,7 @@ public class SimpleAccountLoginConfiguration {
   @NotEmpty
   private String templateName;
   private String assetsPath;
+  private String basePath;
 
   /**
    * @return the templateName
@@ -24,4 +25,13 @@ public class SimpleAccountLoginConfiguration {
   public String getAssetsPath() {
     return assetsPath;
   }
+
+  /**
+   * @return the basePath
+   */
+  public String getBasePath() {
+    return basePath;
+  }
+
+
 }
