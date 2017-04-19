@@ -3,6 +3,9 @@ package gov.ca.cwds.data.persistence.auth;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Enumerated type container for CMS authorization privileges.
  * 
@@ -11,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class CmsUserAuthPrivilege {
 
   private static final CmsUserAuthPrivilege singleton = new CmsUserAuthPrivilege();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CmsUserAuthPrivilege.class);
 
   private final Map<String, UnitAuthority> unitAuthorityByCode = buildUnitAuthorityRegistry();
   private final Map<Long, UserAuthPriv> privBySysId = buildUserPrivRegistry();
@@ -98,6 +103,7 @@ public final class CmsUserAuthPrivilege {
       Long sysId = Long.parseLong(type);
       description = findSysIdDescription(sysId);
     } catch (Exception e) {
+      LOGGER.error("ERROR - Description couldn't parse", e.getMessage(), e);
     }
     return description;
   }
@@ -336,8 +342,7 @@ public final class CmsUserAuthPrivilege {
     /**
      * Resource Management Placement Facility Maintenance
      */
-    USR_PRV_RESOURCE_MGMT_PLACEMENT_FACILITY_MAINT(1473, "Resource Mgmt Placement Facility Maint",
-        1460, "0015"),
+    USR_PRV_RESOURCE_MGMT_PLACEMENT_FACILITY_MAINT(1473, "Resource Mgmt Placement Facility Maint", 1460, "0015"),
 
     /**
      * System Administration

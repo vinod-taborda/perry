@@ -1,10 +1,13 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 
@@ -16,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @ApiModel
 @JsonSnakeCase
 public class CwsOffice {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CwsOffice.class);
 
   @ApiModelProperty(example = "Office")
   @JsonProperty("office_id")
@@ -64,7 +69,7 @@ public class CwsOffice {
       Integer sysId = Integer.parseInt(type);
       description = GovernmentEntityType.getGovernmentEntityTypeBySysId(sysId).getDescription();
     } catch (Exception e) {
-
+      LOGGER.error("ERROR - Description couldn't parse", e.getMessage(), e);
     }
     return description;
   }
@@ -129,9 +134,8 @@ public class CwsOffice {
     result = prime * result + ((county == null) ? 0 : county.hashCode());
     result =
         prime * result + ((governmentEntityType == null) ? 0 : governmentEntityType.hashCode());
-    result =
-        prime * result
-            + ((governmentEntityTypeDesc == null) ? 0 : governmentEntityTypeDesc.hashCode());
+    result = prime * result
+        + ((governmentEntityTypeDesc == null) ? 0 : governmentEntityTypeDesc.hashCode());
     result = prime * result + ((officeId == null) ? 0 : officeId.hashCode());
     return result;
   }
