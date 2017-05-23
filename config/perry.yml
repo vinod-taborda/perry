@@ -12,8 +12,8 @@ security:
       userInfoUri: https://graph.facebook.com/me
   #oauth2:
   #  client:
-  #    clientId: ec591707-be4e-4de5-8fc7-7cff83b04f65
-  #    clientSecret: 5Gp7dQ6Fh7BMs0HlkiQ99
+  #    clientId: XXX
+  #    clientSecret: XXX
   #    accessTokenUri: https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/token
   #    userAuthorizationUri: https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/oauth2/authorize
   #    tokenName: oauth_token
