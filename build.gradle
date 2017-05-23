@@ -1,191 +1,59 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
-        classpath 'se.transmode.gradle:gradle-docker:1.2'
-    }
-}
+apply plugin: 'java'
+apply plugin: 'maven'
 
-plugins {
-    id "java"
-    id 'application'
-    id "org.sonarqube" version "2.2.1"
-}
+group = 'gov.ca.cwds.api'
+version = '0.0.1-SNAPSHOT'
 
-apply plugin: 'maven-publish'
-apply plugin: 'docker'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'jacoco'
+description = """perry"""
 
 sourceCompatibility = 1.8
-
-project.ext {
-    apiVersion = "0.21"
-    configPath = "$rootProject.projectDir/config/"
-    dropwizardVersion = "1.0.5"
-    dropwizardFlywayVersion = "1.0.0-1"
-    metricsVersion = "3.1.0"
-    dropwizardSwaggerVersion = "1.0.0-1"
-    mainclass = "gov.ca.cwds.rest.SecurityApiApplication" 
-}
+targetCompatibility = 1.8
 
 
-def dockerTag = apiVersion + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
-version = apiVersion
-mainClassName = mainclass
 
 repositories {
     mavenCentral()
     maven {
         url "http://maven2.cwds.tabordasolutions.net"
     }
-}
-
-shadowJar {
-  classifier = 'dist'
-  baseName = 'perry'
-  mergeServiceFiles()	
-  manifest {
-    attributes 'Main-Class': mainclass
-  }
-  version = ''
+    maven {
+        url "https://artifacts.alfresco.com/nexus/content/repositories/public/"
+    }
 }
 
 dependencies {
-	compile ('gov.ca.cwds.api:api-core:0.19.118') {
-		exclude group: 'org.glassfish.jersey.core'
-	}
-	compile group: "io.dropwizard", name: "dropwizard-client", version: dropwizardVersion
-	compile group: "io.dropwizard", name: "dropwizard-hibernate", version: dropwizardVersion
-	compile group: "io.dropwizard", name: "dropwizard-views", version: dropwizardVersion
-	compile group: "io.dropwizard", name: "dropwizard-views-mustache", version: dropwizardVersion
-	compile group: 'io.dropwizard', name: 'dropwizard-assets', version: dropwizardVersion
-	compile group: "io.dropwizard", name: "dropwizard-testing", version: dropwizardVersion
-	compile group: "io.dropwizard.metrics", name: "metrics-core", version: metricsVersion
-    compile group: "io.dropwizard.modules", name: "dropwizard-flyway", version: dropwizardFlywayVersion
-    compile group: "org.glassfish.jersey.ext", name: "jersey-declarative-linking", version: "2.23.2"
-	compile group: "javax.el", name: "javax.el-api", version: "2.2.4"
-	compile group: "org.glassfish.web", name: "javax.el", version: "2.2.4"
-	compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version:  '2.3.5'
-	compile group: 'org.slf4j', name: 'slf4j-ext', version: '1.7.22'
-	compile group: 'com.hubspot.dropwizard', name: 'dropwizard-guice', version: '1.0.0.2'
-	compile group: 'org.apache.commons', name: 'commons-compress', version: '1.12'
-	compile group: 'org.bouncycastle', name: 'bcprov-jdk15', version: '1.46'
-	compile group: 'org.apache.shiro', name: 'shiro-core', version: '1.4.0-RC2'
-	compile group: 'org.secnod.dropwizard', name: 'dropwizard-shiro', version: '0.2.0'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:'1.5.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '1.5.3.RELEASE'
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
 
-    compile fileTree(dir: 'lib', include: ['*.jar'])
-    
-	compile group: 'io.swagger', name: 'swagger-jersey2-jaxrs', version: '1.5.9'
-	compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
+    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version:'2.0.13.RELEASE'
+    compile group: 'org.webjars', name: 'angularjs', version:'1.4.3'
+    compile group: 'org.webjars', name: 'jquery', version:'2.1.1'
+    compile group: 'org.webjars', name: 'bootstrap', version:'3.2.0'
+    compile group: 'org.webjars', name: 'webjars-locator', version:'0.32'
+    compile group: 'io.swagger', name: 'swagger-jersey2-jaxrs', version: '1.5.9'
+    compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.11'
 
-    compile group: "org.postgresql", name: "postgresql", version: "9.4.1208.jre7"
+    compile group: 'com.ibm.db2.jcc', name: 'db2jcc4', version: '10.1'
+
+    compile ('gov.ca.cwds.api:api-core:0.19.118') {
+        exclude group: 'org.glassfish.jersey.core'
+    }
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
+            exclude(module: 'commons-logging')
+    }
 
     testCompile 'org.mockito:mockito-core:2.0.54-beta'
- 	testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
-	testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {
-		exclude group: 'javax.servlet', module: 'javax.servlet-api'
-		exclude group: 'junit', module: 'junit'
-	}
-	
-	// https://mvnrepository.com/artifact/nl.jqno.equalsverifier/equalsverifier
-	testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.1.6'
-	testCompile 'org.ow2.asm:asm-all:5.1'
-}
-
-tasks.withType(Test) {
-    enableAssertions = true
-}
-
-test {
-    exclude '**/*IT*'
-}
-
-task integrationTest(type: Test, dependsOn: testClasses) {
-    include '**/*IT*'
-    exclude '**/*Test*'
-}
-
-run {
-    args "server", configPath + "perry.yml"
-}
-
-jacocoTestReport {
-  reports {
-      xml.enabled false
-      csv.enabled false
-      html.destination "${buildDir}/jacocoHtml"
-  }
-}
-
-sonarqube {
-  properties {
-      property "sonar.jacoco.reportPath", "${buildDir}/jacoco/test.exec"
-      property "sonar.jacoco.itReportPath", "${buildDir}/jacoco/integrationTest.exec"
-  }
-}
-
-publishing {
-  publications {
-    shadow(MavenPublication) {
-      from components.shadow
-      groupId 'gov.ca.cwds.api'
-      artifactId 'perry'
-        version version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
+    testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
+    testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {
+        exclude group: 'javax.servlet', module: 'javax.servlet-api'
+        exclude group: 'junit', module: 'junit'
     }
-    library(MavenPublication) {
-      from components.java
-      groupId 'gov.ca.cwds.api'
-      artifactId 'perry'
-        version version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
-    }
-  }
-  repositories {
-    maven {
-      //TODO : set to http url
-      url "file:///usr/share/nginx/html/maven2"
-    }
-  }
-}
 
-task copyConfig(type: Copy) {
-    from 'config'
-    into 'build/docker/config'
-}
-
-task copyDist(type: Copy, dependsOn: shadowJar) {
-    from 'build/libs'
-    into 'build/docker/libs'
-}
-
-task apidocker(type: Docker,  dependsOn: [copyConfig, copyDist] ) {
-    dockerfile = "Dockerfile"
-    project.group = "cwds"
-    applicationName = "perry"
-    tagVersion = version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
-}
-
-task createDockerImage(type:Exec, dependsOn: shadowJar) {
-  commandLine 'docker',  'build',  '-t',  'cwds/perry', '.'
-}
-
-task tagDockerImage(type:Exec, dependsOn: createDockerImage) {
-  commandLine 'docker',  'tag',  'cwds/perry',  "cwds/perry:$dockerTag"
-}
-
-task pushDockerLatest(type:Exec, dependsOn: createDockerImage) {
-  commandLine 'docker',  'push',  'cwds/perry:latest'
-}
-
-task pushDockerVersionTagged(type:Exec, dependsOn: tagDockerImage) {
-  commandLine 'docker',  'push',  "cwds/perry:$dockerTag"
-}
-task publishDocker(dependsOn: [pushDockerVersionTagged, pushDockerLatest]) {
-   doLast { 
-	println 'Published'
-   }
- 
+    // https://mvnrepository.com/artifact/nl.jqno.equalsverifier/equalsverifier
+    testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.1.6'
+    testCompile 'org.ow2.asm:asm-all:5.1'
+    testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: '1.0.5'
 }

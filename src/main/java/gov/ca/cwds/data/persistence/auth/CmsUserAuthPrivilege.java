@@ -1,10 +1,10 @@
 package gov.ca.cwds.data.persistence.auth;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Enumerated type container for CMS authorization privileges.

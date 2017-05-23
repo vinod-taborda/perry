@@ -16,15 +16,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 
 import gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege;
 
+@Ignore
 public class StaffAuthorityPrivilegeDaoIT {
   private DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
   private DateFormat dt = new SimpleDateFormat("HH:mm:ss");

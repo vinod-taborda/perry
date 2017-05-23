@@ -1,11 +1,10 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ca.cwds.data.persistence.auth.CmsUserAuthPrivilege;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Class representing a Staff Person Authority Privilege.
@@ -55,8 +54,8 @@ public class StaffAuthorityPrivilege {
    * @param endDate the endDate
    */
   public StaffAuthorityPrivilege(@JsonProperty("auth_privilege_type") String authPrivilegeType,
-      @JsonProperty("auth_privilege_code") String authPrivilegeCode,
-      @JsonProperty("county_code") String countyCode, @JsonProperty("end_date") String endDate) {
+                                 @JsonProperty("auth_privilege_code") String authPrivilegeCode,
+                                 @JsonProperty("county_code") String countyCode, @JsonProperty("end_date") String endDate) {
     super();
     this.authPrivilegeType = authPrivilegeType;
     this.authPrivilegeTypeDesc =

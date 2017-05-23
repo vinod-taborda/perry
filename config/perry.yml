@@ -1,88 +1,59 @@
-applicationName: Perry
-version: ${APP_VERSION:-local}
-#loginResourceHelper: gov.ca.cwds.rest.resources.auth.SimpleAccountLoginResourceHelper
-loginResourceHelper: ${LOGIN_RESOURCE_HELPER:-gov.ca.cwds.rest.resources.auth.saf.SafLoginResourceHelper}
-
-saf:
-  baseUrl: ${SAF_BASE_URL:-https://sectest.dss.ca.gov/web1/dss_saf}
-  authPath: ${SAF_AUTH_PATH:-/auth/v2/oauth2/authorize}
-  retrieveTokenPath: ${SAF_RETRIEVE_TOKEN_PATH:-/auth/v2/token}
-  validateTokenPath: ${SAF_VALIDATE_TOKEN_PATH:-/data/v2/api/client/41/auth/validatetoken}
-  clientId: ${SAF_CLIENT_ID:-XXXXXX}
-  clientSecret: ${SAF_CLIENT_SECRET:-XXXXXX}
-  callbackUrl: ${SAF_CALLBACK_URL:-http://localhost:8090/authn/callback}
-  scope: ${SAF_SCOPE:-basic_profile}
-
-shiro:
-  iniConfigs: ["file:${SHIRO_CONFIG_PATH:-config/shiro.ini}"]
-
-jerseyClient:
-  minThreads: 1
-  maxThreads: 128
-  workQueueSize: 8
-  gzipEnabled: true
-  gzipEnabledForRequests: true
-  chunkedEncodingEnabled: true
-
-simpleAccountLogin:
-  templateName: simpleAccountLogin.mustache
-  basePath: ${SIMPLE_ACCOUNT_LOGIN_BASE_PATH:-/}
-  assetsPath: /static 
-
-swagger:
-  templateName: swagger.mustache
-  assetsPath: /static
-  resourcePackage: gov.ca.cwds.rest.resources
-  title: CWDS API
-  description: RESTful API definitions for the CWS New System.
-  logo: images/CWDS-API-Logo-Horizontal.png
-  loginUrl: ${LOGIN_URL:-http://localhost:8090/authn/login}
-  showSwagger: ${SHOW_SWAGGER:-false}
-
-cmsDataSourceFactory:
-  driverClass: com.ibm.db2.jcc.DB2Driver
-  user: ${DB_CMS_USER}
-  password: ${DB_CMS_PASSWORD}
-  url: ${DB_CMS_JDBC_URL}
-  validationQuery: "/* MyService Health Check */ SELECT 1 FROM sysibm.sysdummy1 for read only"
-  logValidationErrors: true
-  initialSize: 2
-  minSize: 2
-  maxSize: 8
-  minIdleTime: 1 minute
-  properties:
-      hibernate.dialect: org.hibernate.dialect.DB2Dialect
-      hibernate.show_sql: true
-      hibernate.default_schema: ${DB_CMS_SCHEMA}
-
-server:
-  applicationConnectors:
-  - type: http 
-    port: ${APP_STD_PORT:-8090}
-  adminConnectors:
-  - type: http
-    port: ${APP_ADMIN_PORT:-8091}
-    
-  requestLog:
-    appenders:
-      - type: console
-        threshold: ALL
-        logFormat: '%h [%date{ISO8601}] ACCESS "%r" %s %b %D [%i{User-Agent}]'
-
-logging:
-  level: ${LOGLEVEL:-WARN}
-  loggers:
-    "org.hibernate.SQL":
-      level: DEBUG
-    "org.hibernate.type.descriptor.sql":
-      level: DEBUG
-    "AUDIT":
-      level: ALL
-    "gov.ca.cwds":
-      level: DEBUG
-  appenders:
-    - type: console
-      threshold: WARN
-      timeZone: UTC
-      target: stdout
-      logFormat: '%X{remoteAddress} [%date{ISO8601}] %level "%thread" "%X{uniqueId}" %logger: "%message%n"'  
+security:
+  oauth2:
+    client:
+      clientId: 233668646673605
+      clientSecret: 33b17e044ee6a4fa383f46ec6e28ea1d
+      accessTokenUri: https://graph.facebook.com/oauth/access_token
+      userAuthorizationUri: https://www.facebook.com/dialog/oauth
+      tokenName: oauth_token
+      authenticationScheme: query
+      clientAuthenticationScheme: form
+    resource:
+      userInfoUri: https://graph.facebook.com/me
+  #oauth2:
+  #  client:
+  #    clientId: ec591707-be4e-4de5-8fc7-7cff83b04f65
+  #    clientSecret: 5Gp7dQ6Fh7BMs0HlkiQ99
+  #    accessTokenUri: https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/token
+  #    userAuthorizationUri: https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/oauth2/authorize
+  #    tokenName: oauth_token
+  #    authenticationScheme: query
+  #    clientAuthenticationScheme: form
+  #    pre-established-redirect-uri: http://54.70.247.41/cwds/callback
+  #    registered-redirect-uri: http://54.70.247.41/cwds/callback
+  #    use-current-uri: false
+  #    scope: basic_profile
+  #  resource:
+  #      userInfoUri: https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/validatetoken
+spring:
+      datasource:
+          driver-class-name: com.ibm.db2.jcc.DB2Driver
+          url: jdbc:db2://192.168.99.100:50000/DB0TDEV
+          #name: CWSINT
+          username: db2inst1
+          password: db2inst1
+      jpa:
+          database: db2
+          show_sql: true
+          properties:
+              hibernate.cache.use_query_cache: false
+              hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
+              hibernate.dialect: org.hibernate.dialect.DB2Dialect
+              hibernate.ddl-auto: none
+              hibernate.default_schema: CWSINT
+perry:
+    jwt:
+      timeout: 30 #minutes
+      issuer: perry
+    keyStore:
+      path: config/test.jks
+      alias: test
+      password: test
+      keyPassword : test
+    saf:
+      userInfoUrl: https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/validatetoken
+    serviceProviders:
+        dora:
+          identityMapping: 'config/dora.groovy'
+flyway:
+  enabled: false

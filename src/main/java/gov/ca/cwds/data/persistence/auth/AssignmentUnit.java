@@ -1,17 +1,15 @@
 package gov.ca.cwds.data.persistence.auth;
 
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
-
-import java.math.BigDecimal;
-import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Type;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * {@link CmsPersistentObject} representing an Assignment Unit

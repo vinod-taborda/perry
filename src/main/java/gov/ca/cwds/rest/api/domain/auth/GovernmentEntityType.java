@@ -1,9 +1,9 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
+import gov.ca.cwds.data.ApiSysCodeAware;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import gov.ca.cwds.data.ApiSysCodeAware;
 
 
 /**

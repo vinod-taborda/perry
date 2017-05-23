@@ -1,21 +1,18 @@
 package gov.ca.cwds.data.persistence.auth;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import gov.ca.cwds.data.persistence.PersistentObject;
-import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * {@link PersistentObject} representing a UserId
@@ -98,7 +95,7 @@ public class UserId extends CmsPersistentObject {
   /**
    * {@inheritDoc}
    * 
-   * @see gov.ca.cwds.data.persistence.PersistentObject#getPrimaryKey()
+   * @see PersistentObject#getPrimaryKey()
    */
   @Override
   public String getPrimaryKey() {
@@ -157,7 +154,7 @@ public class UserId extends CmsPersistentObject {
   /**
    * {@inheritDoc}
    * 
-   * @see java.lang.Object#hashCode()
+   * @see Object#hashCode()
    */
   @Override
   public final int hashCode() {
@@ -179,8 +176,8 @@ public class UserId extends CmsPersistentObject {
 
   /**
    * {@inheritDoc}
-   * 
-   * @see java.lang.Object#equals(java.lang.Object)
+   *
+   * @see Object#equals(Object)
    */
   @Override
   public final boolean equals(Object obj) {

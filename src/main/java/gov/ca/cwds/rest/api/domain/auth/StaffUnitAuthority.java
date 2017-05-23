@@ -1,10 +1,9 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -54,9 +53,9 @@ public class StaffUnitAuthority {
    * @param endDate the endDate
    */
   public StaffUnitAuthority(@JsonProperty("unit_authority_code") String unitAuthorityType,
-      @JsonProperty("assigned_unit") String assignedUnit,
-      @JsonProperty("assigned_unit_end_date") String assignedUnitEndDate,
-      @JsonProperty("county_code") String countyCode, @JsonProperty("end_date") String endDate) {
+                            @JsonProperty("assigned_unit") String assignedUnit,
+                            @JsonProperty("assigned_unit_end_date") String assignedUnitEndDate,
+                            @JsonProperty("county_code") String countyCode, @JsonProperty("end_date") String endDate) {
     super();
     this.unitAuthorityCode = unitAuthorityType;
     this.unitAuthorityCodeDesc =

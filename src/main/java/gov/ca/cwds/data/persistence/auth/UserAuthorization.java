@@ -1,13 +1,12 @@
 package gov.ca.cwds.data.persistence.auth;
 
-import java.io.Serializable;
+import gov.ca.cwds.data.persistence.PersistentObject;
+import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import gov.ca.cwds.data.persistence.PersistentObject;
-import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
+import java.io.Serializable;
 
 /**
  * {@link PersistentObject} representing a User Authorization.

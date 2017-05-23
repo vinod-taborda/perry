@@ -1,18 +1,16 @@
 package gov.ca.cwds.data.persistence.auth;
 
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
-import org.hibernate.annotations.Type;
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * {@link CmsPersistentObject} representing a CWS Office.

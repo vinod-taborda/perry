@@ -1,14 +1,11 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.dropwizard.jackson.JsonSnakeCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
