@@ -35,10 +35,9 @@ dependencies {
     compile group: 'io.swagger', name: 'swagger-jersey2-jaxrs', version: '1.5.9'
     compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.11'
-
     compile group: 'com.ibm.db2.jcc', name: 'db2jcc4', version: '10.1'
 
-    compile ('gov.ca.cwds.api:api-core:0.19.118') {
+	compile ('gov.ca.cwds.api:api-core:0.24.259') {
         exclude group: 'org.glassfish.jersey.core'
     }
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
