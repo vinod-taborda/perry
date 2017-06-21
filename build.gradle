@@ -1,15 +1,53 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "http://sonar.dev.cwds.io:8081/artifactory/repo"
+        }
+    }
+    dependencies {
+        classpath 'net.saliman:gradle-cobertura-plugin:2.4.0'
+    }
+}
+
+plugins {
+    id "java"
+    id 'application'
+    id 'net.saliman.cobertura' version '2.4.0'
+    id "org.sonarqube" version "2.2.1"
+    id 'org.springframework.boot' version '1.5.2.RELEASE'
+}
+
+
 apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: "net.saliman.cobertura"
+apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
 group = 'gov.ca.cwds.api'
-version = '0.0.1-SNAPSHOT'
 
 description = """perry"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+project.ext {
+    configPath = "$rootProject.projectDir/config/"
+    targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
+    projectVersion = '0.25'
+    mainclass = 'gov.ca.cwds.PerryApplication'
+    buildEnv = System.env.BUILD_ENV ?: 'JENKINS'
+    devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
+    devDockerPort = 2376
+}
 
+version = projectVersion
+mainClassName = mainclass
+
+bootRepackage {
+    mainClass = 'gov.ca.cwds.PerryApplication'
+}
 
 repositories {
     mavenCentral()
@@ -35,9 +73,10 @@ dependencies {
     compile group: 'io.swagger', name: 'swagger-jersey2-jaxrs', version: '1.5.9'
     compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.11'
+
     compile group: 'com.ibm.db2.jcc', name: 'db2jcc4', version: '10.1'
 
-	compile ('gov.ca.cwds.api:api-core:0.24.259') {
+    compile ('gov.ca.cwds.api:api-core:0.19.118') {
         exclude group: 'org.glassfish.jersey.core'
     }
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
@@ -55,4 +94,35 @@ dependencies {
     testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.1.6'
     testCompile 'org.ow2.asm:asm-all:5.1'
     testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: '1.0.5'
+}
+
+def isPortOpen(host, port) {
+    try {
+        Socket socket = new Socket(host, port)
+        socket.close()
+        return true
+    } catch (IOException e) {
+        return false
+    }
+}
+
+// reused in sub-modules
+task checkDockerService {
+    enabled = project.buildEnv == 'WIN_DEV'
+    doFirst {
+        if (!isPortOpen(project.devDockerHost, project.devDockerPort)) {
+            throw new GradleException('Docker service is not available. Windows users should start Docker Quickstart Terminal of Docker Toolbox')
+        }
+    }
+    doLast {
+        def dockerEnvVars = [:]
+        dockerEnvVars['DOCKER_CERT_PATH'] = System.getProperty("user.home") + '/.docker/machine/machines/default'
+        dockerEnvVars['DOCKER_HOST'] = "tcp://$project.devDockerHost:$project.devDockerPort"
+        dockerEnvVars['DOCKER_MACHINE_NAME'] = 'default'
+        dockerEnvVars['DOCKER_TLS_VERIFY'] = 1
+
+        childProjects.each {
+            k, childProject -> childProject.tasks.withType(Exec) { environment << dockerEnvVars }
+        }
+    }
 }

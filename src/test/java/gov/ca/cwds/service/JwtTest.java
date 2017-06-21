@@ -1,8 +1,6 @@
 package gov.ca.cwds.service;
 
-import gov.ca.cwds.PerryConfiguration;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.impl.DefaultClaims;
+import gov.ca.cwds.PerryProperties;
 import org.junit.Before;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,24 +14,23 @@ import java.util.Set;
  * Created by dmitry.rudenko on 5/22/2017.
  */
 public class JwtTest {
-    private PerryConfiguration configuration;
+    private PerryProperties configuration;
     private JwtService jwtService;
     private Set<String> roles;
 
     @Before
     public void before() {
-        configuration = new PerryConfiguration();
-        configuration.setJwt(new PerryConfiguration.JwtConfiguration());
+        configuration = new PerryProperties();
+        configuration.setJwt(new PerryProperties.JwtConfiguration());
         configuration.getJwt().setIssuer("setJwtIssuer");
         configuration.getJwt().setTimeout(30);
-        configuration.setKeyStore(new PerryConfiguration.KeyStoreConfiguration());
+        configuration.setKeyStore(new PerryProperties.KeyStoreConfiguration());
         configuration.getKeyStore().setAlias("test");
         configuration.getKeyStore().setPassword("test");
         configuration.getKeyStore().setKeyPassword("test");
         configuration.getKeyStore().setPath(getClass().getResource("/test.jks").getPath());
         jwtService = new JwtService();
-        jwtService.oAuth2ClientContext = new DefaultOAuth2ClientContext(new DefaultOAuth2AccessToken("accessToken"));
-        jwtService.perryConfiguration = configuration;
+        jwtService.perryProperties = configuration;
         roles = new HashSet<>();
         roles.add("role1");
         roles.add("role2");

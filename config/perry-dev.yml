@@ -1,0 +1,32 @@
+spring:
+      datasource:
+          driver-class-name: com.ibm.db2.jcc.DB2Driver
+          url: ${DB_CMS_JDBC_URL:jdbc:db2://192.168.99.100:50000/DB0TDEV}
+          username: ${DB_CMS_USER:db2inst1}
+          password: ${DB_CMS_PASSWORD:db2inst1}
+      jpa:
+          database: db2
+          show_sql: true
+          properties:
+              hibernate.cache.use_query_cache: false
+              hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
+              hibernate.dialect: org.hibernate.dialect.DB2Dialect
+              hibernate.ddl-auto: none
+              hibernate.default_schema: ${DB_CMS_SCHEMA:CWSINT}
+perry:
+    jwt:
+      timeout: ${TOKEN_TIMEOUT:30} #minutes
+      issuer: ${TOKEN_ISSUER:perry}
+    keyStore:
+      path: ${KEYSTORE_PATH:config/test.jks}
+      alias: ${KEYSTORE_ALIAS:test}
+      password: ${KEYSTORE_PASSWORD:test}
+      keyPassword : ${KEYSTORE_KEY_PASSWORD:test}
+    serviceProviders:
+      dora:
+        identityMapping: 'config/dora.groovy'
+      demo:
+        identityMapping: 'config/demo.groovy'
+
+server:
+  port: ${APP_STD_PORT:8080}
