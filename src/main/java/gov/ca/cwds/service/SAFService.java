@@ -1,13 +1,14 @@
 package gov.ca.cwds.service;
 
-import gov.ca.cwds.PerryConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 /**
  * Created by dmitry.rudenko on 5/22/2017.
@@ -18,20 +19,14 @@ public class SAFService {
     @Autowired
     private RestTemplate client;
     @Autowired
-    private OAuth2ClientContext oauth2ClientContext;
-    @Autowired
-    private PerryConfiguration perryConfiguration;
+    private ResourceServerProperties sso;
 
-    public String getUserInfo() {
-        //TODO
-        if (true) {
-            return "JAMESSC";
-        }
+    public Map getUserInfo(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        String bearer = BEARER + oauth2ClientContext.getAccessToken().getValue();
+        String bearer = BEARER + accessToken;
         headers.add(HttpHeaders.AUTHORIZATION, bearer);
-        return client.postForObject(perryConfiguration.getSaf().getUserInfoUrl(), new HttpEntity<>(bearer, headers), String.class);
+        return client.postForObject(sso.getUserInfoUri(), new HttpEntity<>(bearer, headers), Map.class);
     }
 
 }

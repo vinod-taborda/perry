@@ -1,28 +1,22 @@
 package gov.ca.cwds;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.ca.cwds.service.scripts.IdentityMappingScript;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by dmitry.rudenko on 5/22/2017.
  */
 @ConfigurationProperties(prefix = "perry")
-public class PerryConfiguration {
+public class PerryProperties {
     @NestedConfigurationProperty
     private JwtConfiguration jwt;
     @NestedConfigurationProperty
     private KeyStoreConfiguration keyStore;
-    @NestedConfigurationProperty
-    private SafConfiguration saf;
     private Map<String, ServiceProviderConfiguration> serviceProviders = new HashMap<>();
 
     public static class JwtConfiguration {
@@ -43,18 +37,6 @@ public class PerryConfiguration {
 
         public void setIssuer(String issuer) {
             this.issuer = issuer;
-        }
-    }
-
-    public static class SafConfiguration {
-       private String userInfoUrl;
-
-        public String getUserInfoUrl() {
-            return userInfoUrl;
-        }
-
-        public void setUserInfoUrl(String userInfoUrl) {
-            this.userInfoUrl = userInfoUrl;
         }
     }
 
@@ -133,14 +115,6 @@ public class PerryConfiguration {
 
     public void setJwt(JwtConfiguration jwt) {
         this.jwt = jwt;
-    }
-
-    public SafConfiguration getSaf() {
-        return saf;
-    }
-
-    public void setSaf(SafConfiguration saf) {
-        this.saf = saf;
     }
 
     public Map<String, ServiceProviderConfiguration> getServiceProviders() {

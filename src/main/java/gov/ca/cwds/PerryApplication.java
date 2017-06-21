@@ -18,28 +18,26 @@ package gov.ca.cwds;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManagerFactory;
 
 @SpringBootApplication
-@EnableOAuth2Sso
-@EnableTransactionManagement(proxyTargetClass=true)
+@EnableTransactionManagement(proxyTargetClass = true)
+@EnableAutoConfiguration(exclude = {FlywayAutoConfiguration.class})
 @ComponentScan("gov.ca.cwds")
 @EntityScan("gov.ca.cwds.data.persistence.auth")
-@EnableConfigurationProperties({PerryConfiguration.class})
-public class PerryApplication extends WebSecurityConfigurerAdapter {
+@EnableConfigurationProperties({PerryProperties.class})
+public class PerryApplication {
     @Bean
     public RestTemplate client() {
         return new RestTemplate();
