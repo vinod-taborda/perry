@@ -1,19 +1,13 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            url "http://sonar.dev.cwds.io:8081/artifactory/repo"
-        }
-    }
-    dependencies {
-        classpath 'net.saliman:gradle-cobertura-plugin:2.4.0'
+        mavenCentral()
     }
 }
 
 plugins {
     id "java"
     id 'application'
-    id 'net.saliman.cobertura' version '2.4.0'
     id "org.sonarqube" version "2.2.1"
     id 'org.springframework.boot' version '1.5.2.RELEASE'
 }
@@ -21,9 +15,9 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'application'
-apply plugin: "net.saliman.cobertura"
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
+apply plugin: 'jacoco'
 
 group = 'gov.ca.cwds.api'
 
@@ -35,11 +29,26 @@ targetCompatibility = 1.8
 project.ext {
     configPath = "$rootProject.projectDir/config/"
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
-    projectVersion = '0.25'
+    projectVersion = '0.25'  + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
     mainclass = 'gov.ca.cwds.PerryApplication'
     buildEnv = System.env.BUILD_ENV ?: 'JENKINS'
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
     devDockerPort = 2376
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.jacoco.reportPath", "${buildDir}/jacoco/test.exec"
+        property "sonar.jacoco.itReportPath", "${buildDir}/jacoco/integrationTest.exec"
+    }
 }
 
 version = projectVersion
@@ -124,5 +133,11 @@ task checkDockerService {
         childProjects.each {
             k, childProject -> childProject.tasks.withType(Exec) { environment << dockerEnvVars }
         }
+    }
+}
+
+task publishDocker(dependsOn: ':docker-perry:dockerPerryPublish') {
+    doLast {
+        println 'Published'
     }
 }
