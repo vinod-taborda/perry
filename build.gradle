@@ -3,6 +3,9 @@ buildscript {
         jcenter()
         mavenCentral()
     }
+    dependencies {
+        classpath group: 'javax.interceptor', name: 'javax.interceptor-api', version: '1.2'
+    }
 }
 
 plugins {
@@ -88,6 +91,8 @@ dependencies {
     compile ('gov.ca.cwds.api:api-core:0.19.118') {
         exclude group: 'org.glassfish.jersey.core'
     }
+
+    compile group: 'javax.interceptor', name: 'javax.interceptor-api', version: '1.2'
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
             exclude(module: 'commons-logging')
     }
@@ -140,4 +145,8 @@ task publishDocker(dependsOn: ':docker-perry:dockerPerryPublish') {
     doLast {
         println 'Published'
     }
+}
+
+javadoc {
+    options.addStringOption("charset", "UTF-8")
 }

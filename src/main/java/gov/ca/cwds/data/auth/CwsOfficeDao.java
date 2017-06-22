@@ -19,10 +19,6 @@ import javax.transaction.Transactional;
 @Repository
 public class CwsOfficeDao extends CrudsDaoImpl<CwsOffice> {
 
-    /**
-     * Constructor
-     */
-
     @Autowired
     public CwsOfficeDao(SessionFactory sessionFactory) {
         super(sessionFactory);
