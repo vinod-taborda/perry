@@ -150,3 +150,8 @@ task publishDocker(dependsOn: ':docker-perry:dockerPerryPublish') {
 javadoc {
     options.addStringOption("charset", "UTF-8")
 }
+
+task integrationTest(type: Test, dependsOn: testClasses) {
+    include '**/*IT*'
+    exclude '**/*Test*'
+}
