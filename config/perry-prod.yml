@@ -40,3 +40,14 @@ perry:
         identityMapping: 'config/dora.groovy'
       demo:
         identityMapping: 'config/demo.groovy'
+
+server:
+  port: ${HTTPS_PORT:8090}
+  ssl:
+    enabled: true
+    keyStoreType: JKS
+    key-store: ${KEYSTORE_PATH:config/test.jks}
+    key-store-password: ${KEYSTORE_PASSWORD:test}
+    key-password: ${KEYSTORE_KEY_PASSWORD:test}
+  http:
+    port: ${HTTP_PORT:8080}
