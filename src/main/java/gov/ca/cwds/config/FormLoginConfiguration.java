@@ -33,15 +33,15 @@ public class FormLoginConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/login*", "/css/**","/images/**", "/dev/**", "/authn/validate*").anonymous()
+                .antMatchers("/static/**", "/login*", "/css/**","/images/**", "/dev/**", "/authn/validate*").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login.html")
-                .defaultSuccessUrl("/index.html")
-                .loginProcessingUrl("/login")
-                .failureUrl("/login.html?error=true")
+                .loginPage("/static/login.html")
+                .defaultSuccessUrl("/static/index.html")
+                .loginProcessingUrl("/static/login")
+                .failureUrl("/static/login.html?error=true")
                 .and()
-                .logout().logoutSuccessUrl("/login.html").and().csrf().disable();
+                .logout().logoutSuccessUrl("/static/login.html").and().csrf().disable();
     }
 }
