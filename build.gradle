@@ -66,9 +66,6 @@ repositories {
     maven {
         url "http://maven2.cwds.tabordasolutions.net"
     }
-    maven {
-        url "https://artifacts.alfresco.com/nexus/content/repositories/public/"
-    }
 }
 
 dependencies {
@@ -86,8 +83,7 @@ dependencies {
     compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.11'
 
-    compile group: 'com.ibm.db2.jcc', name: 'db2jcc4', version: '10.1'
-
+    compile fileTree(dir: 'lib', include: ['*.jar'])
     compile ('gov.ca.cwds.api:api-core:0.19.118') {
         exclude group: 'org.glassfish.jersey.core'
     }
