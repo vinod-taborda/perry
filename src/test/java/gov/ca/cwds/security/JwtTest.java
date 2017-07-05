@@ -31,7 +31,8 @@ public class JwtTest {
     //Enc Key
     configuration.setEncryptionEnabled(true);
     configuration.getKeyStore().setEncKeyPassword("test");
-    configuration.getKeyStore().setEncAlias("enc");
+    configuration.getKeyStore().setEncAlias("enc128");
+    configuration.setEncryptionMethod("A128GCM");
 
   }
 

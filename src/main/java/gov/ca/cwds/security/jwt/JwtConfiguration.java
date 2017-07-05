@@ -7,6 +7,7 @@ public class JwtConfiguration {
   private int timeout;
   private String issuer;
   private boolean encryptionEnabled;
+  private String encryptionMethod;
 
   private KeyStoreConfiguration keyStore;
 
@@ -40,6 +41,14 @@ public class JwtConfiguration {
 
   public void setKeyStore(KeyStoreConfiguration keyStore) {
     this.keyStore = keyStore;
+  }
+
+  public String getEncryptionMethod() {
+    return encryptionMethod;
+  }
+
+  public void setEncryptionMethod(String encryptionMethod) {
+    this.encryptionMethod = encryptionMethod;
   }
 
   public static class KeyStoreConfiguration {

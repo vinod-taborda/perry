@@ -62,7 +62,7 @@ public class JwtService {
   }
 
   private JWEHeader jweHeader() {
-    return new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A256GCM)
+    return new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.parse(configuration.getEncryptionMethod()))
             .contentType("JWT")
             .build();
   }
