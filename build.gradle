@@ -72,7 +72,8 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:'1.5.2.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.2.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '1.5.3.RELEASE'
-    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+    // JWT
+    compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '4.39'
 
     compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version:'2.0.13.RELEASE'
     compile group: 'org.webjars', name: 'angularjs', version:'1.4.3'

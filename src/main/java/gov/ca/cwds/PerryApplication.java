@@ -15,6 +15,7 @@
  */
 package gov.ca.cwds;
 
+import gov.ca.cwds.security.jwt.JwtService;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -38,26 +39,32 @@ import javax.persistence.EntityManagerFactory;
 @EntityScan("gov.ca.cwds.data.persistence.auth")
 @EnableConfigurationProperties({PerryProperties.class})
 public class PerryApplication {
-    @Bean
-    public RestTemplate client() {
-        return new RestTemplate();
-    }
+  @Bean
+  public RestTemplate client() {
+    return new RestTemplate();
+  }
 
-    @Bean
-    @Autowired
-    public SessionFactory sessionFactory(EntityManagerFactory entityManagerFactory) {
-        return entityManagerFactory.unwrap(SessionFactory.class);
-    }
+  @Bean
+  @Autowired
+  public SessionFactory sessionFactory(EntityManagerFactory entityManagerFactory) {
+    return entityManagerFactory.unwrap(SessionFactory.class);
+  }
 
-    @Bean
-    @Autowired
-    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        JpaTransactionManager txManager = new JpaTransactionManager();
-        txManager.setEntityManagerFactory(entityManagerFactory);
-        return txManager;
-    }
+  @Bean
+  @Autowired
+  public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    JpaTransactionManager txManager = new JpaTransactionManager();
+    txManager.setEntityManagerFactory(entityManagerFactory);
+    return txManager;
+  }
 
-    public static void main(String[] args) {
-        SpringApplication.run(PerryApplication.class, args);
-    }
+  @Bean
+  @Autowired
+  public JwtService jwtService(PerryProperties perryProperties) {
+    return new JwtService(perryProperties.getJwt());
+  }
+
+  public static void main(String[] args) {
+    SpringApplication.run(PerryApplication.class, args);
+  }
 }

@@ -1,5 +1,6 @@
 package gov.ca.cwds.service;
 
+import gov.ca.cwds.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,6 @@ public class TokenGeneratorService {
   private JwtService jwtService;
 
   public String generate(String identity) throws Exception {
-    return jwtService.generateToken("test", UUID.randomUUID().toString(), identity);
+    return jwtService.generate("test", UUID.randomUUID().toString(), identity);
   }
 }
