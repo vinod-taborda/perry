@@ -88,7 +88,7 @@ dependencies {
         exclude group: 'org.glassfish.jersey.core'
     }
 
-    compile ('gov.ca.cwds.api:jwt-security:' + projectVersion);
+    compile project(':jwt-security');
 
     compile group: 'javax.interceptor', name: 'javax.interceptor-api', version: '1.2'
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
@@ -107,6 +107,8 @@ dependencies {
     testCompile 'org.ow2.asm:asm-all:5.1'
     testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: '1.0.5'
 }
+
+publish.dependsOn ':jwt-security:publish'
 
 def isPortOpen(host, port) {
     try {
