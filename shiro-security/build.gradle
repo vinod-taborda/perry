@@ -22,7 +22,12 @@ dependencies {
     compileOnly('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
     compileOnly('javax.servlet:javax.servlet-api:3.1.0')
     compile project(':jwt-security')
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile('org.apache.shiro:shiro-core:' + shiroVersion)
+    testCompile('org.apache.shiro:shiro-web:' + shiroVersion)
+    testCompile('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
+    testCompile('javax.servlet:javax.servlet-api:3.1.0')
 }
 
 publish.dependsOn ':jwt-security:publish'
