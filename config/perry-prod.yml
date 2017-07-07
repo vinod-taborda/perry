@@ -30,11 +30,16 @@ perry:
     jwt:
       timeout: ${TOKEN_TIMEOUT:30} #minutes
       issuer: ${TOKEN_ISSUER:perry}
-    keyStore:
-      path: ${KEYSTORE_PATH:config/test.jks}
-      alias: ${KEYSTORE_ALIAS:test}
-      password: ${KEYSTORE_PASSWORD:test}
-      keyPassword : ${KEYSTORE_KEY_PASSWORD:test}
+      encryptionEnabled: ${TOKEN_ENCRYPTION_ENABLED:true}
+      encryptionMethod: ${TOKEN_ENCRYPTION_METHOD:A256GCM}
+      headless: ${HEADLESS_JWT:true}
+      keyStore:
+        path: ${KEYSTORE_PATH:config/enc.jceks}
+        alias: ${KEYSTORE_ALIAS:test}
+        password: ${KEYSTORE_PASSWORD:test}
+        keyPassword : ${KEYSTORE_KEY_PASSWORD:test}
+        encAlias:  ${KEYSTORE_ENC_ALIAS:enc}
+        encKeyPassword: ${KEYSTORE_ENC_KEY_PASSWORD:test}
     serviceProviders:
       dora:
         identityMapping: 'config/dora.groovy'
@@ -46,9 +51,10 @@ server:
   port: ${HTTPS_PORT:8090}
   ssl:
     enabled: true
-    keyStoreType: JKS
-    key-store: ${KEYSTORE_PATH:config/test.jks}
-    key-store-password: ${KEYSTORE_PASSWORD:test}
-    key-password: ${KEYSTORE_KEY_PASSWORD:test}
+    keyStoreType: JCEKS
+    trustStoreType: JCEKS
+    keyStore: ${KEYSTORE_PATH:config/enc.jceks}
+    keyStorePassword: ${KEYSTORE_PASSWORD:test}
+    keyPassword: ${KEYSTORE_KEY_PASSWORD:test}
   http:
     port: ${HTTP_PORT:8080}
