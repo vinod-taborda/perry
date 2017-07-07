@@ -108,7 +108,7 @@ dependencies {
     testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: '1.0.5'
 }
 
-publish.dependsOn ':jwt-security:publish'
+publish.dependsOn ':shiro-security:publish'
 
 def isPortOpen(host, port) {
     try {

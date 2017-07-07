@@ -1,0 +1,45 @@
+group 'gov.ca.cwds.api'
+version projectVersion
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+project.ext {
+    shiroVersion = '1.2.3'
+    jacksonVersion = '2.8.7'
+}
+
+dependencies {
+    compile('org.apache.shiro:shiro-core:' + shiroVersion)
+    compile('org.apache.shiro:shiro-web:' + shiroVersion)
+    compile('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
+    compileOnly('javax.servlet:javax.servlet-api:3.1.0')
+    compile project(':jwt-security')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+publish.dependsOn ':jwt-security:publish'
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+            groupId 'gov.ca.cwds.api'
+            artifactId 'shiro-security'
+            version version + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
+        }
+    }
+    repositories {
+        maven {
+            //TODO : set to http url
+            url "file:///usr/share/nginx/html/maven2"
+        }
+    }
+}
