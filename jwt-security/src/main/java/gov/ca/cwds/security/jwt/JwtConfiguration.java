@@ -8,6 +8,7 @@ public class JwtConfiguration {
   private String issuer;
   private boolean encryptionEnabled;
   private String encryptionMethod;
+  private boolean headless = true;
 
   private KeyStoreConfiguration keyStore;
 
@@ -49,6 +50,14 @@ public class JwtConfiguration {
 
   public void setEncryptionMethod(String encryptionMethod) {
     this.encryptionMethod = encryptionMethod;
+  }
+
+  public boolean isHeadless() {
+    return headless;
+  }
+
+  public void setHeadless(boolean headless) {
+    this.headless = headless;
   }
 
   public static class KeyStoreConfiguration {

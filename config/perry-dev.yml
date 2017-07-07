@@ -19,6 +19,7 @@ perry:
       issuer: ${TOKEN_ISSUER:perry}
       encryptionEnabled: ${TOKEN_ENCRYPTION_ENABLED:true}
       encryptionMethod: ${TOKEN_ENCRYPTION_METHOD:A128GCM}
+      headless: ${HEADLESS_JWT:true}
       keyStore:
         path: ${KEYSTORE_PATH:config/enc.jceks}
         alias: ${KEYSTORE_ALIAS:test}

@@ -39,6 +39,7 @@ public class JwtRealm extends AuthorizingRealm {
   private String encKeyPassword;
   private String encryptionMethod;
   private String tokenIssuer;
+  private boolean headlessToken = true;
 
   private ObjectMapper objectMapper;
   JwtService jwtService;
@@ -55,6 +56,7 @@ public class JwtRealm extends AuthorizingRealm {
     jwtConfiguration.setEncryptionMethod(encryptionMethod);
     jwtConfiguration.setEncryptionEnabled(useEncryption);
     jwtConfiguration.setIssuer(tokenIssuer);
+    jwtConfiguration.setHeadless(headlessToken);
     jwtConfiguration.getKeyStore().setPassword(keyStorePassword);
     jwtConfiguration.getKeyStore().setAlias(keyStoreAlias);
     jwtConfiguration.getKeyStore().setPath(keyStorePath);
@@ -164,6 +166,14 @@ public class JwtRealm extends AuthorizingRealm {
 
   public void setEncryptionMethod(String encryptionMethod) {
     this.encryptionMethod = encryptionMethod;
+  }
+
+  public boolean isHeadlessToken() {
+    return headlessToken;
+  }
+
+  public void setHeadlessToken(boolean headlessToken) {
+    this.headlessToken = headlessToken;
   }
 
   /**

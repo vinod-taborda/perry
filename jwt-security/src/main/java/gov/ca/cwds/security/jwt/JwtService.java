@@ -112,12 +112,18 @@ public class JwtService {
   }
 
   private String removeHeader(String token) {
-    return token.substring(token.indexOf("."));
+    if(configuration.isHeadless()) {
+      return token.substring(token.indexOf("."));
+    }
+    return token;
   }
 
   private String addHeader(String token) {
-    Header header = configuration.isEncryptionEnabled() ? jweHeader() : jwsHeader();
-    return header.toBase64URL().toString() + token;
+    if(configuration.isHeadless()) {
+      Header header = configuration.isEncryptionEnabled() ? jweHeader() : jwsHeader();
+      return header.toBase64URL().toString() + token;
+    }
+    return token;
   }
 
   private void fail() throws GeneralSecurityException {
