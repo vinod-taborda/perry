@@ -82,6 +82,8 @@ dependencies {
     compile group: 'io.swagger', name: 'swagger-jersey2-jaxrs', version: '1.5.9'
     compile group: 'io.swagger', name: 'swagger-annotations', version: '1.5.9'
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.11'
+    //h2 dev mode
+    compile group: 'com.h2database', name: 'h2', version: '1.4.196'
 
     compile fileTree(dir: 'lib', include: ['*.jar'])
     compile ('gov.ca.cwds.api:api-core:0.19.118') {

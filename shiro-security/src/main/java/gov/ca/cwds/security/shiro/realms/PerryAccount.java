@@ -1,5 +1,6 @@
 package gov.ca.cwds.security.shiro.realms;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Set;
@@ -7,6 +8,7 @@ import java.util.Set;
 /**
  * Created by dmitry.rudenko on 6/2/2017.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PerryAccount {
     @JsonProperty
     private String user;
