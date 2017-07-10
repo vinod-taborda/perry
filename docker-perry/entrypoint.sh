@@ -11,4 +11,4 @@ else
   JAVA_OPTS="-Dspring.profiles.active=dev"
 fi
 
-java ${JAVA_OPTS} -jar perry.jar server ${PERRY_CONFIG}
+java ${CWDS_OPTS} ${JAVA_OPTS} -jar perry.jar server ${PERRY_CONFIG}
