@@ -1,9 +1,9 @@
 spring:
       datasource:
           driver-class-name: org.h2.Driver
-          url: ${DB_CMS_JDBC_URL:jdbc:h2:mem:test}
-          username: ${DB_CMS_USER:test}
-          password: ${DB_CMS_PASSWORD:test}
+          url: jdbc:h2:mem:test
+          username: test
+          password: test
       jpa:
           database: h2
           show_sql: true
@@ -12,7 +12,7 @@ spring:
               hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
               hibernate.dialect: org.hibernate.dialect.DB2Dialect
               hibernate.ddl-auto: none
-              hibernate.default_schema: ${DB_CMS_SCHEMA:CWSINT}
+              hibernate.default_schema: test
 perry:
     jwt:
       timeout: ${TOKEN_TIMEOUT:30} #minutes
