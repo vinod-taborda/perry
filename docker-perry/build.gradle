@@ -18,7 +18,7 @@ task dockerCopyConfig(type: Copy) {
     from "$project.parent.projectDir/config"
     into "$dockerContextDir/config"
     include 'perry*.yml'
-    include '*.jks'
+    include '*.jceks'
     include '*.groovy'
 }
 
