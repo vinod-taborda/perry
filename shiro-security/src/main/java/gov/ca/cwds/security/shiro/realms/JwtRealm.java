@@ -17,6 +17,8 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of JWT processing realm. This realm validates JWT token and extract identity claim
@@ -26,6 +28,9 @@ import java.util.List;
  * claim as secondary. So authorization process will expect 2 principals.
  */
 public class JwtRealm extends AuthorizingRealm {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(JwtRealm.class);
+
   /**
    * primary principal equals to username secondary principal equals to user token
    */
@@ -194,8 +199,7 @@ public class JwtRealm extends AuthorizingRealm {
   }
 
   @Override
-  protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
-          throws AuthenticationException {
+  protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) {
     String jwt = ((PerryShiroToken) token).getToken();
     String json = validate(jwt);
     PerryAccount perryAccount = map(json);
@@ -232,6 +236,7 @@ public class JwtRealm extends AuthorizingRealm {
     try {
       return objectMapper.readValue(json, PerryAccount.class);
     } catch (IOException e) {
+      LOGGER.info(e.getMessage(), e);
       // Mapping doesn't apply
       return new PerryAccount() {
         {
