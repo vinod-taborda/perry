@@ -2,7 +2,6 @@ package gov.ca.cwds.data.auth;
 
 
 import gov.ca.cwds.data.persistence.auth.AssignmentUnit;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -14,6 +13,6 @@ import javax.transaction.Transactional;
  */
 @Transactional
 @Repository
-public interface AssignmentUnitDao extends JpaRepository<AssignmentUnit, String> {
+public interface AssignmentUnitDao extends ReadOnlyRepository<AssignmentUnit, String> {
 
 }
