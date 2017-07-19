@@ -121,7 +121,7 @@ public class UserAuthorizationService implements CrudsService {
       String assignedUnitEndDate = "";
       if (StringUtils.isNotBlank(assignedUnitKey)) {
         final gov.ca.cwds.data.persistence.auth.AssignmentUnit assignmentUnit =
-            this.assignmentUnitDao.find(assignedUnitKey);
+            this.assignmentUnitDao.findOne(assignedUnitKey);
         assignedUnitEndDate = DomainChef.cookDate(assignmentUnit.getEndDate());
       }
       setStaffUnitAuths.add(new StaffUnitAuthority(staffUnitAuth.getAuthorityCode(),

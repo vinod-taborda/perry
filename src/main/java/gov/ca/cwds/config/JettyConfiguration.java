@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class JettyConfiguration {
-  @Value("${server.http.port}")
+  @Value("${server.http.port:-1}")
   private int httpPort;
 
   @Bean
@@ -29,7 +29,12 @@ public class JettyConfiguration {
       }
 
       private void customizeJetty(JettyEmbeddedServletContainerFactory container) {
+        if (httpPort > 0) {
+          enableHttpPort(container);
+        }
+      }
 
+      private void enableHttpPort(JettyEmbeddedServletContainerFactory container) {
         container.addServerCustomizers((JettyServerCustomizer) server -> {
           // HTTP
           ServerConnector connector = new ServerConnector(server);
