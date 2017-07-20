@@ -31,12 +31,6 @@ public class PerryApplication {
 
   @Bean
   @Autowired
-  public SessionFactory sessionFactory(EntityManagerFactory entityManagerFactory) {
-    return entityManagerFactory.unwrap(SessionFactory.class);
-  }
-
-  @Bean
-  @Autowired
   public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
     JpaTransactionManager txManager = new JpaTransactionManager();
     txManager.setEntityManagerFactory(entityManagerFactory);

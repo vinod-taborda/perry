@@ -9,11 +9,11 @@ import gov.ca.cwds.rest.api.domain.auth.StaffAuthorityPrivilege;
 import gov.ca.cwds.rest.api.domain.auth.StaffUnitAuthority;
 import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
 import gov.ca.cwds.rest.services.CrudsService;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 @Transactional
 @Service
-public class UserAuthorizationService implements CrudsService {
+public class UserAuthorizationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthorizationService.class);
 
@@ -51,7 +51,6 @@ public class UserAuthorizationService implements CrudsService {
    * 
    * @see CrudsService#find(Serializable)
    */
-  @Override
   public UserAuthorization find(Serializable primaryKey) {
     assert primaryKey instanceof String;
     LOGGER.info(primaryKey.toString());
@@ -139,38 +138,6 @@ public class UserAuthorizationService implements CrudsService {
                       priv.getCountySpecificCode(),
                       DomainChef.cookDate(priv.getEndDate()))).
             collect(Collectors.toSet());
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @see CrudsService#delete(Serializable)
-   */
-  @Override
-  public gov.ca.cwds.rest.api.domain.auth.UserAuthorization delete(Serializable primaryKey) {
-    throw new NotImplementedException("delete not implemented");
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @see CrudsService#create(Request)
-   */
-  @Override
-  public gov.ca.cwds.rest.api.domain.auth.UserAuthorization create(Request request) {
-    throw new NotImplementedException("create not implemented");
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @see CrudsService#update(Serializable,
-   *      Request)
-   */
-  @Override
-  public gov.ca.cwds.rest.api.domain.auth.UserAuthorization update(Serializable primaryKey,
-      Request request) {
-    throw new NotImplementedException("update not implemented");
   }
 
 }
