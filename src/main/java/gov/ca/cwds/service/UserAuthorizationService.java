@@ -59,13 +59,13 @@ public class UserAuthorizationService implements CrudsService {
 
     final String userId = ((String) primaryKey).trim();
     List<UserId> userList = userIdDao.listUserFromLogonId(userId);
-    gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege socialWorker;
+
 
     if (userList != null && !userList.isEmpty()) {
       final UserId user = userList.get(0);
       String userIdentifier = user.getId();
       String staffPersonIdentifier = user.getStaffPersonId();
-      socialWorker = staffAuthorityPrivilegeDao.isSocialWorker(userIdentifier);
+      boolean socialWorker = !staffAuthorityPrivilegeDao.findSocialWorkerPrivileges(userIdentifier).isEmpty();
 
       Set<StaffAuthorityPrivilege> userAuthPrivs = getStaffAuthorityPriveleges(userIdentifier);
 
@@ -74,7 +74,7 @@ public class UserAuthorizationService implements CrudsService {
       Set<CwsOffice> setCwsOffices = getCwsOffices(staffPersonIdentifier);
 
       return new UserAuthorization(user.getLogonId(), user.getStaffPersonId(),
-          socialWorker != null, false, true, userAuthPrivs, setStaffUnitAuths, setCwsOffices);
+              socialWorker, false, true, userAuthPrivs, setStaffUnitAuths, setCwsOffices);
     } else {
       LOGGER.warn("No user id found for " + primaryKey);
     }
@@ -131,16 +131,15 @@ public class UserAuthorizationService implements CrudsService {
    * @return Set of StaffAuthorityPrivilege for the User
    */
   private Set<StaffAuthorityPrivilege> getStaffAuthorityPriveleges(String userId) {
-
-    Set<StaffAuthorityPrivilege> userAuthPrivs = new HashSet<>();
-    final gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege[] staffAuthPrivs =
-        this.staffAuthorityPrivilegeDao.findByUser(userId);
-    for (gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege priv : staffAuthPrivs) {
-      String endDate = DomainChef.cookDate(priv.getEndDate());
-      userAuthPrivs.add(new StaffAuthorityPrivilege(priv.getLevelOfAuthPrivilegeType().toString(),
-          priv.getLevelOfAuthPrivilegeCode(), priv.getCountySpecificCode(), endDate));
-    }
-    return userAuthPrivs;
+    return this.staffAuthorityPrivilegeDao.findByFkuseridT(userId).
+            stream().
+            map(priv ->
+              new StaffAuthorityPrivilege(
+                      priv.getLevelOfAuthPrivilegeType().toString(),
+                      priv.getLevelOfAuthPrivilegeCode(),
+                      priv.getCountySpecificCode(),
+                      DomainChef.cookDate(priv.getEndDate()))).
+            collect(Collectors.toSet());
   }
 
   /**

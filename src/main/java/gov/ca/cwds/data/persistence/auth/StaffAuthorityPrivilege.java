@@ -19,19 +19,7 @@ import java.util.Date;
  * 
  * @author CWDS API Team
  */
-@NamedQueries({
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege.findAll",
-        query = "FROM StaffAuthorityPrivilege"),
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege.findByUser",
-        query = "FROM StaffAuthorityPrivilege WHERE fkuseridT = :userId"),
-    @NamedQuery(
-        name = "gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege.findAllUpdatedAfter",
-        query = "FROM StaffAuthorityPrivilege WHERE lastUpdatedTime > :after"),
-    @NamedQuery(
-        name = "gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege.checkForSocialWorker",
-        query = "FROM StaffAuthorityPrivilege S WHERE S.fkuseridT = :userId AND "
-            + "S.levelOfAuthPrivilegeType = '1468' AND "
-            + "S.levelOfAuthPrivilegeCode = 'P' AND S.endDate is null")})
+
 @Entity
 @Table(name = "STF_PVLT")
 public class StaffAuthorityPrivilege extends CmsPersistentObject {
