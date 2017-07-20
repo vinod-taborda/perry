@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -104,24 +103,24 @@ public class UserAuthorizationService implements CrudsService {
    * @return Set of StaffUnitAuthority for the Staff Person
    */
   private Set<StaffUnitAuthority> getStaffUnitAuthorities(String staffPersonId) {
-
-    Set<StaffUnitAuthority> setStaffUnitAuths = new HashSet<>();
-    final gov.ca.cwds.data.persistence.auth.StaffUnitAuthority[] staffUnitAuths =
-        this.staffUnitAuthorityDao.findByStaff(staffPersonId);
-
-    for (gov.ca.cwds.data.persistence.auth.StaffUnitAuthority staffUnitAuth : staffUnitAuths) {
-      String endDate = DomainChef.cookDate(staffUnitAuth.getEndDate());
-      String assignedUnitKey = staffUnitAuth.getFkasgUnit().trim();
-      String assignedUnitEndDate = "";
-      if (StringUtils.isNotBlank(assignedUnitKey)) {
-        final gov.ca.cwds.data.persistence.auth.AssignmentUnit assignmentUnit =
-            this.assignmentUnitDao.findOne(assignedUnitKey);
-        assignedUnitEndDate = DomainChef.cookDate(assignmentUnit.getEndDate());
-      }
-      setStaffUnitAuths.add(new StaffUnitAuthority(staffUnitAuth.getAuthorityCode(),
-          assignedUnitKey, assignedUnitEndDate, staffUnitAuth.getCountySpecificCode(), endDate));
-    }
-    return setStaffUnitAuths;
+    return this.staffUnitAuthorityDao.findByStaffPersonId(staffPersonId).
+            stream().
+            map(staffUnitAuth -> {
+              String endDate = DomainChef.cookDate(staffUnitAuth.getEndDate());
+              String assignedUnitKey = staffUnitAuth.getFkasgUnit().trim();
+              String assignedUnitEndDate = "";
+              if (StringUtils.isNotBlank(assignedUnitKey)) {
+                final gov.ca.cwds.data.persistence.auth.AssignmentUnit assignmentUnit =
+                        this.assignmentUnitDao.findOne(assignedUnitKey);
+                assignedUnitEndDate = DomainChef.cookDate(assignmentUnit.getEndDate());
+              }
+              return new StaffUnitAuthority(
+                      staffUnitAuth.getAuthorityCode(),
+                      assignedUnitKey,
+                      assignedUnitEndDate,
+                      staffUnitAuth.getCountySpecificCode(),
+                      endDate);
+            }).collect(Collectors.toSet());
   }
 
   /**
