@@ -1,7 +1,5 @@
 package gov.ca.cwds.service;
 
-import com.google.inject.Inject;
-import gov.ca.cwds.data.CrudsDao;
 import gov.ca.cwds.data.auth.*;
 import gov.ca.cwds.data.persistence.auth.UserId;
 import gov.ca.cwds.rest.api.Request;
@@ -23,6 +21,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -90,17 +89,12 @@ public class UserAuthorizationService implements CrudsService {
    * @return Set of CwsOffice for the Staff Person
    */
   private Set<CwsOffice> getCwsOffices(String staffPersonId) {
-
-    Set<CwsOffice> setCwsOffices = new HashSet<>();
-    final gov.ca.cwds.data.persistence.auth.CwsOffice[] cwsOffices =
-        this.cwsOfficeDao.findByStaff(staffPersonId);
-
-
-    for (gov.ca.cwds.data.persistence.auth.CwsOffice cwsOffice : cwsOffices) {
-      setCwsOffices.add(new CwsOffice(cwsOffice.getOfficeId(), cwsOffice.getGovernmentEntityType()
-          .toString(), cwsOffice.getCountySpecificCode()));
-    }
-    return setCwsOffices;
+    return this.cwsOfficeDao.findByStaffPersonId(staffPersonId).
+            stream().
+            map(cwsOffice ->
+              new CwsOffice(cwsOffice.getOfficeId(),
+                      cwsOffice.getGovernmentEntityType().toString(),
+                      cwsOffice.getCountySpecificCode())).collect(Collectors.toSet());
   }
 
   /**
