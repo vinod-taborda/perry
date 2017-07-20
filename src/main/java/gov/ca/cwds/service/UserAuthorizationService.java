@@ -57,7 +57,7 @@ public class UserAuthorizationService implements CrudsService {
     LOGGER.info(primaryKey.toString());
 
     final String userId = ((String) primaryKey).trim();
-    List<UserId> userList = userIdDao.listUserFromLogonId(userId);
+    List<UserId> userList = userIdDao.findByLogonId(userId);
 
 
     if (userList != null && !userList.isEmpty()) {

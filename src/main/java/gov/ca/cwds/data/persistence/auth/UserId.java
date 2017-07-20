@@ -19,12 +19,7 @@ import java.util.Date;
  * 
  * @author CWDS API Team
  */
-@NamedQueries({
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.UserId.findAll", query = "FROM UserId"),
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.UserId.findAllUpdatedAfter",
-        query = "FROM UserId WHERE lastUpdatedTime > :after"),
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.UserId.findUserFromLogonId",
-        query = "FROM UserId U where U.logonId = :logonId")})
+
 @Entity
 @Table(name = "USERID_T")
 public class UserId extends CmsPersistentObject {

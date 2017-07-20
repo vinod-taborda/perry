@@ -16,16 +16,6 @@ import javax.transaction.Transactional;
  */
 @Transactional
 @Repository
-public class UserAuthorizationDao extends CrudsDaoImpl<UserAuthorization> {
-
-  /**
-   * Constructor
-   * 
-   * @param sessionFactory The session factory
-   */
-  @Inject
-  public UserAuthorizationDao(@CmsSessionFactory SessionFactory sessionFactory) {
-    super(sessionFactory);
-  }
+public interface UserAuthorizationDao extends ReadOnlyRepository<UserAuthorization, String> {
 
 }
