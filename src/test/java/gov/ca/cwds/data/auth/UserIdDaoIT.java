@@ -16,6 +16,7 @@ import org.junit.*;
 
 import gov.ca.cwds.data.persistence.auth.UserId;
 
+@Ignore
 public class UserIdDaoIT {
 
   @Rule

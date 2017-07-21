@@ -18,6 +18,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.*;
 
+@Ignore
 public class AssignmentUnitDaoIT {
   private DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
   private String startDateString = "1998-05-11";

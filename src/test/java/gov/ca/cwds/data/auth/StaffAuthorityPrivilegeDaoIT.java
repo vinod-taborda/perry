@@ -20,6 +20,7 @@ import org.junit.*;
 
 import gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege;
 
+@Ignore
 public class StaffAuthorityPrivilegeDaoIT {
   private DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
   private DateFormat dt = new SimpleDateFormat("HH:mm:ss");
