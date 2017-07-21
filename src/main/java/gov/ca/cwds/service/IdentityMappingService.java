@@ -15,6 +15,9 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public class IdentityMappingService {
+
+    private static final String DEFAULT_SP_ID_NAME = "default";
+
     @Autowired
     private UserAuthorizationService userAuthorizationService;
     @Autowired
@@ -24,10 +27,12 @@ public class IdentityMappingService {
         IdentityMappingScript mappingScript = loadMappingScriptForServiceProvider(providerId);
         if (mappingScript != null) {
             UserAuthorization authorization = userAuthorizationService.find(subject);
-            try {
-                return mappingScript.map(authorization);
-            } catch (ScriptException e) {
-                throw new RuntimeException("Identity Mapping failed for service provider: " + providerId, e);
+            if(authorization != null) {
+                try {
+                    return mappingScript.map(authorization);
+                } catch (ScriptException e) {
+                    throw new RuntimeException("Identity Mapping failed for service provider: " + providerId, e);
+                }
             }
         }
         return subject;
@@ -35,11 +40,13 @@ public class IdentityMappingService {
 
 
     private IdentityMappingScript loadMappingScriptForServiceProvider(String serviceProviderId) {
-        if (serviceProviderId != null) {
-            PerryProperties.ServiceProviderConfiguration spConfiguration = configuration.getServiceProviders().get(serviceProviderId);
-            if (spConfiguration != null) {
-                return spConfiguration.getIdentityMapping();
-            }
+        return loadScript(serviceProviderId == null ? DEFAULT_SP_ID_NAME : serviceProviderId);
+    }
+
+    private IdentityMappingScript loadScript(String serviceProviderId) {
+        PerryProperties.ServiceProviderConfiguration spConfiguration = configuration.getServiceProviders().get(serviceProviderId);
+        if(spConfiguration != null) {
+            return spConfiguration.getIdentityMapping();
         }
         return null;
     }

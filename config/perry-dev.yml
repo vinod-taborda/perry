@@ -32,6 +32,8 @@ perry:
         identityMapping: 'config/dora.groovy'
       demo:
         identityMapping: 'config/demo.groovy'
+      default:
+        identityMapping: 'config/default.groovy'
 
 server:
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
