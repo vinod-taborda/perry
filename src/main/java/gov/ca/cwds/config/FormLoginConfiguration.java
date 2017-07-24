@@ -33,7 +33,7 @@ public class FormLoginConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/static/**", "/login*", "/css/**","/images/**", "/dev/**", "/authn/validate*").anonymous()
+                .antMatchers("/static/**", "/login*", "/css/**","/images/**", "/dev/**", "/authn/validate*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
