@@ -18,26 +18,42 @@ class JCEKSKeyProvider implements KeyProvider {
   }
 
   @Override
-  public PrivateKey getSigningKey() throws Exception {
-    return (PrivateKey) getKeyStore().getKey(configuration.getKeyStore().getAlias(), configuration.getKeyStore().getKeyPassword().toCharArray());
+  public PrivateKey getSigningKey() throws JwtException {
+    try {
+      return (PrivateKey) getKeyStore().getKey(configuration.getKeyStore().getAlias(), configuration.getKeyStore().getKeyPassword().toCharArray());
+    } catch (Exception e) {
+      throw new JwtException(e);
+    }
   }
 
   @Override
-  public PublicKey getValidatingKey() throws Exception {
-    return getKeyStore().getCertificate(configuration.getKeyStore().getAlias()).getPublicKey();
+  public PublicKey getValidatingKey() throws JwtException {
+    try {
+      return getKeyStore().getCertificate(configuration.getKeyStore().getAlias()).getPublicKey();
+    } catch (Exception e) {
+      throw new JwtException(e);
+    }
   }
 
   @Override
-  public SecretKey getEncryptingKey() throws Exception {
-    return (SecretKey) getKeyStore().getKey(configuration.getKeyStore().getEncAlias(), configuration.getKeyStore().getEncKeyPassword().toCharArray());
+  public SecretKey getEncryptingKey() throws JwtException {
+    try {
+      return (SecretKey) getKeyStore().getKey(configuration.getKeyStore().getEncAlias(), configuration.getKeyStore().getEncKeyPassword().toCharArray());
+    } catch (Exception e) {
+      throw new JwtException(e);
+    }
   }
 
-  private KeyStore getKeyStore() throws Exception {
-    KeyStore ks = KeyStore.getInstance("JCEKS");
-    try (InputStream readStream = new FileInputStream(configuration.getKeyStore().getPath())) {
-      char keyPassword[] = configuration.getKeyStore().getPassword().toCharArray();
-      ks.load(readStream, keyPassword);
-      return ks;
+  private KeyStore getKeyStore() throws JwtException {
+    try {
+      KeyStore ks = KeyStore.getInstance("JCEKS");
+      try (InputStream readStream = new FileInputStream(configuration.getKeyStore().getPath())) {
+        char keyPassword[] = configuration.getKeyStore().getPassword().toCharArray();
+        ks.load(readStream, keyPassword);
+        return ks;
+      }
+    } catch (Exception e) {
+      throw new JwtException(e);
     }
   }
 }

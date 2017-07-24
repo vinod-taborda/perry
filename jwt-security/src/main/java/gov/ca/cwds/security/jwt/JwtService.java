@@ -40,12 +40,12 @@ public class JwtService {
   }
 
   public String validate(String token) throws Exception {
-    token = addHeader(token);
+    String tokenWithHeader = addHeader(token);
     SignedJWT signedJWT;
     if (configuration.isEncryptionEnabled()) {
-      signedJWT = decrypt(token);
+      signedJWT = decrypt(tokenWithHeader);
     } else {
-      signedJWT = SignedJWT.parse(token);
+      signedJWT = SignedJWT.parse(tokenWithHeader);
     }
     validateSignature(signedJWT);
     validateClaims(signedJWT.getJWTClaimsSet());

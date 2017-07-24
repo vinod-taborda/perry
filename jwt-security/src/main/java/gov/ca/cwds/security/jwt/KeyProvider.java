@@ -8,9 +8,9 @@ import java.security.PublicKey;
  * Created by dmitry.rudenko on 6/30/2017.
  */
 interface KeyProvider {
-  PrivateKey getSigningKey() throws Exception;
+  PrivateKey getSigningKey() throws JwtException;
 
-  PublicKey getValidatingKey() throws Exception;
+  PublicKey getValidatingKey() throws JwtException;
 
-  SecretKey getEncryptingKey() throws Exception;
+  SecretKey getEncryptingKey() throws JwtException;
 }
