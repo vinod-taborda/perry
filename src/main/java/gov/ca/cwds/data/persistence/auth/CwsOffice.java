@@ -17,11 +17,7 @@ import java.math.BigDecimal;
  * 
  * @author CWDS API Team
  */
-@NamedQueries({
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.CwsOffice.findAll",
-        query = "FROM CwsOffice"),
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.CwsOffice.findByStaff",
-        query = "FROM CwsOffice WHERE FKSTFPERST = :staffId")})
+
 @Entity
 @Table(name = "CWS_OFFT")
 public class CwsOffice extends CmsPersistentObject {

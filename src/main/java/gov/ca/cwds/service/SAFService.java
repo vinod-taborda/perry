@@ -2,6 +2,7 @@ package gov.ca.cwds.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import java.util.Map;
  * Created by dmitry.rudenko on 5/22/2017.
  */
 @Service
+@Profile("prod")
 public class SAFService {
     private static final String BEARER = "bearer ";
     @Autowired

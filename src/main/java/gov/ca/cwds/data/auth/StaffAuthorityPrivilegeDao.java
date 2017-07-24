@@ -1,48 +1,27 @@
 package gov.ca.cwds.data.auth;
 
-import com.google.inject.Inject;
-import gov.ca.cwds.data.CrudsDaoImpl;
 import gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege;
-import gov.ca.cwds.inject.CmsSessionFactory;
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * DAO for {@link StaffAuthorityPrivilege}.
- * 
+ *
  * @author CWDS API Team
  */
 @Transactional
 @Repository
-public class StaffAuthorityPrivilegeDao extends CrudsDaoImpl<StaffAuthorityPrivilege> {
+public interface StaffAuthorityPrivilegeDao extends ReadOnlyRepository<StaffAuthorityPrivilege, String> {
 
-  /**
-   * Constructor
-   * 
-   * @param sessionFactory The session factory
-   */
-  @Inject
-  public StaffAuthorityPrivilegeDao(@CmsSessionFactory SessionFactory sessionFactory) {
-    super(sessionFactory);
-  }
+  List<StaffAuthorityPrivilege> findByFkuseridT(String userId);
 
-  @SuppressWarnings("unchecked")
-  public StaffAuthorityPrivilege[] findByUser(String userId) {
-    Query query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery("gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege.findByUser")
-        .setString("userId", userId);
-    return (StaffAuthorityPrivilege[]) query.list().toArray(new StaffAuthorityPrivilege[0]);
-  }
-
-  public StaffAuthorityPrivilege isSocialWorker(String userId) {
-    Query query = this.getSessionFactory().getCurrentSession()
-        .getNamedQuery(
-            "gov.ca.cwds.data.persistence.auth.StaffAuthorityPrivilege.checkForSocialWorker")
-        .setString("userId", userId);
-    return (StaffAuthorityPrivilege) query.uniqueResult();
-  }
+  @Query("SELECT S FROM StaffAuthorityPrivilege S WHERE S.fkuseridT = :userId AND "
+          + "S.levelOfAuthPrivilegeType = '1468' AND "
+          + "S.levelOfAuthPrivilegeCode = 'P' AND S.endDate is null")
+  List<StaffAuthorityPrivilege> findSocialWorkerPrivileges(@Param("userId") String userId);
 
 }

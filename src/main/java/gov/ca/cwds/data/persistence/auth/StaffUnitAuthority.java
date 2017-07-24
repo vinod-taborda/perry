@@ -2,8 +2,6 @@ package gov.ca.cwds.data.persistence.auth;
 
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -17,13 +15,6 @@ import java.util.Date;
  * 
  * @author CWDS API Team
  */
-@NamedQueries({
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.StaffUnitAuthority.findAll",
-        query = "FROM StaffUnitAuthority"),
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.StaffUnitAuthority.findByStaff",
-        query = "FROM StaffUnitAuthority WHERE FKSTFPERST = :staffId"),
-    @NamedQuery(name = "gov.ca.cwds.data.persistence.auth.StaffUnitAuthority.findAllUpdatedAfter",
-        query = "FROM StaffUnitAuthority WHERE lastUpdatedTime > :after")})
 @Entity
 @Table(name = "STFUATHT")
 public class StaffUnitAuthority extends CmsPersistentObject {

@@ -4,6 +4,7 @@ import gov.ca.cwds.PerryProperties;
 import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
 import gov.ca.cwds.service.scripts.IdentityMappingScript;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.script.ScriptException;
@@ -12,6 +13,7 @@ import javax.transaction.Transactional;
 /**
  * Created by dmitry.rudenko on 5/9/2017.
  */
+@Profile("prod")
 @Service
 @Transactional
 public class IdentityMappingService {
