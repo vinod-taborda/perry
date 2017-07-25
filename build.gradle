@@ -15,7 +15,6 @@ plugins {
     id 'org.springframework.boot' version '1.5.2.RELEASE'
 }
 
-
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'maven-publish'
