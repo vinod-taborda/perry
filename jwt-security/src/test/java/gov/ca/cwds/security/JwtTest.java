@@ -2,6 +2,7 @@ package gov.ca.cwds.security;
 
 import com.nimbusds.jose.JOSEException;
 import gov.ca.cwds.security.jwt.JwtConfiguration;
+import gov.ca.cwds.security.jwt.JwtException;
 import gov.ca.cwds.security.jwt.JwtService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class JwtTest {
   }
 
 
-  @Test(expected = GeneralSecurityException.class)
+  @Test(expected = JwtException.class)
   public void testExpired() throws Exception {
     configuration.setTimeout(-1);
     JwtService jwtService = new JwtService(configuration);
@@ -53,7 +54,7 @@ public class JwtTest {
     jwtService.validate(token);
   }
 
-  @Test(expected = GeneralSecurityException.class)
+  @Test(expected = JwtException.class)
   public void testIssuerValidation() throws Exception {
     JwtService jwtService = new JwtService(configuration);
     String token = jwtService.generate("id", "subject", "identity");
@@ -61,7 +62,7 @@ public class JwtTest {
     jwtService.validate(token);
   }
 
-  @Test(expected = JOSEException.class)
+  @Test(expected = JwtException.class)
   public void testEncryption() throws Exception {
     JwtService jwtService = new JwtService(configuration);
     String token = jwtService.generate("id", "subject", "identity");
@@ -79,7 +80,7 @@ public class JwtTest {
     Assert.assertEquals("identity", identity);
   }
 
-  @Test(expected = Exception.class)
+  @Test(expected = JwtException.class)
   public void testSignatureValidation() throws Exception {
     configuration.setEncryptionEnabled(false);
     JwtService jwtService = new JwtService(configuration);

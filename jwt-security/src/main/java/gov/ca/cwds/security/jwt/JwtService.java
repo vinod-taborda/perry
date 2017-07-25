@@ -26,30 +26,38 @@ public class JwtService {
     this.keyProvider = new JCEKSKeyProvider(configuration);
   }
 
-  public String generate(String id, String subject, String identity) throws Exception {
-    JWTClaimsSet claimsSet = prepareClaims(id, subject, identity);
-    SignedJWT signedJWT = sign(claimsSet);
-    String token;
-    if (configuration.isEncryptionEnabled()) {
-      JWEObject jweObject = encrypt(signedJWT);
-      token = jweObject.serialize();
-    } else {
-      token = signedJWT.serialize();
+  public String generate(String id, String subject, String identity) throws JwtException {
+    try {
+      JWTClaimsSet claimsSet = prepareClaims(id, subject, identity);
+      SignedJWT signedJWT = sign(claimsSet);
+      String token;
+      if (configuration.isEncryptionEnabled()) {
+        JWEObject jweObject = encrypt(signedJWT);
+        token = jweObject.serialize();
+      } else {
+        token = signedJWT.serialize();
+      }
+      return removeHeader(token);
+    } catch (Exception e) {
+      throw new JwtException(e);
     }
-    return removeHeader(token);
   }
 
-  public String validate(String token) throws Exception {
-    String tokenWithHeader = addHeader(token);
-    SignedJWT signedJWT;
-    if (configuration.isEncryptionEnabled()) {
-      signedJWT = decrypt(tokenWithHeader);
-    } else {
-      signedJWT = SignedJWT.parse(tokenWithHeader);
+  public String validate(String token) throws JwtException {
+    try {
+      String tokenWithHeader = addHeader(token);
+      SignedJWT signedJWT;
+      if (configuration.isEncryptionEnabled()) {
+        signedJWT = decrypt(tokenWithHeader);
+      } else {
+        signedJWT = SignedJWT.parse(tokenWithHeader);
+      }
+      validateSignature(signedJWT);
+      validateClaims(signedJWT.getJWTClaimsSet());
+      return signedJWT.getJWTClaimsSet().getStringClaim(IDENTITY_CLAIM);
+    } catch (Exception e) {
+      throw new JwtException(e);
     }
-    validateSignature(signedJWT);
-    validateClaims(signedJWT.getJWTClaimsSet());
-    return signedJWT.getJWTClaimsSet().getStringClaim(IDENTITY_CLAIM);
   }
 
   private JWEObject encrypt(SignedJWT signedJWT) throws Exception {
@@ -67,11 +75,15 @@ public class JwtService {
             .build();
   }
 
-  private SignedJWT sign(JWTClaimsSet claimsSet) throws Exception {
-    JWSSigner signer = new RSASSASigner(keyProvider.getSigningKey());
-    SignedJWT signedJWT = new SignedJWT(jwsHeader(), claimsSet);
-    signedJWT.sign(signer);
-    return signedJWT;
+  private SignedJWT sign(JWTClaimsSet claimsSet) throws JwtException {
+    try {
+      JWSSigner signer = new RSASSASigner(keyProvider.getSigningKey());
+      SignedJWT signedJWT = new SignedJWT(jwsHeader(), claimsSet);
+      signedJWT.sign(signer);
+      return signedJWT;
+    } catch (Exception e) {
+      throw new JwtException(e);
+    }
   }
 
   private JWSHeader jwsHeader() {
@@ -95,12 +107,16 @@ public class JwtService {
     }
   }
 
-  private SignedJWT decrypt(String token) throws Exception {
-    SignedJWT signedJWT;
-    JWEObject jweObject = JWEObject.parse(token);
-    jweObject.decrypt(new DirectDecrypter(keyProvider.getEncryptingKey().getEncoded()));
-    signedJWT = jweObject.getPayload().toSignedJWT();
-    return signedJWT;
+  private SignedJWT decrypt(String token) throws JwtException {
+    try {
+      SignedJWT signedJWT;
+      JWEObject jweObject = JWEObject.parse(token);
+      jweObject.decrypt(new DirectDecrypter(keyProvider.getEncryptingKey().getEncoded()));
+      signedJWT = jweObject.getPayload().toSignedJWT();
+      return signedJWT;
+    } catch (Exception e) {
+      throw new JwtException(e);
+    }
   }
 
   private void validateClaims(JWTClaimsSet claims) throws GeneralSecurityException {
@@ -112,14 +128,14 @@ public class JwtService {
   }
 
   private String removeHeader(String token) {
-    if(configuration.isHeadless()) {
+    if (configuration.isHeadless()) {
       return token.substring(token.indexOf("."));
     }
     return token;
   }
 
   private String addHeader(String token) {
-    if(configuration.isHeadless()) {
+    if (configuration.isHeadless()) {
       Header header = configuration.isEncryptionEnabled() ? jweHeader() : jwsHeader();
       return header.toBase64URL().toString() + token;
     }
