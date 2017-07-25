@@ -60,13 +60,17 @@ public class JwtService {
     }
   }
 
-  private JWEObject encrypt(SignedJWT signedJWT) throws Exception {
-    JWEObject jweObject = new JWEObject(
-            jweHeader(),
-            new Payload(signedJWT));
+  private JWEObject encrypt(SignedJWT signedJWT) throws JwtException {
+    try {
+      JWEObject jweObject = new JWEObject(
+              jweHeader(),
+              new Payload(signedJWT));
 
-    jweObject.encrypt(new DirectEncrypter(keyProvider.getEncryptingKey().getEncoded()));
-    return jweObject;
+      jweObject.encrypt(new DirectEncrypter(keyProvider.getEncryptingKey().getEncoded()));
+      return jweObject;
+    } catch (Exception e) {
+      throw new JwtException(e);
+    }
   }
 
   private JWEHeader jweHeader() {
@@ -101,8 +105,14 @@ public class JwtService {
             .claim(IDENTITY_CLAIM, identity).build();
   }
 
-  private void validateSignature(SignedJWT signedJWT) throws Exception {
-    if (!signedJWT.verify(new RSASSAVerifier((RSAPublicKey) keyProvider.getValidatingKey()))) {
+  private void validateSignature(SignedJWT signedJWT) throws JwtException {
+    boolean verified = false;
+    try {
+      verified = signedJWT.verify(new RSASSAVerifier((RSAPublicKey) keyProvider.getValidatingKey()));
+    } catch (Exception e) {
+      throw new JwtException(e);
+    }
+    if (!verified) {
       fail();
     }
   }
@@ -142,7 +152,7 @@ public class JwtService {
     return token;
   }
 
-  private void fail() throws GeneralSecurityException {
-    throw new GeneralSecurityException("Token validation failed");
+  private void fail() throws JwtException {
+    throw new JwtException("Token validation failed");
   }
 }

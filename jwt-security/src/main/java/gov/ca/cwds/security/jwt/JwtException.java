@@ -11,4 +11,8 @@ public class JwtException extends RuntimeException {
   public JwtException(Throwable cause) {
     super(cause);
   }
+
+  public JwtException(String message) {
+    super(message);
+  }
 }
