@@ -28,6 +28,7 @@ dependencies {
     testCompile('org.apache.shiro:shiro-web:' + shiroVersion)
     testCompile('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
     testCompile('javax.servlet:javax.servlet-api:3.1.0')
+    testCompile "org.mockito:mockito-core:1.+"
 }
 
 publish.dependsOn ':jwt-security:publish'

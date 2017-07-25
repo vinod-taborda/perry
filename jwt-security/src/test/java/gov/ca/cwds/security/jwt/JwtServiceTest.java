@@ -1,4 +1,4 @@
-package gov.ca.cwds.security;
+package gov.ca.cwds.security.jwt;
 
 import com.nimbusds.jose.JOSEException;
 import gov.ca.cwds.security.jwt.JwtConfiguration;
@@ -13,7 +13,7 @@ import java.security.GeneralSecurityException;
 /**
  * Created by dmitry.rudenko on 6/30/2017.
  */
-public class JwtTest {
+public class JwtServiceTest {
   private JwtConfiguration configuration;
 
   @Before
