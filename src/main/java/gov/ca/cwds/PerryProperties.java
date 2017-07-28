@@ -2,6 +2,7 @@ package gov.ca.cwds;
 
 import gov.ca.cwds.security.jwt.JwtConfiguration;
 import gov.ca.cwds.service.scripts.IdentityMappingScript;
+import gov.ca.cwds.service.scripts.IdpMappingScript;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -17,8 +18,22 @@ public class PerryProperties {
     @NestedConfigurationProperty
     private JwtConfiguration jwt;
 
+    @NestedConfigurationProperty
+    private IdentityProviderConfiguration identityProvider;
+
     private Map<String, ServiceProviderConfiguration> serviceProviders = new HashMap<>();
 
+    public static class IdentityProviderConfiguration {
+        private IdpMappingScript idpMapping;
+
+        public IdpMappingScript getIdpMapping() {
+            return idpMapping;
+        }
+
+        public void setIdpMapping(String idpMapping) throws IOException {
+            this.idpMapping = new IdpMappingScript(idpMapping);
+        }
+    }
 
     public static class ServiceProviderConfiguration {
         private String id;
@@ -55,5 +70,13 @@ public class PerryProperties {
 
     public void setServiceProviders(Map<String, ServiceProviderConfiguration> serviceProviders) {
         this.serviceProviders = serviceProviders;
+    }
+
+    public IdentityProviderConfiguration getIdentityProvider() {
+        return identityProvider;
+    }
+
+    public void setIdentityProvider(IdentityProviderConfiguration identityProvider) {
+        this.identityProvider = identityProvider;
     }
 }

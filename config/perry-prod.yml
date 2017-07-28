@@ -8,9 +8,9 @@ security:
      tokenName: oauth_token
      authenticationScheme: query
      clientAuthenticationScheme: form
-     scope: ${SAF_SCOPE:basic_profile}
+     scope: ${SAF_SCOPE:basicprofile,racfid}
    resource:
-      userInfoUri: ${SAF_VALIDATE_TOKEN_PATH:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/validatetoken}
+      userInfoUri: ${SAF_VALIDATE_TOKEN_PATH:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/userinfo?scopes=basicprofile.racfid}
 spring:
       datasource:
           driver-class-name: com.ibm.db2.jcc.DB2Driver
@@ -27,6 +27,8 @@ spring:
               hibernate.ddl-auto: none
               hibernate.default_schema: ${DB_CMS_SCHEMA:CWSINT}
 perry:
+    identityProvider:
+      idpMapping: 'config/idp.groovy'
     jwt:
       timeout: ${TOKEN_TIMEOUT:30} #minutes
       issuer: ${TOKEN_ISSUER:perry}
@@ -41,10 +43,6 @@ perry:
         encAlias:  ${KEYSTORE_ENC_ALIAS:enc}
         encKeyPassword: ${KEYSTORE_ENC_KEY_PASSWORD:test}
     serviceProviders:
-      dora:
-        identityMapping: 'config/dora.groovy'
-      demo:
-        identityMapping: 'config/demo.groovy'
       default:
         identityMapping: 'config/default.groovy'
 

@@ -1,0 +1,1 @@
+universalUserToken.userId = idpToken["safid.racfid"]

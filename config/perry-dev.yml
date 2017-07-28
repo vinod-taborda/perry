@@ -28,10 +28,6 @@ perry:
         encAlias:  ${KEYSTORE_ENC_ALIAS:enc128}
         encKeyPassword: ${KEYSTORE_ENC_KEY_PASSWORD:test}
     serviceProviders:
-      dora:
-        identityMapping: 'config/dora.groovy'
-      demo:
-        identityMapping: 'config/demo.groovy'
       default:
         identityMapping: 'config/default.groovy'
 
