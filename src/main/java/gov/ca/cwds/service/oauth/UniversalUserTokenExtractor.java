@@ -1,6 +1,7 @@
 package gov.ca.cwds.service.oauth;
 
 import gov.ca.cwds.PerryProperties;
+import gov.ca.cwds.UniversalUserToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Profile;
@@ -14,12 +15,12 @@ import java.util.Map;
  */
 @Service
 @Profile("prod")
-public class PerryPrincipalExtractor implements PrincipalExtractor {
+public class UniversalUserTokenExtractor implements PrincipalExtractor {
   @Autowired
   private PerryProperties configuration;
 
   @Override
-  public Object extractPrincipal(Map<String, Object> map) {
+  public UniversalUserToken extractPrincipal(Map<String, Object> map) {
     try {
       return configuration.getIdentityProvider().getIdpMapping().map(map);
     } catch (ScriptException e) {
