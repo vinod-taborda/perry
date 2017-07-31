@@ -1,6 +1,7 @@
 package gov.ca.cwds.service;
 
 import gov.ca.cwds.PerryProperties;
+import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
 import gov.ca.cwds.service.scripts.IdentityMappingScript;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,10 @@ public class IdentityMappingService {
     @Autowired
     private PerryProperties configuration;
 
-    public String map(String subject, String providerId) {
+    public String map(UniversalUserToken subject, String providerId) {
         IdentityMappingScript mappingScript = loadMappingScriptForServiceProvider(providerId);
         if (mappingScript != null) {
-            UserAuthorization authorization = userAuthorizationService.find(subject);
+            UserAuthorization authorization = userAuthorizationService.find(subject.getUserId());
             if(authorization != null) {
                 try {
                     return mappingScript.map(authorization);
@@ -37,7 +38,7 @@ public class IdentityMappingService {
                 }
             }
         }
-        return subject;
+        return subject.getUserId();
     }
 
 

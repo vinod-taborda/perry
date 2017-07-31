@@ -1,6 +1,8 @@
 package gov.ca.cwds.service.oauth;
 
 import gov.ca.cwds.service.SAFService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +19,8 @@ import java.util.Map;
 public class SafUserInfoTokenService extends UserInfoTokenServices {
     private SAFService safService;
     private String clientId;
+    @Autowired
+    private PrincipalExtractor principalExtractor;
 
     public SafUserInfoTokenService(SAFService safService, String userInfoEndpointUrl, String clientId) {
         super(userInfoEndpointUrl, clientId);
@@ -25,13 +29,14 @@ public class SafUserInfoTokenService extends UserInfoTokenServices {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public OAuth2Authentication loadAuthentication(String accessToken) {
         Map userInfo = safService.getUserInfo(accessToken);
-        String userName = (String) userInfo.get("username");
+        Object principal = principalExtractor.extractPrincipal(userInfo);
         OAuth2Request request = new OAuth2Request(null, this.clientId, null, true, null,
                 null, null, null, null);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                userName, "N/A", extractAuthorities(userInfo));
+                principal, "N/A", extractAuthorities(userInfo));
         token.setDetails(userInfo);
         return new OAuth2Authentication(request, token);
     }

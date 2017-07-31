@@ -1,5 +1,6 @@
 package gov.ca.cwds.service;
 
+import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -24,10 +25,10 @@ public class OauthLoginService implements LoginService {
     OAuth2ClientContext oauth2ClientContext;
 
     public String login(String providerId) throws Exception {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        UniversalUserToken userToken = (UniversalUserToken) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String accessToken = oauth2ClientContext.getAccessToken().getValue();
-        String jwtIdentity = identityMappingService.map(userName, providerId);
-        return jwtService.generate(userName, accessToken, jwtIdentity);
+        String jwtIdentity = identityMappingService.map(userToken, providerId);
+        return jwtService.generate(accessToken, userToken.getUserId(), jwtIdentity);
     }
 
     public String validate(String token) throws Exception {
