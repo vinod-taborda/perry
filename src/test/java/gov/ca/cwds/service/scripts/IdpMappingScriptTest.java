@@ -12,13 +12,12 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by dmitry.rudenko on 7/28/2017.
  */
-@SuppressWarnings("unchecked")
 public class IdpMappingScriptTest {
   @Test
   public void testGroovyMapping() throws Exception {
     String path = Paths.get(getClass().getResource("/idp.groovy").toURI()).toString();
     IdpMappingScript idpMappingScript = new IdpMappingScript(path);
-    Map userInfo = new HashMap();
+    Map<String, Object> userInfo = new HashMap<>();
     userInfo.put("safid.racfid", "racfid");
     userInfo.put("ok", "true");
     UniversalUserToken userToken = idpMappingScript.map(userInfo);

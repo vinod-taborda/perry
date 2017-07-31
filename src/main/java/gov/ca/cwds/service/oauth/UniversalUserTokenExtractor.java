@@ -16,7 +16,6 @@ import java.util.Map;
 @Service
 @Profile("prod")
 public class UniversalUserTokenExtractor implements PrincipalExtractor {
-  @Autowired
   private PerryProperties configuration;
 
   @Override
@@ -26,5 +25,10 @@ public class UniversalUserTokenExtractor implements PrincipalExtractor {
     } catch (ScriptException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Autowired
+  public void setConfiguration(PerryProperties perryProperties) {
+    this.configuration = perryProperties;
   }
 }
