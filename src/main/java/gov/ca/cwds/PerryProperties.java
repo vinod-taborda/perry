@@ -21,6 +21,8 @@ public class PerryProperties {
     @NestedConfigurationProperty
     private IdentityProviderConfiguration identityProvider;
 
+    private Map<String, String> users;
+
     private Map<String, ServiceProviderConfiguration> serviceProviders = new HashMap<>();
 
     public static class IdentityProviderConfiguration {
@@ -78,5 +80,13 @@ public class PerryProperties {
 
     public void setIdentityProvider(IdentityProviderConfiguration identityProvider) {
         this.identityProvider = identityProvider;
+    }
+
+    public Map<String, String> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Map<String, String> users) {
+        this.users = users;
     }
 }

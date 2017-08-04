@@ -30,6 +30,8 @@ perry:
     serviceProviders:
       default:
         identityMapping: 'config/default.groovy'
+    #users:
+    #  userid: password
 
 server:
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
