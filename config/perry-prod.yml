@@ -47,6 +47,7 @@ perry:
         identityMapping: 'config/default.groovy'
 
 server:
+  context-path: ${CONTEXT_PATH:/}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
   port: ${HTTPS_PORT:8090}
   ssl:
