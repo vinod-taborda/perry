@@ -32,7 +32,7 @@ project.ext {
     configPath = "$rootProject.projectDir/config/"
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
     projectMajorVersion = '3.6'
-    projectVersion = majorVersion  + ((System.properties.getProperty('build') != null && System.properties.getProperty('Release') == true ) ? '.' + System.properties.getProperty('build') : '') + '-SNAPSHOT'
+    projectVersion = projectMajorVersion  + ((System.properties.getProperty('build') != null && System.properties.getProperty('Release') == true ) ? '.' + System.properties.getProperty('build') : '') + '-SNAPSHOT'
     mainclass = 'gov.ca.cwds.PerryApplication'
     buildEnv = System.env.BUILD_ENV ?: 'JENKINS'
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
