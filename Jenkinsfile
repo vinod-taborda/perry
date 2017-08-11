@@ -39,8 +39,8 @@ node ('dora-slave'){
        }
 	}
 	stage('Clean Workspace') {
-		//archiveArtifacts artifacts: '**/geo-services-api-*.jar,readme.txt', fingerprint: true
-		//cleanWs()
+		archiveArtifacts artifacts: '**/perry*.jar,readme.txt', fingerprint: true
+		cleanWs()
 	}
 	stage('Deploy Application'){
 	   //checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '433ac100-b3c2-4519-b4d6-207c029a103b', url: 'git@github.com:ca-cwds/de-ansible.git']]]
@@ -51,7 +51,7 @@ node ('dora-slave'){
        emailext attachLog: true, body: "Failed: ${e}", recipientProviders: [[$class: 'DevelopersRecipientProvider']],
        subject: "Perry CI pipeline failed", to: "Leonid.Marushevskiy@osi.ca.gov, Alex.Kuznetsov@osi.ca.gov"
  }finally {
-	   publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'jwt-security/build/reports/tests/', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+	   publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '**/build/reports/tests/', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
 	   junit '**/reports/tests/*.xml'
        cleanWs()
  }
