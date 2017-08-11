@@ -31,7 +31,8 @@ targetCompatibility = 1.8
 project.ext {
     configPath = "$rootProject.projectDir/config/"
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
-    projectVersion = '0.25'  + ((System.properties.getProperty('build') != null ) ? '.' + System.properties.getProperty('build') : '')
+    projectMajorVersion = '3.6'
+    projectVersion = majorVersion  + ((System.properties.getProperty('build') != null && System.properties.getProperty('Release') == true ) ? '.' + System.properties.getProperty('build') : '') + '-SNAPSHOT'
     mainclass = 'gov.ca.cwds.PerryApplication'
     buildEnv = System.env.BUILD_ENV ?: 'JENKINS'
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
