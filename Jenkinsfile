@@ -18,9 +18,7 @@ node ('tpt2-slave'){
 		def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar'
    }
    stage('Unit Tests') {
-       buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport', switches: '--stacktrace'
-	   publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnitReports', reportTitles: 'JUnit tests summary'])
-
+       buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport', switches: '--info'
    }
    stage('SonarQube analysis'){
 		withSonarQubeEnv('Core-SonarQube') {
@@ -46,16 +44,15 @@ node ('tpt2-slave'){
 	stage('Deploy Application'){
 	   checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '433ac100-b3c2-4519-b4d6-207c029a103b', url: 'git@github.com:ca-cwds/de-ansible.git']]]
 	   //sh 'ansible-playbook -e GEO_API_VERSION=$APP_VERSION -i $inventory deploy-geo-services-api.yml --vault-password-file ~/.ssh/vault.txt -vv'
-	   cleanWs()
-	   sleep (20)
   }
 
- } catch (e)   {
+ } catch (Exception e)   {
        emailext attachLog: true, body: "Failed: ${e}", recipientProviders: [[$class: 'DevelopersRecipientProvider']],
        subject: "Perry CI pipeline failed", to: "Leonid.Marushevskiy@osi.ca.gov, Alex.Kuznetsov@osi.ca.gov"
-	   publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/integrationTest', reportFiles: 'index.html', reportName: 'Integration Tests Reports', reportTitles: 'Integration tests summary'])
-	   publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: 'JUnitReports', reportTitles: 'JUnit tests summary'])
+ }finally {
+	   publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'jwt-security/build/reports/tests/', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+	   junit '**/reports/tests/*.xml'
        cleanWs()
-	   }
+ }
 }
 
