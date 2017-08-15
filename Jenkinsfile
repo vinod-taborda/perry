@@ -4,7 +4,7 @@ node ('dora-slave'){
    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), disableConcurrentBuilds(), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
    parameters([
       string(defaultValue: 'latest', description: '', name: 'APP_VERSION'),
-      string(defaultValue: 'development', description: '', name: 'branch'),
+      string(defaultValue: 'master', description: '', name: 'branch'),
       booleanParam(defaultValue: false, description: '', name: 'Release'),
       string(defaultValue: 'inventories/tpt2dev/hosts.yml', description: '', name: 'inventory')
       ]), pipelineTriggers([pollSCM('H/5 * * * *')])])
