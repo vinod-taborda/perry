@@ -9,21 +9,10 @@ import java.nio.file.Paths;
 /**
  * Created by dmitry.rudenko on 7/25/2017.
  */
-public class IdentityMappingScriptTest {
+public class IdentityMappingScriptTest extends BaseScriptTest {
   @Test
   public void testGroovyMapping() throws Exception {
-    String path =  Paths.get(getClass().getResource("/test.groovy").toURI()).toString();
-    IdentityMappingScript identityMappingScript = new IdentityMappingScript(path);
-    UserAuthorization userAuthorization = new UserAuthorization("userId",
-            "staffId",
-            null,
-            null,
-            null,
-            null,
-            null,
-            null);
-    String json = identityMappingScript.map(userAuthorization);
-    assertEquals("{\"user\":\"userId\",\"roles\":[\"none\"],\"staffId\":\"staffId\"}", json);
 
+    test("/scripts/basic/test.groovy", "/scripts/basic/test.json", "scripts/basic/authz.json");
   }
 }
