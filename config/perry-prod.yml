@@ -46,7 +46,7 @@ perry:
       default:
         identityMapping: 'config/default.groovy'
       intake:
-         identityMapping: 'config/intake.groovy'
+        identityMapping: 'config/intake.groovy'
 server:
   context-path: ${CONTEXT_PATH:/}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
