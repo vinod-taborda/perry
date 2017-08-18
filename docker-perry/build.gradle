@@ -7,6 +7,12 @@ def releaseDocker = System.properties.getProperty("Release")
 def buildNumber = System.properties.getProperty("build")
 def dockerTag = (releaseDocker == 'true' && buildNumber != null  ? projectMajorVersion + '_' + buildNumber + '-RC' : projectVersion )
 
+println "ReleaseDocker: " + releaseDocker
+println "Build: " + buildNumber
+println "Docker Tag: " + dockerTag
+println "Project Version: " + projectVersion
+println "Project Major Version: " + projectMajorVersion
+
 def perryDistFileName = "perry-${projectVersion}.jar"
 def dockerContextDir = "$project.parent.buildDir/docker-perry"
 
