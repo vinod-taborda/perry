@@ -36,7 +36,7 @@ node ('dora-slave'){
 	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker'
+           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=$Release -DBuildNumber=$BUILD_NUMBER'
        }
 	}
 	stage('Clean Workspace') {

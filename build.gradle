@@ -36,15 +36,13 @@ project.ext {
     buildEnv = System.env.BUILD_ENV ?: 'JENKINS'
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
     devDockerPort = 2376
-    releaseDocker = System.getProperty("Release")
+    releaseDocker = System.getProperty("ReleaseDocker")
     buildNumber = System.getProperty("BuildNumber")
     projectVersion = projectMajorVersion + '-SNAPSHOT'
-    dockerTag = (releaseDocker == true && buildNumber != null  ? projectMajorVersion + '_' + buildNumber + '-RC' : projectVersion )
 }
 
 println "ReleaseDocker: " + releaseDocker
 println "Build: " + buildNumber
-println "Docker Tag: " + dockerTag
 println "Project Version: " + projectVersion
 println "Project Major Version: " + projectMajorVersion
 

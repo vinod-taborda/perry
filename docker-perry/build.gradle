@@ -3,15 +3,10 @@ import org.apache.tools.ant.filters.FixCrLfFilter;
 def targetDockerHubRepository = rootProject.name
 
 def dockerImageName = targetDockerHubOrganization + '/' + targetDockerHubRepository
-def releaseDocker = System.getProperty("Release")
-def buildNumber = System.getProperty("BuildNumber")
 def dockerTag = (releaseDocker == 'true' && buildNumber != null  ? projectMajorVersion + '_' + buildNumber + '-RC' : projectVersion )
 
 println "ReleaseDocker: " + releaseDocker
-println "Build: " + buildNumber
 println "Docker Tag: " + dockerTag
-println "Project Version: " + projectVersion
-println "Project Major Version: " + projectMajorVersion
 
 def perryDistFileName = "perry-${projectVersion}.jar"
 def dockerContextDir = "$project.parent.buildDir/docker-perry"
