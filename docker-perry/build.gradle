@@ -3,8 +3,8 @@ import org.apache.tools.ant.filters.FixCrLfFilter;
 def targetDockerHubRepository = rootProject.name
 
 def dockerImageName = targetDockerHubOrganization + '/' + targetDockerHubRepository
-def releaseDocker = System.properties.getProperty("Release")
-def buildNumber = System.properties.getProperty("build")
+def releaseDocker = System.getProperty("Release")
+def buildNumber = System.getProperty("BuildNumber")
 def dockerTag = (releaseDocker == 'true' && buildNumber != null  ? projectMajorVersion + '_' + buildNumber + '-RC' : projectVersion )
 
 println "ReleaseDocker: " + releaseDocker
