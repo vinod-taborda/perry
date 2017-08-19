@@ -5,7 +5,7 @@ node ('dora-slave'){
    parameters([
       string(defaultValue: 'latest', description: '', name: 'APP_VERSION'),
       string(defaultValue: 'master', description: '', name: 'branch'),
-      booleanParam(defaultValue: false, description: '', name: 'Release'),
+      booleanParam(defaultValue: false, description: '', name: 'release'),
       string(defaultValue: 'inventories/tpt2dev/hosts.yml', description: '', name: 'inventory')
       ]), pipelineTriggers([pollSCM('H/5 * * * *')])])
   try {
@@ -36,7 +36,7 @@ node ('dora-slave'){
 	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=$Release -DBuildNumber=$BUILD_NUMBER'
+           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=$release -DBuildNumber=$BUILD_NUMBER'
        }
 	}
 	stage('Clean Workspace') {
