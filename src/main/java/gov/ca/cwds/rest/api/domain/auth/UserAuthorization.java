@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.api.domain.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import gov.ca.cwds.data.persistence.auth.StaffPerson;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.Response;
 import gov.ca.cwds.rest.api.domain.DomainObject;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 /**
  * {@link DomainObject} representing a request for User Authorization.
- * 
+ *
  * @author CWDS API Team
  */
 @ApiModel
@@ -56,6 +57,14 @@ public final class UserAuthorization extends DomainObject implements Request, Re
   @JsonProperty("cws_office")
   private Set<CwsOffice> cwsOffice;
 
+  @ApiModelProperty
+  @JsonProperty("staff_person")
+  private StaffPerson staffPerson;
+
+  @ApiModelProperty
+  @JsonProperty("county")
+  private String county;
+
   /**
    * Default, no-param, no-op constructor Required by frameworks.
    */
@@ -65,24 +74,25 @@ public final class UserAuthorization extends DomainObject implements Request, Re
 
   /**
    * JSON Constructor
-   * 
-   * @param userId the user id
-   * @param staffPersonId the staff person id
-   * @param socialWorker is user a social worker
-   * @param supervisor is user a supervisor
+   *
+   * @param userId            the user id
+   * @param staffPersonId     the staff person id
+   * @param socialWorker      is user a social worker
+   * @param supervisor        is user a supervisor
    * @param overrideAuthority does user have override authority
-   * @param authPrivilege the authorityPrivilege
-   * @param unitAuthority the unitAuthority
-   * @param cwsOffice the cwsOffice
+   * @param authPrivilege     the authorityPrivilege
+   * @param unitAuthority     the unitAuthority
+   * @param cwsOffice         the cwsOffice
    */
   public UserAuthorization(@JsonProperty("user_id") String userId,
-      @JsonProperty("staff_person_id") String staffPersonId,
-      @JsonProperty("social_worker") Boolean socialWorker,
-      @JsonProperty("supervisor") Boolean supervisor,
-      @JsonProperty("override_authority") Boolean overrideAuthority,
-      @JsonProperty("authority_privilege") Set<StaffAuthorityPrivilege> authPrivilege,
-      @JsonProperty("unit_authority") Set<StaffUnitAuthority> unitAuthority,
-      @JsonProperty("cws_office") Set<CwsOffice> cwsOffice) {
+                           @JsonProperty("staff_person_id") String staffPersonId,
+                           @JsonProperty("social_worker") Boolean socialWorker,
+                           @JsonProperty("supervisor") Boolean supervisor,
+                           @JsonProperty("override_authority") Boolean overrideAuthority,
+                           @JsonProperty("authority_privilege") Set<StaffAuthorityPrivilege> authPrivilege,
+                           @JsonProperty("unit_authority") Set<StaffUnitAuthority> unitAuthority,
+                           @JsonProperty("cws_office") Set<CwsOffice> cwsOffice,
+                           @JsonProperty("staff_person") StaffPerson staffPerson) {
     super();
     this.userId = userId;
     this.staffPersonId = staffPersonId;
@@ -92,6 +102,8 @@ public final class UserAuthorization extends DomainObject implements Request, Re
     this.authorityPrivilege = authPrivilege;
     this.unitAuthority = unitAuthority;
     this.cwsOffice = cwsOffice;
+    this.staffPerson = staffPerson;
+    this.county = GovernmentEntityType.findByCountyCd(staffPerson.getCountyCode()).getDescription();
   }
 
   /**
@@ -150,11 +162,17 @@ public final class UserAuthorization extends DomainObject implements Request, Re
     return cwsOffice;
   }
 
+  public StaffPerson getStaffPerson() {
+    return staffPerson;
+  }
+
+
+
   /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#hashCode()
-   */
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#hashCode()
+     */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -167,6 +185,8 @@ public final class UserAuthorization extends DomainObject implements Request, Re
     result = prime * result + ((supervisor == null) ? 0 : supervisor.hashCode());
     result = prime * result + ((unitAuthority == null) ? 0 : unitAuthority.hashCode());
     result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+    result = prime * result + ((staffPerson == null) ? 0 : staffPerson.hashCode());
+    result = prime * result + ((county == null) ? 0 : county.hashCode());
     return result;
   }
 
@@ -241,6 +261,20 @@ public final class UserAuthorization extends DomainObject implements Request, Re
         return false;
       }
     } else if (!userId.equals(other.userId)) {
+      return false;
+    }
+    if (staffPerson == null) {
+      if (other.staffPerson != null) {
+        return false;
+      }
+    } else if (!staffPerson.equals(other.staffPerson)) {
+      return false;
+    }
+    if (county == null) {
+      if (other.county != null) {
+        return false;
+      }
+    } else if (!county.equals(other.county)) {
       return false;
     }
     return true;
