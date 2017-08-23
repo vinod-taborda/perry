@@ -42,7 +42,7 @@ public class LoginResource {
 
     //back-end only!
     @GET
-    @RequestMapping("/authn/validate")
+    @RequestMapping(value = "/authn/validate", produces = "application/json")
     @ApiOperation(value = "Validate an authentication token", code = 200)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "authorized"),
             @ApiResponse(code = 401, message = "Unauthorized")})
