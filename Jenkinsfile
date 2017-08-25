@@ -48,7 +48,7 @@ node ('dora-slave'){
 	   sh 'ansible-playbook -e VERSION_NUMBER=$APP_VERSION -i $inventory deploy-perry.yml --vault-password-file ~/.ssh/vault.txt -vv'
   }
   stage('Smoke Tests') {
-      git branch: 'development', url: 'https://github.com/ca-cwds/perry.git'
+      git branch: 'master', url: 'https://github.com/ca-cwds/perry.git'
       buildInfo = rtGradle.run buildFile: './build.gradle', tasks: 'smokeTest --stacktrace'
       publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/smokeTest', reportFiles: 'index.html', reportName: 'Smoke Tests Report', reportTitles: 'Smoke tests summary'])
     }
