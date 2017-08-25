@@ -49,7 +49,7 @@ perry:
         identityMapping: 'config/intake.groovy'
 management:
   context-path: /manage
-  port: 9082
+  port: ${ADMIN_PORT:9082}
   security:
     enabled: false
   ssl:

@@ -33,7 +33,7 @@ perry:
     users: ${USERS:}
 management:
   context-path: /manage
-  port: 9082
+  port: ${ADMIN_PORT:9082}
   security:
     enabled: false
   ssl:
