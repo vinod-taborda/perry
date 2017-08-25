@@ -31,14 +31,14 @@ targetCompatibility = 1.8
 project.ext {
     configPath = "$rootProject.projectDir/config/"
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
-    projectMajorVersion = '3.6'
+    projectMajorVersion = '0.3.6'
     mainclass = 'gov.ca.cwds.PerryApplication'
     buildEnv = System.env.BUILD_ENV ?: 'JENKINS'
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
     devDockerPort = 2376
     releaseDocker = System.getProperty("ReleaseDocker")
     buildNumber = System.getProperty("BuildNumber")
-    projectVersion = projectMajorVersion + '-SNAPSHOT'
+    projectVersion = projectMajorVersion
 }
 
 println "ReleaseDocker: " + releaseDocker
