@@ -1,6 +1,7 @@
 package gov.ca.cwds.service;
 
 import gov.ca.cwds.data.auth.*;
+import gov.ca.cwds.data.persistence.auth.StaffPerson;
 import gov.ca.cwds.data.persistence.auth.UserId;
 import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.domain.DomainChef;
@@ -44,6 +45,8 @@ public class UserAuthorizationService {
   private CwsOfficeDao cwsOfficeDao;
   @Autowired
   private AssignmentUnitDao assignmentUnitDao;
+  @Autowired
+  private StaffPersonDao staffPersonDao;
 
 
   /**
@@ -71,8 +74,10 @@ public class UserAuthorizationService {
 
       Set<CwsOffice> setCwsOffices = getCwsOffices(staffPersonIdentifier);
 
+      StaffPerson staffPerson = getStaffPerson(staffPersonIdentifier);
+
       return new UserAuthorization(user.getLogonId(), user.getStaffPersonId(),
-              socialWorker, false, true, userAuthPrivs, setStaffUnitAuths, setCwsOffices);
+              socialWorker, false, true, userAuthPrivs, setStaffUnitAuths, setCwsOffices, staffPerson);
     } else {
       LOGGER.warn("No user id found for " + primaryKey);
     }
@@ -93,6 +98,10 @@ public class UserAuthorizationService {
               new CwsOffice(cwsOffice.getOfficeId(),
                       cwsOffice.getGovernmentEntityType().toString(),
                       cwsOffice.getCountySpecificCode())).collect(Collectors.toSet());
+  }
+
+  private StaffPerson getStaffPerson(String staffPersonId) {
+    return staffPersonDao.findOne(staffPersonId);
   }
 
   /**

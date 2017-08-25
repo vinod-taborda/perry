@@ -1,1 +1,1 @@
-{"user":"userabc","roles":["Supervisor"],"staffId":"q1p","counites":[{"code":"21","privileges":["Countywide Read"],"units":[{"id":"ABC123","authorities":["Supervisor"]}]}]}
+{"user":"userabc","roles":["Supervisor"],"staffId":"q1p","county_name":"Marin","county_code":"21","privileges":["Countywide Read"]}
