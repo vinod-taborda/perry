@@ -32,14 +32,14 @@ project.ext {
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
-    projectMajorVersion = '0.3.6'
+    projectMajorVersion = '0.4.1'
     mainclass = 'gov.ca.cwds.PerryApplication'
     buildEnv = System.env.BUILD_ENV ?: 'JENKINS'
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
     devDockerPort = 2376
     releaseDocker = System.getProperty("ReleaseDocker")
     buildNumber = System.getProperty("BuildNumber")
-    projectVersion = projectMajorVersion
+    projectVersion = projectMajorVersion + '-SNAPSHOT'
 }
 
 println "ReleaseDocker: " + releaseDocker
