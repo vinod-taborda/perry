@@ -1,22 +1,33 @@
 package gov.ca.cwds.security.jwt;
 
-import com.nimbusds.jose.*;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.Header;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTClaimsSet.Builder;
 import com.nimbusds.jwt.SignedJWT;
-
 import java.security.GeneralSecurityException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by dmitry.rudenko on 6/30/2017.
  */
 public class JwtService {
-  private static final String IDENTITY_CLAIM = "identity";
+
+  public static final String IDENTITY_CLAIM = "identity";
 
   private KeyProvider keyProvider;
   private JwtConfiguration configuration;
@@ -26,9 +37,10 @@ public class JwtService {
     this.keyProvider = new JCEKSKeyProvider(configuration);
   }
 
-  public String generate(String id, String subject, String identity) throws JwtException {
+
+  public String generate(String id, String subject, Map<String, String> customJwtClaimsMap) {
     try {
-      JWTClaimsSet claimsSet = prepareClaims(id, subject, identity);
+      JWTClaimsSet claimsSet = prepareClaims(id, subject, customJwtClaimsMap);
       SignedJWT signedJWT = sign(claimsSet);
       String token;
       if (configuration.isEncryptionEnabled()) {
@@ -41,6 +53,12 @@ public class JwtService {
     } catch (Exception e) {
       throw new JwtException(e);
     }
+  }
+
+  public String generate(String id, String subject, String identity) throws JwtException {
+    Map<String, String> claimsMap = new HashMap<>();
+    claimsMap.put(IDENTITY_CLAIM, identity);
+    return generate(id, subject, claimsMap);
   }
 
   public String validate(String token) throws JwtException {
@@ -94,15 +112,18 @@ public class JwtService {
     return new JWSHeader(JWSAlgorithm.RS256);
   }
 
-  private JWTClaimsSet prepareClaims(String id, String subject, String identity) {
+  private JWTClaimsSet prepareClaims(String id, String subject, Map<String, String> claimsMap) {
     long nowMillis = new Date().getTime();
-    return new JWTClaimsSet.Builder()
-            .subject(subject)
-            .issueTime(new Date(nowMillis))
-            .issuer(configuration.getIssuer())
-            .expirationTime(new Date(nowMillis + configuration.getTimeout() * 60 * 1000))
-            .jwtID(id)
-            .claim(IDENTITY_CLAIM, identity).build();
+    Builder builder = new Builder()
+        .subject(subject)
+        .issueTime(new Date(nowMillis))
+        .issuer(configuration.getIssuer())
+        .expirationTime(new Date(nowMillis + configuration.getTimeout() * 60 * 1000))
+        .jwtID(id);
+
+    claimsMap.forEach(builder::claim);
+
+    return builder.build();
   }
 
   private void validateSignature(SignedJWT signedJWT) throws JwtException {
@@ -139,7 +160,7 @@ public class JwtService {
 
   private String removeHeader(String token) {
     if (configuration.isHeadless()) {
-      return token.substring(token.indexOf("."));
+      return token.substring(token.indexOf('.'));
     }
     return token;
   }
