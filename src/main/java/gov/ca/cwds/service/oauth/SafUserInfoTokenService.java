@@ -1,6 +1,8 @@
 package gov.ca.cwds.service.oauth;
 
 import gov.ca.cwds.service.SAFService;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -9,9 +11,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by dmitry.rudenko on 5/30/2017.
