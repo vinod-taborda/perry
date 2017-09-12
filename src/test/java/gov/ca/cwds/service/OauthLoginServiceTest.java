@@ -24,6 +24,8 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -31,7 +33,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author CWDS CALS API Team
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext
 @ContextConfiguration(classes = OauthLoginServiceTestConf.class)
+@ActiveProfiles({"UnitTest", "prod"})
 public class OauthLoginServiceTest {
 
   private static final String USER_ID = "userId";

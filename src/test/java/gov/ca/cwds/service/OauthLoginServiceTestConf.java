@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceS
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -27,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @ComponentScan(basePackages = {"gov.ca.cwds.service"})
+@Profile({"UnitTest", "prod"})
 public class OauthLoginServiceTestConf {
 
   public static final String TOKEN = "token";
