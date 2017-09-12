@@ -4,7 +4,7 @@ node ('dora-slave'){
    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), disableConcurrentBuilds(), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
    parameters([
       string(defaultValue: 'latest', description: '', name: 'APP_VERSION'),
-      string(defaultValue: 'master', description: '', name: 'branch'),
+      string(defaultValue: 'development', description: '', name: 'branch'),
       booleanParam(defaultValue: false, description: '', name: 'release'),
       string(defaultValue: 'inventories/tpt2dev/hosts.yml', description: '', name: 'inventory')
       ]), pipelineTriggers([pollSCM('H/5 * * * *')])])
@@ -33,8 +33,8 @@ node ('dora-slave'){
    }
 
 	stage ('Push to artifactory'){
-	    rtGradle.deployer repo:'libs-snapshot', server: serverArti
-	    //rtGradle.deployer repo:'libs-release', server: serverArti
+	    //rtGradle.deployer repo:'libs-snapshot', server: serverArti
+	    rtGradle.deployer repo:'libs-release', server: serverArti
 	    rtGradle.deployer.deployArtifacts = true
 		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
 		rtGradle.deployer.deployArtifacts = false
