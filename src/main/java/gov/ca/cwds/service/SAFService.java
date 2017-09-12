@@ -24,18 +24,18 @@ public class SAFService {
   private ResourceServerProperties sso;
 
   public Map getUserInfo(String accessToken) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    String bearer = BEARER + accessToken;
-    headers.add(HttpHeaders.AUTHORIZATION, bearer);
-    return client.postForObject(sso.getUserInfoUri(), new HttpEntity<>(bearer, headers), Map.class);
+    return callSaf(sso.getUserInfoUri(), accessToken, Map.class);
   }
 
   public String validate(String token) {
+    return callSaf(sso.getTokenInfoUri(), token, String.class);
+  }
+
+  protected <T> T callSaf(String uri, String token, Class<T> returnType) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     String bearer = BEARER + token;
     headers.add(HttpHeaders.AUTHORIZATION, bearer);
-    return client.postForObject(sso.getTokenInfoUri(), new HttpEntity<>(bearer, headers), String.class);
+    return client.postForObject(uri, new HttpEntity<>(bearer, headers), returnType);
   }
 }

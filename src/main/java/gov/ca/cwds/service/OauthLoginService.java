@@ -44,9 +44,13 @@ public class OauthLoginService implements LoginService {
   }
 
   public String validate(String token) throws Exception {
-    safService.validate(token);
     OAuth2AccessToken accessToken = tokenStore.readAccessToken(token);
-    return (String) accessToken.getAdditionalInformation().get(IDENTITY);
+    if (accessToken != null) {
+        safService.validate(token);
+        return (String) accessToken.getAdditionalInformation().get(IDENTITY);
+    } else {
+      throw new IllegalStateException("There is no accessToken in tokenStore for value:" + token);
+    }
   }
 
 }
