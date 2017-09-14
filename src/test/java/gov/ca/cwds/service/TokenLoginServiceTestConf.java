@@ -28,8 +28,8 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @ComponentScan(basePackages = {"gov.ca.cwds.service"})
-@Profile({"UnitTest", "prod"})
-public class OauthLoginServiceTestConf {
+@Profile({"UnitTest"})
+public class TokenLoginServiceTestConf {
 
   public static final String TOKEN = "token";
   public static final String TOKEN_EXPIRED = "token_expired";
@@ -97,9 +97,10 @@ public class OauthLoginServiceTestConf {
   public IdentityMappingService identityMappingService() {
     return new IdentityMappingService();
   }
+  
   @Bean
-  public OauthLoginService loginService() {
-    return new OauthLoginService();
+  public TokenLoginService loginService() {
+    return new TokenLoginService();
   }
 
   @Bean

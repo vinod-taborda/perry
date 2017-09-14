@@ -1,8 +1,8 @@
 package gov.ca.cwds.service;
 
-import static gov.ca.cwds.service.OauthLoginServiceTestConf.TOKEN;
-import static gov.ca.cwds.service.OauthLoginServiceTestConf.TOKEN2;
-import static gov.ca.cwds.service.OauthLoginServiceTestConf.TOKEN_EXPIRED;
+import static gov.ca.cwds.service.TokenLoginServiceTestConf.TOKEN;
+import static gov.ca.cwds.service.TokenLoginServiceTestConf.TOKEN2;
+import static gov.ca.cwds.service.TokenLoginServiceTestConf.TOKEN_EXPIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -34,9 +34,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(classes = OauthLoginServiceTestConf.class)
-@ActiveProfiles({"UnitTest", "prod"})
-public class OauthLoginServiceTest {
+@ContextConfiguration(classes = TokenLoginServiceTestConf.class)
+@ActiveProfiles({"UnitTest"})
+public class TokenLoginServiceTest {
 
   private static final String USER_ID = "userId";
   private static final String USER_ID1 = "userId1";
@@ -55,7 +55,7 @@ public class OauthLoginServiceTest {
   private OAuth2ClientContext clientContext;
 
   @Autowired
-  private OauthLoginService oauthLoginService;
+  private TokenLoginService loginService;
 
   @Autowired
   private TokenStore tokenStore;
@@ -114,7 +114,7 @@ public class OauthLoginServiceTest {
   public void login() throws Exception {
     securityContext.setAuthentication(authentication);
     clientContext.setAccessToken(oAuth2AccessToken);
-    String token = oauthLoginService.login("providerId");
+    String token = loginService.login("providerId");
     assertEquals(TOKEN, token);
   }
 
@@ -123,22 +123,22 @@ public class OauthLoginServiceTest {
     //First Login
     securityContext.setAuthentication(authentication);
     clientContext.setAccessToken(oAuth2AccessToken);
-    String token = oauthLoginService.login("providerId");
+    String token = loginService.login("providerId");
     assertEquals(TOKEN, token);
 
-    String validateRes = oauthLoginService.validate(token);
+    String validateRes = loginService.validate(token);
     assertEquals(USER_ID, validateRes);
     assertEquals(((InMemoryTokenStore)tokenStore).getAccessTokenCount(), 1);
 
     // Second Login
     securityContext.setAuthentication(authentication1);
     clientContext.setAccessToken(oAuth2AccessTokenExpired);
-    String tokenExpired = oauthLoginService.login("providerId");
+    String tokenExpired = loginService.login("providerId");
     assertEquals(TOKEN_EXPIRED, tokenExpired);
     assertEquals(((InMemoryTokenStore)tokenStore).getAccessTokenCount(), 2);
 
     try {
-      oauthLoginService.validate(tokenExpired);
+      loginService.validate(tokenExpired);
       fail();
     } catch (IllegalArgumentException e) {
       // Do nothing expected exception
@@ -147,9 +147,9 @@ public class OauthLoginServiceTest {
     // Third login
     securityContext.setAuthentication(authentication2);
     clientContext.setAccessToken(oAuth2AccessToken2);
-    String token2 = oauthLoginService.login("providerId");
+    String token2 = loginService.login("providerId");
     assertEquals(TOKEN2, token2);
-    assertEquals(USER_ID2, oauthLoginService.validate(token2));
+    assertEquals(USER_ID2, loginService.validate(token2));
     //Expired token should be deleted
     assertEquals(((InMemoryTokenStore)tokenStore).getAccessTokenCount(), 2);
     

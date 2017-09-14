@@ -4,6 +4,7 @@ import gov.ca.cwds.PerryProperties;
 import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
 import gov.ca.cwds.service.scripts.IdentityMappingScript;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -34,16 +35,15 @@ public class IdentityMappingService {
                 try {
                     return mappingScript.map(authorization);
                 } catch (ScriptException e) {
-                    throw new RuntimeException("Identity Mapping failed for service provider: " + providerId, e);
+                    throw new IllegalArgumentException("Identity Mapping failed for service provider: " + providerId, e);
                 }
             }
         }
         return subject.getUserId();
     }
 
-
     private IdentityMappingScript loadMappingScriptForServiceProvider(String serviceProviderId) {
-        return loadScript(serviceProviderId == null ? DEFAULT_SP_ID_NAME : serviceProviderId);
+        return loadScript(StringUtils.isEmpty(serviceProviderId) ? DEFAULT_SP_ID_NAME : serviceProviderId);
     }
 
     private IdentityMappingScript loadScript(String serviceProviderId) {

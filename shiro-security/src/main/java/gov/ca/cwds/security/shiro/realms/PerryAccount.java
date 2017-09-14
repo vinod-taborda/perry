@@ -15,6 +15,16 @@ public class PerryAccount {
     @JsonProperty
     private Set<String> roles;
 
+    public PerryAccount(String user) {
+        this.user = user;
+    }
+
+    /**
+     * Default Constructor
+     */
+    public PerryAccount() {
+    }
+
     public String getUser() {
         return user;
     }

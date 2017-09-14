@@ -1,10 +1,13 @@
 package gov.ca.cwds.security.shiro.realms;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.apache.shiro.authc.AuthenticationException;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,38 +18,43 @@ public class PerryRealm extends AbstractRealm {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PerryRealm.class);
 
-  public String getValidationUrl() {
-    return validationUrl;
+  private String validationUri;
+
+  private Client client;
+
+
+  public String getValidationUri() {
+    return validationUri;
   }
 
-  public void setValidationUrl(String validationUrl) {
-    this.validationUrl = validationUrl;
+  public void setValidationUri(String validationUri) {
+    this.validationUri = validationUri;
   }
-
-  private String validationUrl;
 
   @Override
   protected String validate(String token) throws AuthenticationException {
     try {
-      URL url = new URL(validationUrl);
-      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-      conn.setRequestMethod("GET");
-      conn.setRequestProperty("Accept", "application/json");
-      if (conn.getResponseCode() != 200) {
+      WebTarget target = client.target(validationUri).queryParam("token", token);
+      Invocation.Builder invocation = target.request(MediaType.APPLICATION_JSON);
+      Response response = invocation.get();
+      int status = response.getStatus();
+      if (status != 200) {
         throw new AuthenticationException("Failed : HTTP error code : "
-            + conn.getResponseCode());
+            + status);
       }
-      BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-      StringBuilder sb = new StringBuilder();
-      String line;
-      while ((line = br.readLine()) != null) {
-        sb.append(line);
-      }
-      conn.disconnect();
-      return sb.toString();
+      return response.readEntity(String.class);
     } catch (Exception e) {
       LOGGER.error(e.getMessage());
       throw new AuthenticationException(e);
     }
+  }
+
+  @Override
+  protected void onInit() {
+    super.onInit();
+    JerseyClientBuilder clientBuilder = new JerseyClientBuilder()
+        .property(ClientProperties.CONNECT_TIMEOUT, 5000)
+        .property(ClientProperties.READ_TIMEOUT, 20000);
+    client = clientBuilder.build();
   }
 }

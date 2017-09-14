@@ -1,56 +1,47 @@
 package gov.ca.cwds.service;
 
 import gov.ca.cwds.UniversalUserToken;
-import javax.transaction.Transactional;
+import gov.ca.cwds.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.UUID;
 
 /**
  * Created by dmitry.rudenko on 5/22/2017.
  */
 @Profile("prod")
 @Service
+@Primary
 @Transactional
 public class OauthLoginService implements LoginService {
-
-  private static final String IDENTITY = "identity";
-
   @Autowired
   IdentityMappingService identityMappingService;
   @Autowired
-  OAuth2ClientContext oauth2ClientContext;
+  JwtService jwtService;
   @Autowired
-  SAFService safService;
-  @Autowired
-  TokenStore tokenStore;
+  TokenLoginService tokenLoginService;
 
   public String login(String providerId) throws Exception {
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-
-    OAuth2Authentication authentication = (OAuth2Authentication)securityContext.getAuthentication();
-    UniversalUserToken userToken = (UniversalUserToken) authentication.getPrincipal();
-    OAuth2AccessToken accessToken = oauth2ClientContext.getAccessToken();
+    UniversalUserToken userToken = (UniversalUserToken) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     String jwtIdentity = identityMappingService.map(userToken, providerId);
-    accessToken.getAdditionalInformation().put(IDENTITY, jwtIdentity);
-    tokenStore.storeAccessToken(accessToken, authentication);
-    return accessToken.getValue();
+    return jwtService.generate(UUID.randomUUID().toString(), userToken.getUserId(), jwtIdentity);
   }
 
   public String validate(String token) throws Exception {
-    OAuth2AccessToken accessToken = tokenStore.readAccessToken(token);
-    if (accessToken != null) {
-        safService.validate(token);
-        return (String) accessToken.getAdditionalInformation().get(IDENTITY);
-    } else {
-      throw new IllegalStateException("There is no accessToken in tokenStore for value:" + token);
-    }
+    return jwtService.validate(token);
+  }
+
+  public String loginV2(String providerId) throws Exception {
+    return tokenLoginService.login(providerId);
+  }
+
+  public String validateV2(String token) throws Exception {
+    return tokenLoginService.validate(token);
   }
 
 }

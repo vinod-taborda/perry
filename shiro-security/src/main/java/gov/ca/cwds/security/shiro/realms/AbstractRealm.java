@@ -2,7 +2,6 @@ package gov.ca.cwds.security.shiro.realms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.ca.cwds.security.shiro.PerryShiroToken;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.shiro.authc.AuthenticationException;
@@ -42,8 +41,6 @@ public abstract class AbstractRealm extends AuthorizingRealm {
   }
 
   /**
-   *
-   * @param token
    * @return Result of validation (authorization data in JSON format)
    */
   protected abstract String validate(String token) throws AuthenticationException;
@@ -68,26 +65,21 @@ public abstract class AbstractRealm extends AuthorizingRealm {
   }
 
   /**
-   * Maps payload to user info. For more complex user info override this method. User info will
-   * be accessible as secondary principal:
-   * <p>
-   * Subject subject = SecurityUtils.getSubject(); List principals =
-   * subject.getPrincipals().asList(); PerryAccount account = (PerryAccount) principals.get(1);
+   * Maps payload to user info. For more complex user info override this method. User info will be
+   * accessible as secondary principal: <p> Subject subject = SecurityUtils.getSubject(); List
+   * principals = subject.getPrincipals().asList(); PerryAccount account = (PerryAccount)
+   * principals.get(1);
    *
-   * @param json jwt payload
-   * @return mapped jwt payload
+   * @param json payload
+   * @return mapped payload
    */
   protected PerryAccount map(String json) {
     try {
       return objectMapper.readValue(json, PerryAccount.class);
-    } catch (IOException e) {
-      LOGGER.info(e.getMessage(), e);
+    } catch (Exception e) {
+      LOGGER.warn(e.getMessage(), e);
       // Mapping doesn't apply
-      return new PerryAccount() {
-        {
-          setUser(json);
-        }
-      };
+      return new PerryAccount(json);
     }
   }
 
