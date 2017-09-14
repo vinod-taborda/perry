@@ -23,8 +23,6 @@ public class OauthLoginService implements LoginService {
   IdentityMappingService identityMappingService;
   @Autowired
   JwtService jwtService;
-  @Autowired
-  TokenLoginService tokenLoginService;
 
   public String login(String providerId) throws Exception {
     UniversalUserToken userToken = (UniversalUserToken) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -35,13 +33,4 @@ public class OauthLoginService implements LoginService {
   public String validate(String token) throws Exception {
     return jwtService.validate(token);
   }
-
-  public String loginV2(String providerId) throws Exception {
-    return tokenLoginService.login(providerId);
-  }
-
-  public String validateV2(String token) throws Exception {
-    return tokenLoginService.validate(token);
-  }
-
 }
