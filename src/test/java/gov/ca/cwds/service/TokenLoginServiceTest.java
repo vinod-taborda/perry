@@ -140,7 +140,7 @@ public class TokenLoginServiceTest {
     try {
       loginService.validate(tokenExpired);
       fail();
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalStateException e) {
       // Do nothing expected exception
     }
 

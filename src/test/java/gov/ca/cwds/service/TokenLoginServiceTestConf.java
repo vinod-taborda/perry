@@ -75,12 +75,16 @@ public class TokenLoginServiceTestConf {
       }
 
       @Override
-      public String validate(String token) {
+      public Map validate(String token) {
+        HashMap map = new HashMap();
         if (token.equals(TOKEN) || token.equals(TOKEN2)) {
-          return "OK";
+          map.put("active","true");
+        } else if (token.equals(TOKEN_EXPIRED)) {
+          map.put("active","false");
         } else {
           throw new IllegalArgumentException("");
         }
+        return map;
       }
     };
 
@@ -91,6 +95,11 @@ public class TokenLoginServiceTestConf {
     InMemoryTokenStore inMemoryTokenStore = new InMemoryTokenStore();
     inMemoryTokenStore.setFlushInterval(1);
     return inMemoryTokenStore;
+  }
+
+  @Bean
+  public TokenService tokenService() {
+    return new TokenService();
   }
 
   @Bean

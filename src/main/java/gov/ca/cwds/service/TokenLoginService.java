@@ -30,6 +30,8 @@ public class TokenLoginService implements LoginService {
   SAFService safService;
   @Autowired
   TokenStore tokenStore;
+  @Autowired
+  TokenService tokenService;
 
   public String login(String providerId) throws Exception {
     SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -44,13 +46,7 @@ public class TokenLoginService implements LoginService {
   }
 
   public String validate(String token) throws Exception {
-    OAuth2AccessToken accessToken = tokenStore.readAccessToken(token);
-    if (accessToken != null) {
-        safService.validate(token);
-        return (String) accessToken.getAdditionalInformation().get(IDENTITY);
-    } else {
-      throw new IllegalStateException("There is no accessToken in tokenStore for value:" + token);
-    }
+    return tokenService.validate(token);
   }
 
 }

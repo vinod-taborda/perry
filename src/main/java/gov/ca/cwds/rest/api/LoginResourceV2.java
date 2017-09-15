@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author CWDS CALS API Team
  */
-@RestController("v2")
+@RestController("LoginResourceV2")
 public class LoginResourceV2 {
 
   @Autowired
