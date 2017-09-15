@@ -3,14 +3,13 @@ package gov.ca.cwds.rest.api;
 import gov.ca.cwds.service.TokenGeneratorService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import javax.transaction.Transactional;
+import javax.ws.rs.POST;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.transaction.Transactional;
-import javax.ws.rs.POST;
 
 /**
  * Created by dmitry.rudenko on 6/15/2017.
