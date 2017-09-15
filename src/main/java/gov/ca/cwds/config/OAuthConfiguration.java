@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 /**
  * Created by dmitry.rudenko on 5/23/2017.
@@ -42,6 +43,11 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public TokenStore tokenStore() {
         return new InMemoryTokenStore();
+    }
+
+    @Bean
+    public SecurityContextLogoutHandler logoutHandler() {
+        return new SecurityContextLogoutHandler();
     }
 
 }

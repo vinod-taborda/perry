@@ -4,11 +4,11 @@ import gov.ca.cwds.service.TokenService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.Context;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author CWDS CALS API Team
  */
+@Profile("prod")
 @RestController()
 public class TokenInvalidateResource {
 
@@ -24,7 +25,6 @@ public class TokenInvalidateResource {
 
   @POST
   @RequestMapping("/authn/invalidate")
-  @Transactional
   @ApiOperation(
       value = "Invalidate token",
       code = 200)

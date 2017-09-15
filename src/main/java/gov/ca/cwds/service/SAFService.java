@@ -1,6 +1,7 @@
 package gov.ca.cwds.service;
 
 import java.util.Map;
+import org.apache.commons.lang3.NotImplementedException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -21,8 +22,6 @@ import org.springframework.web.client.RestTemplate;
 @ConfigurationProperties(prefix = "security.oauth2.resource")
 public class SAFService {
 
-
-
   private static final String BEARER = "bearer ";
   @JsonIgnore
   @Autowired
@@ -41,17 +40,33 @@ public class SAFService {
     this.revokeTokenUri = revokeTokenUri;
   }
 
-  public Map getUserInfo(String accessToken) {
-    return callSaf(sso.getUserInfoUri(), accessToken, Map.class);
+  public Map getUserInfo(String accessToken) throws SAFServiceException {
+    try {
+      return callSaf(sso.getUserInfoUri(), accessToken, Map.class);
+    } catch (Exception e) {
+      throw new SAFServiceException(e);
+    }
+
   }
 
-  public Map validate(String token) {
-    return callSaf(sso.getTokenInfoUri(), token, Map.class);
+  public Map validate(String token) throws SAFServiceException {
+    try {
+      return callSaf(sso.getTokenInfoUri(), token, Map.class);
+    } catch (Exception e) {
+      throw new SAFServiceException(e);
+    }
   }
 
-  public void invalidate(String token) {
-    callSaf(revokeTokenUri, token, String.class);
+  public String invalidate(String token) throws SAFServiceException {
+    try{
+      return callSaf(revokeTokenUri, token, String.class);
+    } catch (Exception e) {
+      throw new SAFServiceException(e);
+    }
+  }
 
+  public String logout() throws SAFServiceException {
+    throw new SAFServiceException(new NotImplementedException("The method is not implemented yet"));
   }
 
   protected <T> T callSaf(String uri, String token, Class<T> returnType) {
@@ -61,4 +76,6 @@ public class SAFService {
     headers.add(HttpHeaders.AUTHORIZATION, bearer);
     return client.postForObject(uri, new HttpEntity<>(bearer, headers), returnType);
   }
+
+
 }
