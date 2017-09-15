@@ -1,7 +1,9 @@
 package gov.ca.cwds.rest.api;
 
+import gov.ca.cwds.PerryProperties;
+import gov.ca.cwds.config.Constants;
+import gov.ca.cwds.rest.api.domain.PerryException;
 import gov.ca.cwds.service.LoginService;
-import gov.ca.cwds.service.OauthLoginService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -16,6 +18,7 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.core.*;
+import java.util.logging.Logger;
 
 /**
  * Created by dmitry.rudenko on 5/22/2017.
@@ -24,25 +27,32 @@ import javax.ws.rs.core.*;
 public class LoginResource {
     @Autowired
     LoginService loginService;
+    @Autowired
+    PerryProperties configuration;
 
     @GET
-    @RequestMapping("/authn/login")
+    @RequestMapping(Constants.LOGIN_SERVICE_URL)
     @Transactional
     @ApiOperation(
             value = "Login. Applications should direct users to this endpoint for login.  When authentication complete, user will be redirected back to callback with auth 'token' as a query parameter",
             code = 200)
     public void login(@NotNull @Context final HttpServletResponse response,
                       @ApiParam(required = true, name = "callback",
-                              value = "URL to send the user back to after authentication") @RequestParam("callback") @NotNull String callback,
+                              value = "URL to send the user back to after authentication") @RequestParam(Constants.CALLBACK_PARAM) String callback,
                       @ApiParam(name = "sp_id",
                               value = "Service provider id") @RequestParam(name = "sp_id", required = false) String spId) throws Exception {
         String jwtToken = loginService.login(spId);
-        response.sendRedirect(callback + "?token=" + jwtToken);
+        if(configuration.getWhiteList().contains(callback)) {
+            response.sendRedirect(callback + "?token=" + jwtToken);
+        }
+        else {
+            throw new PerryException("Invalid callback url: " + callback);
+        }
     }
 
     //back-end only!
     @GET
-    @RequestMapping(value = "/authn/validate", produces = "application/json")
+    @RequestMapping(value = Constants.VALIDATE_SERVICE_URL, produces = "application/json")
     @ApiOperation(value = "Validate an authentication token", code = 200)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "authorized"),
             @ApiResponse(code = 401, message = "Unauthorized")})
@@ -51,6 +61,7 @@ public class LoginResource {
         try {
             return loginService.validate(token);
         } catch (Exception e) {
+            Logger.getLogger(LoginResource.class.getName()).info(e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return "Unauthorized";
         }
