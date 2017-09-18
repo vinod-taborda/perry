@@ -6,7 +6,7 @@ spring:
           password: test
       jpa:
           database: h2
-          show_sql: true
+          show_sql: ${SHOW_SQL:false}
           properties:
               hibernate.cache.use_query_cache: false
               hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
@@ -31,7 +31,7 @@ perry:
       default:
         identityMapping: 'config/default.groovy'
     users: ${USERS:}
-    whiteList: ${WHITE_LIST:/perry/demo-sp.html}
+    whiteList: ${WHITE_LIST:*}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}
@@ -67,6 +67,6 @@ logging:
   level:
     org:
       springframework:
-        web: ${LOG_LEVEL:INFO}
-        security: ${LOG_LEVEL:INFO}
-      hibernate: ${LOG_LEVEL:INFO}
+        web: ${LOG_LEVEL:DEBUG}
+        security: ${LOG_LEVEL:DEBUG}
+      hibernate: ${LOG_LEVEL:DEBUG}

@@ -16,6 +16,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static gov.ca.cwds.config.Constants.CALLBACK_PARAM;
@@ -54,9 +55,13 @@ public class LoginServiceValidatorFilter extends GenericFilterBean {
 
   protected void registered(String param, HttpServletRequest servletRequest) {
     String paramValue = servletRequest.getParameter(param);
-    if (!configuration.getWhiteList().contains(paramValue)) {
+    if (!disabled(configuration.getWhiteList()) && !configuration.getWhiteList().contains(paramValue)) {
       throw new PerryException(param + ": " + paramValue + " is not registered");
     }
+  }
+
+  private boolean disabled(List<String> whiteList) {
+    return whiteList.size() == 1 && whiteList.contains("*");
   }
 
 }
