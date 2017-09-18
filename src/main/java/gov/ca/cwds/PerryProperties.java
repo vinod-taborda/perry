@@ -7,8 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by dmitry.rudenko on 5/22/2017.
@@ -22,6 +21,8 @@ public class PerryProperties {
     private IdentityProviderConfiguration identityProvider;
 
     private String users;
+
+    private List<String> whiteList = new ArrayList<>();
 
     private Map<String, ServiceProviderConfiguration> serviceProviders = new HashMap<>();
 
@@ -56,6 +57,14 @@ public class PerryProperties {
         public void setIdentityMapping(String identityMapping) throws IOException {
             this.identityMapping = new IdentityMappingScript(identityMapping);
         }
+    }
+
+    public List<String> getWhiteList() {
+        return whiteList;
+    }
+
+    public void setWhiteList(String whiteList) {
+        this.whiteList = Arrays.asList(whiteList.split("\\s"));
     }
 
     public JwtConfiguration getJwt() {
