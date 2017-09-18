@@ -43,7 +43,7 @@ public class OauthLogoutService implements LogoutService {
     try {
       safService.logout();
     } catch (SAFServiceException e) {
-      LOGGER.error(e.getMessage(), e);
+      LOGGER.warn(e.getMessage(), e);
     }
   }
 }
