@@ -43,6 +43,10 @@ endpoints:
   enabled: false
   health:
     enabled: true
+  info:
+    enabled: true
+  env:
+    enabled: true
 server:
   context-path: ${CONTEXT_PATH:/}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
