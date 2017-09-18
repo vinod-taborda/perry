@@ -1,8 +1,8 @@
 package gov.ca.cwds.config;
 
 
-import gov.ca.cwds.PerryProperties;
 import gov.ca.cwds.rest.api.domain.PerryException;
+import gov.ca.cwds.service.WhiteList;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -16,7 +16,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Logger;
 
 import static gov.ca.cwds.config.Constants.CALLBACK_PARAM;
@@ -28,7 +27,7 @@ import static gov.ca.cwds.config.Constants.LOGIN_SERVICE_URL;
 @Component
 public class LoginServiceValidatorFilter extends GenericFilterBean {
   @Autowired
-  PerryProperties configuration;
+  WhiteList whiteList;
 
   private static final RequestMatcher LOGIN_REQUEST_MATCHER = new AntPathRequestMatcher(LOGIN_SERVICE_URL);
 
@@ -55,13 +54,6 @@ public class LoginServiceValidatorFilter extends GenericFilterBean {
 
   protected void registered(String param, HttpServletRequest servletRequest) {
     String paramValue = servletRequest.getParameter(param);
-    if (!disabled(configuration.getWhiteList()) && !configuration.getWhiteList().contains(paramValue)) {
-      throw new PerryException(param + ": " + paramValue + " is not registered");
-    }
+    whiteList.validate(param, paramValue);
   }
-
-  private boolean disabled(List<String> whiteList) {
-    return whiteList.size() == 1 && whiteList.contains("*");
-  }
-
 }
