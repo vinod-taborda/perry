@@ -25,50 +25,53 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 @EnableOAuth2Sso
 @Configuration
 public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private ResourceServerProperties sso;
-    @Autowired
-    private SAFService safService;
-    @Autowired
-    private LoginServiceValidatorFilter loginServiceValidatorFilter;
-    @Autowired
-    private OauthLogoutService tokenRevocationLogoutHandler;
-    @Autowired
-    private OAuthLogoutSuccessHandler logoutSuccessHandler;
 
-    @Bean
-    @Primary
-    public SafUserInfoTokenService userInfoTokenServices() {
-        return new SafUserInfoTokenService(safService, sso.getUserInfoUri(), sso.getClientId());
-    }
+  @Autowired
+  private ResourceServerProperties sso;
+  @Autowired
+  private SAFService safService;
+  @Autowired
+  private LoginServiceValidatorFilter loginServiceValidatorFilter;
+  @Autowired
+  private OauthLogoutService tokenRevocationLogoutHandler;
+  @Autowired
+  private OAuthLogoutSuccessHandler logoutSuccessHandler;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        //  /authn/validate should be for backend only!
-        http.authorizeRequests().antMatchers("/authn/validate*/**", "/templates/**", "/manage/**").permitAll()
-                .and()
-                .addFilterBefore(loginServiceValidatorFilter, AbstractPreAuthenticatedProcessingFilter.class);
-        http.logout()
-            .logoutUrl("/authn/logout")
+  @Bean
+  @Primary
+  public SafUserInfoTokenService userInfoTokenServices() {
+    return new SafUserInfoTokenService(safService, sso.getUserInfoUri(), sso.getClientId());
+  }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    //  /authn/validate should be for backend only!
+    http.authorizeRequests().antMatchers("/authn/validate*/**", "/templates/**", "/manage/**").permitAll()
+        .and()
+          .logout()
+            .logoutUrl("/authn/logout").permitAll()
             .addLogoutHandler(tokenRevocationLogoutHandler)
-            .logoutSuccessHandler(logoutSuccessHandler);
+            .logoutSuccessHandler(logoutSuccessHandler)
+        .and()
+          .addFilterBefore(loginServiceValidatorFilter,
+            AbstractPreAuthenticatedProcessingFilter.class).csrf().disable();
 
-        super.configure(http);
-    }
+    super.configure(http);
+  }
 
-    @Bean
-    public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
-    }
+  @Bean
+  public TokenStore tokenStore() {
+    return new InMemoryTokenStore();
+  }
 
-    @Bean
-    public SecurityContextLogoutHandler logoutHandler() {
-        return new SecurityContextLogoutHandler();
-    }
-    
-    @Bean
-    public OAuthLogoutSuccessHandler logoutSuccessHandler() {
-        return new OAuthLogoutSuccessHandler();
-    }
+  @Bean
+  public SecurityContextLogoutHandler logoutHandler() {
+    return new SecurityContextLogoutHandler();
+  }
+
+  @Bean
+  public OAuthLogoutSuccessHandler logoutSuccessHandler() {
+    return new OAuthLogoutSuccessHandler();
+  }
 
 }
