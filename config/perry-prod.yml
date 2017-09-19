@@ -13,7 +13,7 @@ security:
       userInfoUri: ${SAF_USER_INFO_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/userinfo?scopes=basicprofile.racfid}
       tokenInfoUri: ${SAF_VALIDATE_TOKEN_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/validatetoken}
       revokeTokenUri: ${SAF_REVOKE_TOKEN_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/revoketoken}
-      logoutTokenUri: ${SAF_REVOKE_TOKEN_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/logout}
+      logoutTokenUri: ${SAF_LOGOUT_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/logout}
 spring:
       datasource:
           driver-class-name: com.ibm.db2.jcc.DB2Driver
@@ -22,7 +22,7 @@ spring:
           password: ${DB_CMS_PASSWORD:db2inst1}
       jpa:
           database: db2
-          show_sql: true
+          show_sql: ${SHOW_SQL:false}
           properties:
               hibernate.cache.use_query_cache: false
               hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
@@ -50,7 +50,7 @@ perry:
         identityMapping: 'config/default.groovy'
       intake:
         identityMapping: 'config/intake.groovy'
-    whiteList: ${WHITE_LIST:/perry/demo-sp.html } # urls separated by spaces.
+    whiteList: ${WHITE_LIST:*} # urls separated by spaces.
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}
@@ -62,6 +62,12 @@ endpoints:
   enabled: false
   health:
     enabled: true
+  info:
+    enabled: false
+  env:
+    enabled: false
+  configprops:
+    enabled: false
 server:
   context-path: ${CONTEXT_PATH:/}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
@@ -86,6 +92,6 @@ logging:
   level:
     org:
       springframework:
-        web: ${LOG_LEVEL:INFO}
-        security: ${LOG_LEVEL:INFO}
-      hibernate: ${LOG_LEVEL:INFO}
+        web: ${LOG_LEVEL:DEBUG}
+        security: ${LOG_LEVEL:DEBUG}
+      hibernate: ${LOG_LEVEL:DEBUG}
