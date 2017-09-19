@@ -1,24 +1,8 @@
 package gov.ca.cwds.security.shiro.realms;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.ca.cwds.security.jwt.JwtConfiguration;
 import gov.ca.cwds.security.jwt.JwtService;
-import gov.ca.cwds.security.shiro.PerryShiroToken;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.SimplePrincipalCollection;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of JWT processing realm. This realm validates JWT token and extract identity claim
@@ -27,14 +11,8 @@ import org.slf4j.LoggerFactory;
  * During authentication process this realm puts user name as primary credential and mapped identity
  * claim as secondary. So authorization process will expect 2 principals.
  */
-public class JwtRealm extends AuthorizingRealm {
+public class JwtRealm extends AbstractRealm {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JwtRealm.class);
-
-  /**
-   * primary principal equals to username secondary principal equals to user token
-   */
-  private static final int PRINCIPALS_COUNT = 2;
   private String keyStorePath;
   private String keyStoreAlias;
   private String keyStorePassword;
@@ -46,12 +24,11 @@ public class JwtRealm extends AuthorizingRealm {
   private String tokenIssuer;
   private boolean headlessToken = true;
 
-  private ObjectMapper objectMapper;
   JwtService jwtService;
 
   @Override
   protected void onInit() {
-    objectMapper = new ObjectMapper();
+    super.onInit();
     jwtService = new JwtService(jwtConfiguration());
   }
 
@@ -181,40 +158,7 @@ public class JwtRealm extends AuthorizingRealm {
     this.headlessToken = headlessToken;
   }
 
-  /**
-   * Default Constructor
-   */
-  public JwtRealm() {
-    setAuthenticationTokenClass(PerryShiroToken.class);
-  }
-
-  @Override
-  protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-    List principalsList = principals.asList();
-    if (principalsList.size() == PRINCIPALS_COUNT) {
-      PerryAccount perryAccount = (PerryAccount) principalsList.get(1);
-      return new SimpleAuthorizationInfo(perryAccount.getRoles());
-    }
-    throw new AuthenticationException("User authorization failed!");
-  }
-
-  @Override
-  protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) {
-    String jwt = ((PerryShiroToken) token).getToken();
-    String json = validate(jwt);
-    PerryAccount perryAccount = map(json);
-    return getAuthenticationInfo(perryAccount);
-  }
-
-  private AuthenticationInfo getAuthenticationInfo(PerryAccount perryAccount) {
-    List<Object> principals = new ArrayList<>();
-    principals.add(perryAccount.getUser());
-    principals.add(perryAccount);
-    PrincipalCollection principalCollection = new SimplePrincipalCollection(principals, getName());
-    return new SimpleAuthenticationInfo(principalCollection, "N/A");
-  }
-
-  private String validate(String token)  {
+  protected String validate(String token)  {
     try {
       return jwtService.validate(token);
     } catch (Exception e) {
@@ -222,27 +166,4 @@ public class JwtRealm extends AuthorizingRealm {
     }
   }
 
-  /**
-   * Maps JWT payload to user info. For more complex user info override this method. User info will
-   * be accessible as secondary principal:
-   * <p>
-   * Subject subject = SecurityUtils.getSubject(); List principals =
-   * subject.getPrincipals().asList(); PerryAccount account = (PerryAccount) principals.get(1);
-   *
-   * @param json jwt payload
-   * @return mapped jwt payload
-   */
-  protected PerryAccount map(String json) {
-    try {
-      return objectMapper.readValue(json, PerryAccount.class);
-    } catch (IOException e) {
-      LOGGER.info(e.getMessage(), e);
-      // Mapping doesn't apply
-      return new PerryAccount() {
-        {
-          setUser(json);
-        }
-      };
-    }
-  }
 }

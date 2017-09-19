@@ -112,7 +112,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
             exclude(module: 'commons-logging')
     }
-
+    testCompile 'org.springframework:spring-test:4.3.0.RELEASE'
     testCompile 'org.mockito:mockito-core:2.0.54-beta'
     testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
     testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {

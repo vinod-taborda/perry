@@ -18,7 +18,7 @@ class JCEKSKeyProvider implements KeyProvider {
   }
 
   @Override
-  public PrivateKey getSigningKey() throws JwtException {
+  public PrivateKey getSigningKey() {
     try {
       return (PrivateKey) getKeyStore().getKey(configuration.getKeyStore().getAlias(), configuration.getKeyStore().getKeyPassword().toCharArray());
     } catch (Exception e) {
@@ -27,7 +27,7 @@ class JCEKSKeyProvider implements KeyProvider {
   }
 
   @Override
-  public PublicKey getValidatingKey() throws JwtException {
+  public PublicKey getValidatingKey() {
     try {
       return getKeyStore().getCertificate(configuration.getKeyStore().getAlias()).getPublicKey();
     } catch (Exception e) {
@@ -36,7 +36,7 @@ class JCEKSKeyProvider implements KeyProvider {
   }
 
   @Override
-  public SecretKey getEncryptingKey() throws JwtException {
+  public SecretKey getEncryptingKey() {
     try {
       return (SecretKey) getKeyStore().getKey(configuration.getKeyStore().getEncAlias(), configuration.getKeyStore().getEncKeyPassword().toCharArray());
     } catch (Exception e) {
@@ -44,11 +44,11 @@ class JCEKSKeyProvider implements KeyProvider {
     }
   }
 
-  private KeyStore getKeyStore() throws JwtException {
+  private KeyStore getKeyStore() {
     try {
       KeyStore ks = KeyStore.getInstance("JCEKS");
       try (InputStream readStream = new FileInputStream(configuration.getKeyStore().getPath())) {
-        char keyPassword[] = configuration.getKeyStore().getPassword().toCharArray();
+        char[] keyPassword = configuration.getKeyStore().getPassword().toCharArray();
         ks.load(readStream, keyPassword);
         return ks;
       }
