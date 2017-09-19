@@ -26,7 +26,7 @@ public class LogoutResource {
   private LogoutService logoutService;
 
   @GET
-  @RequestMapping("/authn/logout")
+  @RequestMapping("/authn/logout/v2")
   @ApiOperation(value = "Logout",  code = 200)
   public void logout(
       @NotNull @Context

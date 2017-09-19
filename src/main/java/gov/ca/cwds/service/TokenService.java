@@ -35,6 +35,7 @@ public class TokenService {
       LOGGER.info("SAFToken invalidation result: %s", result);
     } catch (Exception e) {
       LOGGER.warn("OAuth token invalidation problems", e);
+      throw new IllegalStateException(e);
     }
   }
 
@@ -61,18 +62,15 @@ public class TokenService {
 
   private void revokeToken(String token) {
     OAuth2AccessToken accessToken = tokenStore.readAccessToken(token);
-    if(accessToken == null) {
-      throw new IllegalArgumentException("There is no AccessToken for value: " + token);
+    if(accessToken != null) {
+      tokenStore.removeAccessToken(accessToken);
     }
-    tokenStore.removeAccessToken(accessToken);
   }
 
   public void invalidate(OAuth2Authentication authentication) {
     OAuth2AccessToken accessToken = tokenStore.getAccessToken(authentication);
-    if (accessToken == null) {
-      throw new IllegalStateException("There is no accessToken for authentication: "
-          + authentication.getUserAuthentication().getName() );
+    if (accessToken != null) {
+      invalidate(accessToken.getValue());
     }
-    invalidate(accessToken.getValue());
   }
 }

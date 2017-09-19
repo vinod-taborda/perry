@@ -1,7 +1,9 @@
 package gov.ca.cwds.config;
 
+import gov.ca.cwds.service.OauthLogoutService;
 import gov.ca.cwds.service.SAFService;
 import gov.ca.cwds.service.oauth.SafUserInfoTokenService;
+import gov.ca.cwds.web.OAuthLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -11,11 +13,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 /**
  * Created by dmitry.rudenko on 5/23/2017.
@@ -30,6 +31,10 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
     private SAFService safService;
     @Autowired
     private LoginServiceValidatorFilter loginServiceValidatorFilter;
+    @Autowired
+    private OauthLogoutService tokenRevocationLogoutHandler;
+    @Autowired
+    private OAuthLogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     @Primary
@@ -43,6 +48,11 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/authn/validate*/**", "/templates/**", "/manage/**").permitAll()
                 .and()
                 .addFilterBefore(loginServiceValidatorFilter, AbstractPreAuthenticatedProcessingFilter.class);
+        http.logout()
+            .logoutUrl("/authn/logout")
+            .addLogoutHandler(tokenRevocationLogoutHandler)
+            .logoutSuccessHandler(logoutSuccessHandler);
+
         super.configure(http);
     }
 
@@ -54,6 +64,11 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public SecurityContextLogoutHandler logoutHandler() {
         return new SecurityContextLogoutHandler();
+    }
+    
+    @Bean
+    public OAuthLogoutSuccessHandler logoutSuccessHandler() {
+        return new OAuthLogoutSuccessHandler();
     }
 
 }
