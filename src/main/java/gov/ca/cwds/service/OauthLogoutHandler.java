@@ -9,24 +9,18 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
  * @author CWDS CALS API Team
  */
 @Profile("prod")
-@Service
-public class OauthLogoutService implements LogoutService, LogoutHandler {
+@Component
+public class OauthLogoutHandler implements LogoutHandler {
 
   @Autowired
   private TokenService tokenService;
-
-  @Override
-  public void logout(HttpServletRequest request, HttpServletResponse response) {
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    Authentication authentication = securityContext.getAuthentication();
-    logout(request, response);
-  }
 
   @Override
   public void logout(HttpServletRequest request, HttpServletResponse response,

@@ -27,8 +27,9 @@ public class LoginResource {
     @Autowired
     LoginService loginService;
     @Autowired
-    PerryProperties configuration;@Autowired
-  WhiteList whiteList;
+    PerryProperties configuration;
+    @Autowired
+    WhiteList whiteList;
 
     @GET
     @RequestMapping(Constants.LOGIN_SERVICE_URL)

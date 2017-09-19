@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.api;
 
 import gov.ca.cwds.service.TokenLoginService;
+import gov.ca.cwds.service.WhiteList;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -25,6 +26,8 @@ public class LoginResourceV2 {
 
   @Autowired
   TokenLoginService loginService;
+  @Autowired
+  WhiteList whiteList;
 
   /**
    *
@@ -43,11 +46,11 @@ public class LoginResourceV2 {
       code = 200)
   public void loginV2(@NotNull @Context final HttpServletResponse response,
       @ApiParam(required = true, name = "callback",
-          value = "URL to send the user back to after authentication") @RequestParam("callback") @NotNull String callback,
+          value = "URL to send the user back to after authentication") @RequestParam(name = "callback") String callback,
       @ApiParam(name = "sp_id",
           value = "Service provider id") @RequestParam(name = "sp_id", required = false) String spId)
       throws Exception {
-
+    whiteList.validate("callback", callback);
     String jwtToken = loginService.login(spId);
     response.sendRedirect(callback + "?token=" + jwtToken);
   }
