@@ -68,6 +68,10 @@ public class TokenService {
   }
 
   public void invalidate(OAuth2Authentication authentication) {
+    if (authentication == null) {
+      LOGGER.warn("Authentication is NULL");
+      return;
+    }
     OAuth2AccessToken accessToken = tokenStore.getAccessToken(authentication);
     if (accessToken != null) {
       invalidate(accessToken.getValue());
