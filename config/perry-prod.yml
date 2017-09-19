@@ -19,7 +19,7 @@ spring:
           password: ${DB_CMS_PASSWORD:db2inst1}
       jpa:
           database: db2
-          show_sql: true
+          show_sql: ${SHOW_SQL:false}
           properties:
               hibernate.cache.use_query_cache: false
               hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
@@ -47,6 +47,7 @@ perry:
         identityMapping: 'config/default.groovy'
       intake:
         identityMapping: 'config/intake.groovy'
+    whiteList: ${WHITE_LIST:*} # urls separated by spaces.
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}
@@ -58,6 +59,12 @@ endpoints:
   enabled: false
   health:
     enabled: true
+  info:
+    enabled: false
+  env:
+    enabled: false
+  configprops:
+    enabled: false
 server:
   context-path: ${CONTEXT_PATH:/}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
@@ -71,3 +78,17 @@ server:
     keyPassword: ${KEYSTORE_KEY_PASSWORD:test}
   http:
     port: ${HTTP_PORT:8080}
+  error:
+    whitelabel:
+      enabled: false
+logging:
+  file: ${LOG_FILE:perry-log.txt}
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  level:
+    org:
+      springframework:
+        web: ${LOG_LEVEL:DEBUG}
+        security: ${LOG_LEVEL:DEBUG}
+      hibernate: ${LOG_LEVEL:DEBUG}
