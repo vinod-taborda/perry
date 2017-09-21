@@ -10,7 +10,10 @@ security:
      clientAuthenticationScheme: form
      scope: ${SAF_SCOPE:basicprofile,racfid}
    resource:
-      userInfoUri: ${SAF_VALIDATE_TOKEN_PATH:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/userinfo?scopes=basicprofile.racfid}
+      userInfoUri: ${SAF_USER_INFO_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/userinfo?scopes=basicprofile.racfid}
+      tokenInfoUri: ${SAF_VALIDATE_TOKEN_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/validatetoken}
+      revokeTokenUri: ${SAF_REVOKE_TOKEN_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/revoketoken}
+      logoutTokenUri: ${SAF_LOGOUT_URI:https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/client/41/oauth2/logout}
 spring:
       datasource:
           driver-class-name: com.ibm.db2.jcc.DB2Driver
@@ -19,7 +22,7 @@ spring:
           password: ${DB_CMS_PASSWORD:db2inst1}
       jpa:
           database: db2
-          show_sql: true
+          show_sql: ${SHOW_SQL:false}
           properties:
               hibernate.cache.use_query_cache: false
               hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
@@ -47,6 +50,7 @@ perry:
         identityMapping: 'config/default.groovy'
       intake:
         identityMapping: 'config/intake.groovy'
+    whiteList: ${WHITE_LIST:*} # urls separated by spaces.
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}
@@ -58,6 +62,12 @@ endpoints:
   enabled: false
   health:
     enabled: true
+  info:
+    enabled: false
+  env:
+    enabled: false
+  configprops:
+    enabled: false
 server:
   context-path: ${CONTEXT_PATH:/}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
@@ -71,3 +81,17 @@ server:
     keyPassword: ${KEYSTORE_KEY_PASSWORD:test}
   http:
     port: ${HTTP_PORT:8080}
+  error:
+    whitelabel:
+      enabled: false
+logging:
+  file: ${LOG_FILE:perry-log.txt}
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  level:
+    org:
+      springframework:
+        web: ${LOG_LEVEL:DEBUG}
+        security: ${LOG_LEVEL:DEBUG}
+      hibernate: ${LOG_LEVEL:DEBUG}
