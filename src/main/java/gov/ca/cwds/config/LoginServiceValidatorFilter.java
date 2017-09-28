@@ -1,25 +1,24 @@
 package gov.ca.cwds.config;
 
 
+import static gov.ca.cwds.config.Constants.CALLBACK_PARAM;
+import static gov.ca.cwds.config.Constants.LOGIN_SERVICE_URL;
+
 import gov.ca.cwds.rest.api.domain.PerryException;
 import gov.ca.cwds.service.WhiteList;
+import java.io.IOException;
+import java.util.logging.Logger;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.logging.Logger;
-
-import static gov.ca.cwds.config.Constants.CALLBACK_PARAM;
-import static gov.ca.cwds.config.Constants.LOGIN_SERVICE_URL;
 
 /**
  * Created by dmitry.rudenko on 9/14/2017.

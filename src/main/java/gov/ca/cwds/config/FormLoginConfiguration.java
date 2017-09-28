@@ -1,5 +1,6 @@
 package gov.ca.cwds.config;
 
+import gov.ca.cwds.web.PerryLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,9 @@ public class FormLoginConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private LoginServiceValidatorFilter loginServiceValidatorFilter;
 
+    @Autowired
+    private PerryLogoutSuccessHandler perryLogoutSuccessHandler;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authProvider);
@@ -39,7 +43,7 @@ public class FormLoginConfiguration extends WebSecurityConfigurerAdapter {
                         "/css/**",
                         "/images/**",
                         "/dev/**",
-                        "/authn/validate*",
+                        "/authn/validate*/**",
                         "/manage/**",
                         "/templates/*").permitAll()
                 .anyRequest().authenticated()
@@ -50,9 +54,8 @@ public class FormLoginConfiguration extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login")
                 .failureUrl("/login.html?error=true")
                 .and()
-                .logout().logoutSuccessUrl("/login.html")
+                .logout().logoutUrl("/authn/logout").permitAll().logoutSuccessHandler(perryLogoutSuccessHandler)
                 .and().csrf().disable()
                 .addFilterBefore(loginServiceValidatorFilter, UsernamePasswordAuthenticationFilter.class);
-
     }
 }

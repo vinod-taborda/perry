@@ -35,12 +35,13 @@ targetCompatibility = 1.8
 project.ext {
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
-    projectMajorVersion = '0.4.2'
+    projectMajorVersion = '0.4.3'
     mainclass = 'gov.ca.cwds.PerryApplication'
 
     releaseDocker = System.getProperty("ReleaseDocker")
     buildNumber = System.getProperty("BuildNumber")
     projectVersion = projectMajorVersion + '-SNAPSHOT'
+//    projectVersion = projectMajorVersion
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
     
     // assume that Windows users use the Docker Toolbox
@@ -112,7 +113,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
             exclude(module: 'commons-logging')
     }
-
+    testCompile 'org.springframework:spring-test:4.3.0.RELEASE'
     testCompile 'org.mockito:mockito-core:2.0.54-beta'
     testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
     testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {

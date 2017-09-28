@@ -10,7 +10,10 @@ security:
      clientAuthenticationScheme: form
      scope: ${SAF_SCOPE:basicprofile,racfid}
    resource:
-      userInfoUri: ${SAF_VALIDATE_TOKEN_PATH:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/userinfo?scopes=basicprofile.racfid}
+      userInfoUri: ${SAF_USER_INFO_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/userinfo?scopes=basicprofile.racfid}
+      tokenInfoUri: ${SAF_VALIDATE_TOKEN_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/validatetoken}
+      revokeTokenUri: ${SAF_REVOKE_TOKEN_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/revoketoken}
+      logoutTokenUri: ${SAF_LOGOUT_URI:https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/client/41/oauth2/logout}
 spring:
       datasource:
           driver-class-name: com.ibm.db2.jcc.DB2Driver

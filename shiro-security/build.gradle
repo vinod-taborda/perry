@@ -21,6 +21,8 @@ dependencies {
     compileOnly('org.apache.shiro:shiro-web:' + shiroVersion)
     compileOnly('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
     compileOnly('javax.servlet:javax.servlet-api:3.1.0')
+    compileOnly('org.glassfish.jersey.core:jersey-client:2.25.1')
+    compileOnly('javax.ws.rs:javax.ws.rs-api:2.0.1')
     compile project(':jwt-security')
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
