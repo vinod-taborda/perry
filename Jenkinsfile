@@ -55,6 +55,7 @@ node ('dora-slave'){
   }
   stage('Smoke Tests') {
       git branch: 'master', url: 'https://github.com/ca-cwds/perry.git'
+      sleep 40
       buildInfo = rtGradle.run buildFile: './build.gradle', tasks: 'smokeTest --stacktrace'
       publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/smokeTest', reportFiles: 'index.html', reportName: 'Smoke Tests Report', reportTitles: 'Smoke tests summary'])
     }
