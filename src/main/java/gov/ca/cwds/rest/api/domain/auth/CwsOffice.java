@@ -63,10 +63,10 @@ public class CwsOffice {
   private String getGovernmentEntityTypeDescription(String type) {
     String description = "";
     try {
-      Integer sysId = Integer.parseInt(type);
+      Integer sysId = Integer.valueOf(type);
       description = GovernmentEntityType.getGovernmentEntityTypeBySysId(sysId).getDescription();
     } catch (Exception e) {
-      LOGGER.error("ERROR - Description couldn't parse", e.getMessage(), e);
+      LOGGER.error("ERROR - Description couldn't parse: {}", e.getMessage());
     }
     return description;
   }

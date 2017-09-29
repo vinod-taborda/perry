@@ -35,10 +35,10 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
    */
   @Override
   protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
-    String tokenFromRequest = getToken(request);
+    HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+    String tokenFromRequest = getToken(httpServletRequest);
     if(isNullOrEmpty(tokenFromRequest)) {
-      LOGGER.warn("Authorization Token must be passed as request parameter (`" + PARAM_TOKEN
-              + "`) or in the (`" + HEADER_AUTHORIZATION + "`) header");
+      LOGGER.warn("Authorization Token must be passed as request parameter (`{}`) or in the (`{}`) header", PARAM_TOKEN, HEADER_AUTHORIZATION);
       throw new AuthenticationException("Authentication failed");
     }
     PerryShiroToken token = new PerryShiroToken(tokenFromRequest);
@@ -63,7 +63,8 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
   @Override
   protected boolean onAccessDenied(ServletRequest request, ServletResponse response)
       throws Exception {
-    String token = getToken(request);
+    HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+    String token = getToken(httpServletRequest);
 
     if (token == null) {
       LOGGER.debug("No token - Denying Access");
@@ -74,8 +75,7 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
     return executeLogin(request, response);
   }
 
-  private String getToken(ServletRequest request) {
-    HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+  private String getToken(HttpServletRequest httpServletRequest) {
     String token = httpServletRequest.getParameter(PARAM_TOKEN);
     if (isNullOrEmpty(token)) {
       token = httpServletRequest.getHeader(HEADER_AUTHORIZATION);
@@ -110,10 +110,10 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
       ServletRequest request, ServletResponse response) throws Exception {
     Subject currentUser = SecurityUtils.getSubject();
     // we should never get here. we don't have sessions on APIs
-    LOGGER.warn("Existing session when no sessions should be allowed, {}",
-        currentUser.getPrincipal().toString());
+    String userName = currentUser.getPrincipal().toString();
+    LOGGER.warn("Existing session when no sessions should be allowed, {}", userName);
 
-    LOGGER.info(currentUser.getPrincipal().toString());
+    LOGGER.info(userName);
     return super.onLoginSuccess(token, subject, request, response);
   }
 

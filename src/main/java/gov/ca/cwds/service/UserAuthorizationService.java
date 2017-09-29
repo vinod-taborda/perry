@@ -79,7 +79,7 @@ public class UserAuthorizationService {
       return new UserAuthorization(user.getLogonId(), user.getStaffPersonId(),
               socialWorker, false, true, userAuthPrivs, setStaffUnitAuths, setCwsOffices, staffPerson);
     } else {
-      LOGGER.warn("No user id found for " + primaryKey);
+      LOGGER.warn("No user id found for {}", primaryKey);
     }
 
     return null;

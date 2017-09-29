@@ -100,10 +100,10 @@ public final class CmsUserAuthPrivilege {
   public String getUserAuthPrivDescription(String type) {
     String description = "";
     try {
-      Long sysId = Long.parseLong(type);
+      Long sysId = Long.valueOf(type);
       description = findSysIdDescription(sysId);
     } catch (Exception e) {
-      LOGGER.error("ERROR - Description couldn't parse", e.getMessage(), e);
+      LOGGER.error("ERROR - Description couldn't parse: {}", e.getMessage());
     }
     return description;
   }

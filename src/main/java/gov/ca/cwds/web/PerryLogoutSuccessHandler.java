@@ -33,15 +33,11 @@ public class PerryLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler imp
   }
 
   protected boolean tryRedirect(HttpServletResponse response, String callback) throws IOException {
-    boolean result;
     if (callback != null) {
       whiteList.validate("callback", callback);
       response.sendRedirect(callback);
-      result = Boolean.TRUE;
-    } else {
-      result = Boolean.FALSE;
+      return true;
     }
-    return result;
+    return false;
   }
-
 }

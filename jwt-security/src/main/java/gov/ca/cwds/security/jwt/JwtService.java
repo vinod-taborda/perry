@@ -71,8 +71,9 @@ public class JwtService {
         signedJWT = SignedJWT.parse(tokenWithHeader);
       }
       validateSignature(signedJWT);
-      validateClaims(signedJWT.getJWTClaimsSet());
-      return signedJWT.getJWTClaimsSet().getStringClaim(IDENTITY_CLAIM);
+      JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+      validateClaims(claimsSet);
+      return claimsSet.getStringClaim(IDENTITY_CLAIM);
     } catch (Exception e) {
       throw new JwtException(e);
     }
@@ -150,7 +151,7 @@ public class JwtService {
     }
   }
 
-  private void validateClaims(JWTClaimsSet claims) throws GeneralSecurityException {
+  private void validateClaims(JWTClaimsSet claims) throws JwtException {
     if ((configuration.getIssuer() != null && !configuration.getIssuer().equals(claims.getIssuer())) ||
             new Date().after(claims.getExpirationTime()) ||
             claims.getClaim(IDENTITY_CLAIM) == null) {
