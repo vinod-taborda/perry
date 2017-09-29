@@ -1,6 +1,7 @@
 package gov.ca.cwds.security.shiro.web;
 
 import gov.ca.cwds.security.shiro.PerryShiroToken;
+import gov.ca.cwds.security.shiro.utils.Utils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -42,7 +43,7 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
     }
     PerryShiroToken token = new PerryShiroToken(tokenFromRequest);
 
-    LOGGER.debug("Created a PerryShiroToken Token for: {}.", tokenFromRequest);
+    LOGGER.debug("Created a PerryShiroToken Token for: {}.", Utils.replaceCRLF(tokenFromRequest));
     return token;
   }
 
