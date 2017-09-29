@@ -36,11 +36,11 @@ public class PerrySAFLogoutSuccessHandler extends PerryLogoutSuccessHandler impl
     try {
       safLogoutURI = new URI(safLogoutUrlBuilder.toString());
     } catch (URISyntaxException e) {
-      logger.error(e);
+      logger.error(e.getMessage());
       return false;
     }
     response.sendRedirect(safLogoutURI.toString());
-    return Boolean.TRUE;
+    return true;
   }
 
   public String getLogoutTokenUri() {
