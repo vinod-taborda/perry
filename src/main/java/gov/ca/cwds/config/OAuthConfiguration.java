@@ -3,7 +3,7 @@ package gov.ca.cwds.config;
 import gov.ca.cwds.service.OauthLogoutHandler;
 import gov.ca.cwds.service.SAFService;
 import gov.ca.cwds.service.oauth.SafUserInfoTokenService;
-import gov.ca.cwds.web.PerryLogoutSuccessHandler;
+import gov.ca.cwds.web.PerrySAFLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 /**
@@ -35,7 +34,7 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
   @Autowired
   private OauthLogoutHandler tokenRevocationLogoutHandler;
   @Autowired
-  private PerryLogoutSuccessHandler logoutSuccessHandler;
+  private PerrySAFLogoutSuccessHandler logoutSuccessHandler;
 
   @Bean
   @Primary
