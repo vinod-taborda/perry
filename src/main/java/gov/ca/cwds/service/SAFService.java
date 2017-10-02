@@ -57,11 +57,16 @@ public class SAFService {
     }
   }
 
+  private String getClientAccessToken() {
+    //TODO implement
+    throw new UnsupportedOperationException();
+  }
+
   public String invalidate(String token) throws SAFServiceException {
+    String clientAccessToken = getClientAccessToken();
     try {
       revokeTokenUri += "?token=" + token + "&token_type_hint=access_token";
-
-      return callSaf(revokeTokenUri, sso.getClientSecret(), String.class);
+      return callSaf(revokeTokenUri, clientAccessToken, String.class);
     } catch (Exception e) {
       throw new SAFServiceException(
           "Token Revocation problem for revokeTokenUri = " + revokeTokenUri, e);
