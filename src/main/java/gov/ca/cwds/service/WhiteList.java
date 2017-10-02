@@ -16,9 +16,8 @@ public class WhiteList {
   PerryProperties configuration;
 
   public void validate(String param, String url) {
-    String paramValue = url;
-    if (!disabled(configuration.getWhiteList()) && !configuration.getWhiteList().contains(paramValue)) {
-      throw new PerryException(param + ": " + paramValue + " is not registered");
+    if (!disabled(configuration.getWhiteList()) && !configuration.getWhiteList().contains(url)) {
+      throw new PerryException(param + ": " + url + " is not registered");
     }
   }
 
