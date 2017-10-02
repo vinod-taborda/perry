@@ -24,10 +24,8 @@ public class SAFService {
 
   private static final String BEARER = "bearer ";
   @JsonIgnore
-  @Autowired
   private RestTemplate client;
   @JsonIgnore
-  @Autowired
   private ResourceServerProperties sso;
 
   private String revokeTokenUri;
@@ -47,6 +45,16 @@ public class SAFService {
       throw new SAFServiceException(e);
     }
 
+  }
+
+  @Autowired
+  public void setClient(RestTemplate client) {
+    this.client = client;
+  }
+
+  @Autowired
+  public void setSso(ResourceServerProperties sso) {
+    this.sso = sso;
   }
 
   public Map validate(String token) throws SAFServiceException {
