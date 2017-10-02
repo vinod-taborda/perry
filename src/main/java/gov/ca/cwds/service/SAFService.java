@@ -62,6 +62,7 @@ public class SAFService {
   }
 
   private String getClientAccessToken() {
+    //TODO user OAuth2RestTemplate!!!
     StringBuilder sb = new StringBuilder(clientProperties.getAccessTokenUri())
         .append("?")
         .append("client_id=").append(sso.getClientId())
