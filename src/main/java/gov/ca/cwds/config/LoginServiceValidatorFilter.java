@@ -26,15 +26,14 @@ import static gov.ca.cwds.config.Constants.LOGIN_SERVICE_URL;
  */
 @Component
 public class LoginServiceValidatorFilter extends GenericFilterBean {
-  @Autowired
-  WhiteList whiteList;
+  private WhiteList whiteList;
 
-  private static final RequestMatcher LOGIN_REQUEST_MATCHER = new AntPathRequestMatcher(LOGIN_SERVICE_URL);
+  private RequestMatcher requestMatcher = new AntPathRequestMatcher(LOGIN_SERVICE_URL);
 
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
     HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-    if (LOGIN_REQUEST_MATCHER.matches(httpServletRequest)) {
+    if (requestMatcher.matches(httpServletRequest)) {
       validate(httpServletRequest);
       Logger.getLogger(this.getClass().getName()).fine("LOGIN SERVICE: Authentication process is started");
     }
@@ -52,8 +51,17 @@ public class LoginServiceValidatorFilter extends GenericFilterBean {
     }
   }
 
-  protected void registered(String param, HttpServletRequest servletRequest) {
+  @Autowired
+  public void setWhiteList(WhiteList whiteList) {
+    this.whiteList = whiteList;
+  }
+
+  private void registered(String param, HttpServletRequest servletRequest) {
     String paramValue = servletRequest.getParameter(param);
     whiteList.validate(param, paramValue);
+  }
+
+  public void setRequestMatcher(RequestMatcher requestMatcher) {
+    this.requestMatcher = requestMatcher;
   }
 }
