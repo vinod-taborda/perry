@@ -29,7 +29,6 @@ public class SAFService {
   @JsonIgnore
   private ResourceServerProperties sso;
   @JsonIgnore
-  @Autowired
   private ClientProperties clientProperties;
 
   private String revokeTokenUri;
@@ -61,6 +60,11 @@ public class SAFService {
     this.sso = sso;
   }
 
+  @Autowired
+  public void setClientProperties(ClientProperties clientProperties) {
+    this.clientProperties = clientProperties;
+  }
+
   public Map validate(String token) throws SAFServiceException {
     try {
       return callSaf(sso.getTokenInfoUri(), token, Map.class);
@@ -69,7 +73,7 @@ public class SAFService {
     }
   }
 
-  private String getClientAccessToken() {
+  protected String getClientAccessToken() {
     //TODO use OAuth2RestTemplate!!!
     StringBuilder sb = new StringBuilder(clientProperties.getAccessTokenUri())
         .append("?")

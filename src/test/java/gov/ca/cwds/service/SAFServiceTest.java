@@ -1,5 +1,6 @@
 package gov.ca.cwds.service;
 
+import gov.ca.cwds.config.OAuthConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -53,11 +54,22 @@ public class SAFServiceTest {
     ArgumentCaptor<HttpEntity> httpEntity = ArgumentCaptor.forClass(HttpEntity.class);
     ArgumentCaptor<Class> returnType = ArgumentCaptor.forClass(Class.class);
     safService.setRevokeTokenUri(URL);
+    OAuthConfiguration.ClientProperties clientProperties = new OAuthConfiguration.ClientProperties();
+    clientProperties.setAccessTokenUri("setAccessTokenUri");
+    safService.setClientProperties(clientProperties);
+
+
+    Mockito.when(client.getForObject(
+            "setAccessTokenUri?client_id=null&client_secret=null&grant_type=client_credentials",
+            String.class))
+            .thenReturn(TOKEN);
+
+
     safService.invalidate(TOKEN);
     Mockito.verify(client, Mockito.times(1)).postForObject(uriArg.capture(),
             httpEntity.capture(),
             returnType.capture());
-    assert uriArg.getValue().equals(URL);
+    assert uriArg.getValue().equals("URL?token=token&token_type_hint=access_token");
     assert returnType.getValue()== String.class;
     assert httpEntity.getValue().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0).equals(HEADER);
   }
