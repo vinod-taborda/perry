@@ -1,10 +1,8 @@
 package gov.ca.cwds.service.scripts;
 
-import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
 import groovy.json.JsonOutput;
-
-import javax.script.ScriptException;
 import java.io.IOException;
+import javax.script.ScriptException;
 
 /**
  * Created by dmitry.rudenko on 5/9/2017.
@@ -14,7 +12,7 @@ public class IdentityMappingScript extends Script {
         super(path, "authorization");
     }
 
-    public String map(UserAuthorization userAuthorization) throws ScriptException {
+    public String map(Object userAuthorization) throws ScriptException {
         return JsonOutput.toJson(eval(userAuthorization));
     }
 }
