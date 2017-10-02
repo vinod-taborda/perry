@@ -1,5 +1,6 @@
 package gov.ca.cwds.service;
 
+import gov.ca.cwds.config.OAuthConfiguration.ClientProperties;
 import java.util.Map;
 import org.apache.commons.lang3.NotImplementedException;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -27,6 +28,9 @@ public class SAFService {
   private RestTemplate client;
   @JsonIgnore
   private ResourceServerProperties sso;
+  @JsonIgnore
+  @Autowired
+  private ClientProperties clientProperties;
 
   private String revokeTokenUri;
 
@@ -65,11 +69,24 @@ public class SAFService {
     }
   }
 
+  private String getClientAccessToken() {
+    //TODO use OAuth2RestTemplate!!!
+    StringBuilder sb = new StringBuilder(clientProperties.getAccessTokenUri())
+        .append("?")
+        .append("client_id=").append(sso.getClientId())
+        .append("&").append("client_secret=").append(sso.getClientSecret())
+        .append("&").append("grant_type=client_credentials");
+    return client.getForObject(sb.toString(), String.class);
+  }
+
   public String invalidate(String token) throws SAFServiceException {
-    try{
-      return callSaf(revokeTokenUri, token, String.class);
+    String clientAccessToken = getClientAccessToken();
+    try {
+      revokeTokenUri += "?token=" + token + "&token_type_hint=access_token";
+      return callSaf(revokeTokenUri, clientAccessToken, String.class);
     } catch (Exception e) {
-      throw new SAFServiceException(e);
+      throw new SAFServiceException(
+          "Token Revocation problem for revokeTokenUri = " + revokeTokenUri, e);
     }
   }
 
