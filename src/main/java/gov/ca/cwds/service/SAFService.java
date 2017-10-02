@@ -58,10 +58,13 @@ public class SAFService {
   }
 
   public String invalidate(String token) throws SAFServiceException {
-    try{
-      return callSaf(revokeTokenUri, token, String.class);
+    try {
+      revokeTokenUri += "?token=" + token + "&token_type_hint=access_token";
+
+      return callSaf(revokeTokenUri, sso.getClientSecret(), String.class);
     } catch (Exception e) {
-      throw new SAFServiceException(e);
+      throw new SAFServiceException(
+          "Token Revocation problem for revokeTokenUri = " + revokeTokenUri, e);
     }
   }
 

@@ -29,7 +29,8 @@ public class PerrySAFLogoutSuccessHandler extends PerryLogoutSuccessHandler impl
     safLogoutUrlBuilder.append('?');
     Optional.ofNullable(callback).ifPresent(s -> {
       whiteList.validate("callback", callback);
-      safLogoutUrlBuilder.append("redirectToClientLogin=").append(s);
+      safLogoutUrlBuilder.append("redirectToClientLogin=").append(s)
+      .append("&message=");
     });
 
     URI safLogoutURI;
