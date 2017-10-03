@@ -1,12 +1,16 @@
 package gov.ca.cwds.config;
 
+import gov.ca.cwds.config.OAuthConfiguration.ClientProperties;
 import gov.ca.cwds.service.OauthLogoutHandler;
 import gov.ca.cwds.service.SAFService;
 import gov.ca.cwds.service.oauth.SafUserInfoTokenService;
 import gov.ca.cwds.web.PerrySAFLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.OAuth2ClientProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,6 +27,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 @Profile("prod")
 @EnableOAuth2Sso
 @Configuration
+@EnableConfigurationProperties(ClientProperties.class)
 public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -61,6 +66,20 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   public TokenStore tokenStore() {
     return new InMemoryTokenStore();
+  }
+
+  @ConfigurationProperties(prefix = "security.oauth2.client")
+  public static class ClientProperties{
+
+    private String accessTokenUri;
+
+    public String getAccessTokenUri() {
+      return accessTokenUri;
+    }
+
+    public void setAccessTokenUri(String accessTokenUri) {
+      this.accessTokenUri = accessTokenUri;
+    }
   }
 
 }

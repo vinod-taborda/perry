@@ -1,6 +1,7 @@
 package gov.ca.cwds.service;
 
 import gov.ca.cwds.PerryProperties;
+import gov.ca.cwds.config.OAuthConfiguration.ClientProperties;
 import gov.ca.cwds.data.auth.AssignmentUnitDao;
 import gov.ca.cwds.data.auth.CwsOfficeDao;
 import gov.ca.cwds.data.auth.StaffAuthorityPrivilegeDao;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @ComponentScan(basePackages = {"gov.ca.cwds.service"})
+@EnableConfigurationProperties(ClientProperties.class)
 @Profile({"UnitTest"})
 public class TokenLoginServiceTestConf {
 
@@ -51,6 +54,12 @@ public class TokenLoginServiceTestConf {
     return null;
   }
 
+  @Bean
+  public ClientProperties clientProperties() {
+    ClientProperties clientProperties = new ClientProperties();
+    clientProperties.setAccessTokenUri("");
+    return clientProperties;
+  }
 
   @Bean
   public SAFService safService() {

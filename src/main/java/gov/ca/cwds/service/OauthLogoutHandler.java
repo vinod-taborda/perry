@@ -2,6 +2,8 @@ package gov.ca.cwds.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
@@ -16,12 +18,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class OauthLogoutHandler implements LogoutHandler {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(OauthLogoutHandler.class);
+
   @Autowired
   private TokenService tokenService;
 
   @Override
   public void logout(HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) {
-    tokenService.invalidate((OAuth2Authentication) authentication);
+    try {
+      OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) authentication;
+      tokenService.invalidate(oAuth2Authentication);
+    } catch (Exception e) {
+      LOGGER.error("Token invalidation error.",  e);
+    }
   }
 }

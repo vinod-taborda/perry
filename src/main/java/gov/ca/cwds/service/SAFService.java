@@ -1,5 +1,6 @@
 package gov.ca.cwds.service;
 
+import gov.ca.cwds.config.OAuthConfiguration.ClientProperties;
 import java.util.Map;
 import org.apache.commons.lang3.NotImplementedException;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -24,11 +25,11 @@ public class SAFService {
 
   private static final String BEARER = "bearer ";
   @JsonIgnore
-  @Autowired
   private RestTemplate client;
   @JsonIgnore
-  @Autowired
   private ResourceServerProperties sso;
+  @JsonIgnore
+  private ClientProperties clientProperties;
 
   private String revokeTokenUri;
 
@@ -40,6 +41,10 @@ public class SAFService {
     this.revokeTokenUri = revokeTokenUri;
   }
 
+  public ClientProperties getClientProperties() {
+    return clientProperties;
+  }
+
   public Map getUserInfo(String accessToken) throws SAFServiceException {
     try {
       return callSaf(sso.getUserInfoUri(), accessToken, Map.class);
@@ -47,6 +52,21 @@ public class SAFService {
       throw new SAFServiceException(e);
     }
 
+  }
+
+  @Autowired
+  public void setClient(RestTemplate client) {
+    this.client = client;
+  }
+
+  @Autowired
+  public void setSso(ResourceServerProperties sso) {
+    this.sso = sso;
+  }
+
+  @Autowired
+  public void setClientProperties(ClientProperties clientProperties) {
+    this.clientProperties = clientProperties;
   }
 
   public Map validate(String token) throws SAFServiceException {
@@ -57,11 +77,24 @@ public class SAFService {
     }
   }
 
+  protected String getClientAccessToken() {
+    //TODO use OAuth2RestTemplate!!!
+    StringBuilder sb = new StringBuilder(clientProperties.getAccessTokenUri())
+        .append("?")
+        .append("client_id=").append(sso.getClientId())
+        .append("&").append("client_secret=").append(sso.getClientSecret())
+        .append("&").append("grant_type=client_credentials");
+    return client.getForObject(sb.toString(), String.class);
+  }
+
   public String invalidate(String token) throws SAFServiceException {
-    try{
-      return callSaf(revokeTokenUri, token, String.class);
+    String clientAccessToken = getClientAccessToken();
+    try {
+      revokeTokenUri += "?token=" + token + "&token_type_hint=access_token";
+      return callSaf(revokeTokenUri, clientAccessToken, String.class);
     } catch (Exception e) {
-      throw new SAFServiceException(e);
+      throw new SAFServiceException(
+          "Token Revocation problem for revokeTokenUri = " + revokeTokenUri, e);
     }
   }
 

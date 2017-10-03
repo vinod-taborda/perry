@@ -12,14 +12,18 @@ import java.util.List;
  */
 @Component
 public class WhiteList {
-  @Autowired
+
   PerryProperties configuration;
 
   public void validate(String param, String url) {
-    String paramValue = url;
-    if (!disabled(configuration.getWhiteList()) && !configuration.getWhiteList().contains(paramValue)) {
-      throw new PerryException(param + ": " + paramValue + " is not registered");
+    if (!disabled(configuration.getWhiteList()) && !configuration.getWhiteList().contains(url)) {
+      throw new PerryException(param + ": " + url + " is not registered");
     }
+  }
+
+  @Autowired
+  public void setConfiguration(PerryProperties configuration) {
+    this.configuration = configuration;
   }
 
   private boolean disabled(List<String> whiteList) {
