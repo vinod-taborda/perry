@@ -1,5 +1,6 @@
 package gov.ca.cwds.rest.api;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.service.TokenLoginService;
 import gov.ca.cwds.service.TokenService;
 import gov.ca.cwds.service.WhiteList;
@@ -46,6 +47,7 @@ public class LoginResourceV2 {
   @ApiOperation(
       value = "Login. Applications should direct users to this endpoint for login.  When authentication complete, user will be redirected back to callback with auth 'token' as a query parameter (endpoint used for backward compatibility)",
       code = 200)
+  @SuppressFBWarnings("UNVALIDATED_REDIRECT")//white list usage right before redirect
   public void loginV2(@NotNull @Context final HttpServletResponse response,
       @ApiParam(required = true, name = "callback",
           value = "URL to send the user back to after authentication") @RequestParam(name = "callback") String callback,

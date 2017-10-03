@@ -1,5 +1,6 @@
 package gov.ca.cwds.web;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.service.WhiteList;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -32,6 +33,7 @@ public class PerryLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler imp
     }
   }
 
+  @SuppressFBWarnings("UNVALIDATED_REDIRECT")//white list usage right before redirect
   protected boolean tryRedirect(HttpServletResponse response, String callback) throws IOException {
     if (callback != null) {
       whiteList.validate("callback", callback);
