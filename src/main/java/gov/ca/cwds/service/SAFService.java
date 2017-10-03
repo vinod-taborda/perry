@@ -42,6 +42,14 @@ public class SAFService {
     this.revokeTokenUri = revokeTokenUri;
   }
 
+  public ClientProperties getClientProperties() {
+    return clientProperties;
+  }
+
+  public void setClientProperties(ClientProperties clientProperties) {
+    this.clientProperties = clientProperties;
+  }
+
   public Map getUserInfo(String accessToken) throws SAFServiceException {
     try {
       return callSaf(sso.getUserInfoUri(), accessToken, Map.class);

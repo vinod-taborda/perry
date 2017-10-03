@@ -1,5 +1,9 @@
 package gov.ca.cwds.service;
 
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+
+import gov.ca.cwds.config.OAuthConfiguration.ClientProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,9 +21,12 @@ import java.util.Map;
 public class SAFServiceTest {
   private SAFService safService;
   private ResourceServerProperties resourceServerProperties;
+  private ClientProperties clientProperties;
   private static final String URL = "URL";
   private static final String TOKEN = "token";
+  private static final String CLIENT_TOKEN = "client_token";
   private static final String HEADER = "bearer " + TOKEN;
+  private static final String CLIENT_TOKEN_HEADER = "bearer " + CLIENT_TOKEN;
   private RestTemplate client;
 
   @Before
@@ -31,6 +38,9 @@ public class SAFServiceTest {
     resourceServerProperties.setTokenInfoUri(URL);
     resourceServerProperties.setUserInfoUri(URL);
     safService.setSso(resourceServerProperties);
+    clientProperties = new ClientProperties();
+    clientProperties.setAccessTokenUri(URL);
+    safService.setClientProperties(clientProperties);
   }
 
   @Test
@@ -49,6 +59,7 @@ public class SAFServiceTest {
 
   @Test
   public void testInvalidate() throws SAFServiceException {
+    Mockito.when(client.getForObject(anyString(), anyObject())).thenReturn(CLIENT_TOKEN);
     ArgumentCaptor<String> uriArg = ArgumentCaptor.forClass(String.class);
     ArgumentCaptor<HttpEntity> httpEntity = ArgumentCaptor.forClass(HttpEntity.class);
     ArgumentCaptor<Class> returnType = ArgumentCaptor.forClass(Class.class);
@@ -57,9 +68,9 @@ public class SAFServiceTest {
     Mockito.verify(client, Mockito.times(1)).postForObject(uriArg.capture(),
             httpEntity.capture(),
             returnType.capture());
-    assert uriArg.getValue().equals(URL);
+    assert uriArg.getValue().equals(URL + "?token="+ TOKEN +"&token_type_hint=access_token");
     assert returnType.getValue()== String.class;
-    assert httpEntity.getValue().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0).equals(HEADER);
+    assert httpEntity.getValue().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0).equals(CLIENT_TOKEN_HEADER);
   }
 
   @Test
