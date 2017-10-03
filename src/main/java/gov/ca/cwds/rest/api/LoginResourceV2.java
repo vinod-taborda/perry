@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.api;
 
 import gov.ca.cwds.service.TokenLoginService;
+import gov.ca.cwds.service.TokenService;
 import gov.ca.cwds.service.WhiteList;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.core.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +30,8 @@ public class LoginResourceV2 {
   TokenLoginService loginService;
   @Autowired
   WhiteList whiteList;
+  @Autowired
+  TokenService tokenService;
 
   /**
    *
@@ -81,6 +85,24 @@ public class LoginResourceV2 {
     } catch (Exception e) {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return "Unauthorized";
+    }
+  }
+
+  @POST
+  @RequestMapping("/authn/invalidate/v2")
+  @ApiOperation(
+      value = "Invalidate token",
+      code = 200)
+  public String invalidate(@NotNull @Context final HttpServletResponse response,
+      @NotNull @ApiParam(required = true, name = "token",
+          value = "The token to invalidate") @RequestParam("token") String token) {
+    try{
+      tokenService.invalidate(token);
+      response.setStatus(HttpServletResponse.SC_OK);
+      return "OK";
+    } catch (Exception e) {
+      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+      return "Invalid Token";
     }
   }
 }

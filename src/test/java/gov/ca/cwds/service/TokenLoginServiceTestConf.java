@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.web.client.RestTemplate;
@@ -51,6 +52,11 @@ public class TokenLoginServiceTestConf {
 
   @Bean
   ResourceServerProperties properties() {
+    return null;
+  }
+
+  @Bean
+  OAuth2RestTemplate oAuth2RestTemplate() {
     return null;
   }
 
@@ -107,8 +113,8 @@ public class TokenLoginServiceTestConf {
   }
 
   @Bean
-  public TokenService tokenService() {
-    return new TokenService();
+  public TokenServiceImpl tokenService() {
+    return new TokenServiceImpl();
   }
 
   @Bean

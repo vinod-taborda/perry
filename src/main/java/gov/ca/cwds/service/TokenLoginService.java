@@ -31,7 +31,7 @@ public class TokenLoginService implements LoginService {
   @Autowired
   TokenStore tokenStore;
   @Autowired
-  TokenService tokenService;
+  TokenServiceImpl tokenService;
 
   public String login(String providerId) throws Exception {
     SecurityContext securityContext = SecurityContextHolder.getContext();
