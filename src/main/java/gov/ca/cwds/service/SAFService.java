@@ -1,6 +1,5 @@
 package gov.ca.cwds.service;
 
-import gov.ca.cwds.config.OAuthConfiguration.ClientProperties;
 import java.util.Map;
 import org.apache.commons.lang3.NotImplementedException;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -11,7 +10,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -26,10 +28,12 @@ public class SAFService {
   private static final String BEARER = "bearer ";
   @JsonIgnore
   private RestTemplate client;
+
+  @JsonIgnore
+  private OAuth2RestTemplate restTemplate;
+
   @JsonIgnore
   private ResourceServerProperties sso;
-  @JsonIgnore
-  private ClientProperties clientProperties;
 
   private String revokeTokenUri;
 
@@ -39,10 +43,6 @@ public class SAFService {
 
   public void setRevokeTokenUri(String revokeTokenUri) {
     this.revokeTokenUri = revokeTokenUri;
-  }
-
-  public ClientProperties getClientProperties() {
-    return clientProperties;
   }
 
   public Map getUserInfo(String accessToken) throws SAFServiceException {
@@ -65,8 +65,8 @@ public class SAFService {
   }
 
   @Autowired
-  public void setClientProperties(ClientProperties clientProperties) {
-    this.clientProperties = clientProperties;
+  public void setRestTemplate(OAuth2RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
   }
 
   public Map validate(String token) throws SAFServiceException {
@@ -77,21 +77,15 @@ public class SAFService {
     }
   }
 
-  protected String getClientAccessToken() {
-    //TODO use OAuth2RestTemplate!!!
-    StringBuilder sb = new StringBuilder(clientProperties.getAccessTokenUri())
-        .append("?")
-        .append("client_id=").append(sso.getClientId())
-        .append("&").append("client_secret=").append(sso.getClientSecret())
-        .append("&").append("grant_type=client_credentials");
-    return client.getForObject(sb.toString(), String.class);
-  }
-
   public String invalidate(String token) throws SAFServiceException {
-    String clientAccessToken = getClientAccessToken();
     try {
-      revokeTokenUri += "?token=" + token + "&token_type_hint=access_token";
-      return callSaf(revokeTokenUri, clientAccessToken, String.class);
+      HttpHeaders headers = new HttpHeaders();
+      MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+      params.add("token", token);
+      params.add("token_type_hint", "access_token");
+      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+      HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+      return restTemplate.postForEntity(revokeTokenUri, request, String.class).getBody();
     } catch (Exception e) {
       throw new SAFServiceException(
           "Token Revocation problem for revokeTokenUri = " + revokeTokenUri, e);
