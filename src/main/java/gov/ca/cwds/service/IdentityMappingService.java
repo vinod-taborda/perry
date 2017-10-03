@@ -22,9 +22,9 @@ public class IdentityMappingService {
 
     private static final String DEFAULT_SP_ID_NAME = "default";
 
-    @Autowired
+
     private UserAuthorizationService userAuthorizationService;
-    @Autowired
+
     private PerryProperties configuration;
 
     public String map(UniversalUserToken subject, String providerId) {
@@ -52,5 +52,15 @@ public class IdentityMappingService {
             return spConfiguration.getIdentityMapping();
         }
         return null;
+    }
+
+    @Autowired
+    public void setUserAuthorizationService(UserAuthorizationService userAuthorizationService) {
+        this.userAuthorizationService = userAuthorizationService;
+    }
+
+    @Autowired
+    public void setConfiguration(PerryProperties configuration) {
+        this.configuration = configuration;
     }
 }
