@@ -5,6 +5,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Profile;
@@ -23,6 +25,7 @@ public class PerrySAFLogoutSuccessHandler extends PerryLogoutSuccessHandler impl
   private String logoutTokenUri;
 
   @Override
+  @SuppressFBWarnings("UNVALIDATED_REDIRECT")//white list usage right before redirect
   protected boolean tryRedirect(HttpServletResponse response, String callback) throws IOException {
     assert(StringUtils.isNotBlank(logoutTokenUri));
     StringBuilder safLogoutUrlBuilder = new StringBuilder(logoutTokenUri);
