@@ -26,12 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("LoginResourceV2")
 public class LoginResourceV2 {
 
-  @Autowired
-  TokenLoginService loginService;
-  @Autowired
-  WhiteList whiteList;
-  @Autowired
-  TokenService tokenService;
+
+  private TokenLoginService loginService;
+  private WhiteList whiteList;
+  private TokenService tokenService;
 
   /**
    *
@@ -104,5 +102,20 @@ public class LoginResourceV2 {
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return "Invalid Token";
     }
+  }
+
+  @Autowired
+  public void setLoginService(TokenLoginService loginService) {
+    this.loginService = loginService;
+  }
+
+  @Autowired
+  public void setWhiteList(WhiteList whiteList) {
+    this.whiteList = whiteList;
+  }
+
+  @Autowired
+  public void setTokenService(TokenService tokenService) {
+    this.tokenService = tokenService;
   }
 }
