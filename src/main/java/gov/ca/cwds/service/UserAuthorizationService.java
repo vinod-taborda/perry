@@ -149,4 +149,27 @@ public class UserAuthorizationService {
             collect(Collectors.toSet());
   }
 
+  public void setUserIdDao(UserIdDao userIdDao) {
+    this.userIdDao = userIdDao;
+  }
+
+  public void setStaffAuthorityPrivilegeDao(StaffAuthorityPrivilegeDao staffAuthorityPrivilegeDao) {
+    this.staffAuthorityPrivilegeDao = staffAuthorityPrivilegeDao;
+  }
+
+  public void setStaffUnitAuthorityDao(StaffUnitAuthorityDao staffUnitAuthorityDao) {
+    this.staffUnitAuthorityDao = staffUnitAuthorityDao;
+  }
+
+  public void setCwsOfficeDao(CwsOfficeDao cwsOfficeDao) {
+    this.cwsOfficeDao = cwsOfficeDao;
+  }
+
+  public void setAssignmentUnitDao(AssignmentUnitDao assignmentUnitDao) {
+    this.assignmentUnitDao = assignmentUnitDao;
+  }
+
+  public void setStaffPersonDao(StaffPersonDao staffPersonDao) {
+    this.staffPersonDao = staffPersonDao;
+  }
 }

@@ -22,7 +22,6 @@ public class OauthLogoutHandler implements LogoutHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OauthLogoutHandler.class);
 
-  @Autowired
   private TokenServiceImpl tokenService;
   @Autowired
   private TokenStore tokenStore;
@@ -42,5 +41,10 @@ public class OauthLogoutHandler implements LogoutHandler {
     } catch (Exception e) {
       LOGGER.error("Token invalidation error.", e);
     }
+  }
+
+  @Autowired
+  public void setTokenService(TokenService tokenService) {
+    this.tokenService = tokenService;
   }
 }
