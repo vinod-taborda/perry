@@ -41,8 +41,8 @@ public class SAFServiceTest {
     ArgumentCaptor<Class> returnType = ArgumentCaptor.forClass(Class.class);
     safService.validate(TOKEN);
     Mockito.verify(client, Mockito.times(1)).postForObject(uriArg.capture(),
-            httpEntity.capture(),
-            returnType.capture());
+        httpEntity.capture(),
+        returnType.capture());
     assert uriArg.getValue().equals(URL);
     assert returnType.getValue()== Map.class;
     assert httpEntity.getValue().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0).equals(HEADER);
@@ -60,15 +60,15 @@ public class SAFServiceTest {
 
 
     Mockito.when(client.getForObject(
-            "setAccessTokenUri?client_id=null&client_secret=null&grant_type=client_credentials",
-            String.class))
-            .thenReturn(TOKEN);
+        "setAccessTokenUri?client_id=null&client_secret=null&grant_type=client_credentials",
+        String.class))
+        .thenReturn(TOKEN);
 
 
     safService.invalidate(TOKEN);
     Mockito.verify(client, Mockito.times(1)).postForObject(uriArg.capture(),
-            httpEntity.capture(),
-            returnType.capture());
+        httpEntity.capture(),
+        returnType.capture());
     assert uriArg.getValue().equals("URL?token=token&token_type_hint=access_token");
     assert returnType.getValue()== String.class;
     assert httpEntity.getValue().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0).equals(HEADER);
@@ -81,8 +81,8 @@ public class SAFServiceTest {
     ArgumentCaptor<Class> returnType = ArgumentCaptor.forClass(Class.class);
     safService.getUserInfo(TOKEN);
     Mockito.verify(client, Mockito.times(1)).postForObject(uriArg.capture(),
-            httpEntity.capture(),
-            returnType.capture());
+        httpEntity.capture(),
+        returnType.capture());
     assert uriArg.getValue().equals(URL);
     assert returnType.getValue()== Map.class;
     assert httpEntity.getValue().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0).equals(HEADER);
