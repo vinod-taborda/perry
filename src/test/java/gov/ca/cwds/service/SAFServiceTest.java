@@ -1,10 +1,11 @@
 package gov.ca.cwds.service;
 
-import gov.ca.cwds.config.OAuthConfiguration;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 
+import gov.ca.cwds.config.OAuthConfiguration;
 import gov.ca.cwds.config.OAuthConfiguration.ClientProperties;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,8 +14,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceS
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 /**
  * Created by dmitry.rudenko on 10/2/2017.
