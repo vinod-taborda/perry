@@ -22,8 +22,8 @@ public class OauthLogoutHandler implements LogoutHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OauthLogoutHandler.class);
 
-  private TokenServiceImpl tokenService;
-  @Autowired
+  private TokenService tokenService;
+
   private TokenStore tokenStore;
 
   @Override
@@ -46,5 +46,10 @@ public class OauthLogoutHandler implements LogoutHandler {
   @Autowired
   public void setTokenService(TokenService tokenService) {
     this.tokenService = tokenService;
+  }
+
+  @Autowired
+  public void setTokenStore(TokenStore tokenStore) {
+    this.tokenStore = tokenStore;
   }
 }
