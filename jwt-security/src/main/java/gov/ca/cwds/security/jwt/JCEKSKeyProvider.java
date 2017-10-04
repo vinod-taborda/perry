@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Created by dmitry.rudenko on 6/30/2017.
@@ -44,6 +45,7 @@ class JCEKSKeyProvider implements KeyProvider {
     }
   }
 
+  @SuppressFBWarnings("UNVALIDATED_REDIRECT")
   private KeyStore getKeyStore() {
     try {
       KeyStore ks = KeyStore.getInstance("JCEKS");
