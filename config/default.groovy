@@ -1,3 +1,8 @@
+def authorization = user.authorization
+if (authorization == null) {
+    return [user : user.userId,
+            roles: user.roles]
+}
 privileges = []
 authorization.authorityPrivilege.findAll {
     it.authPrivilegeCode == "P" && it.endDate == null

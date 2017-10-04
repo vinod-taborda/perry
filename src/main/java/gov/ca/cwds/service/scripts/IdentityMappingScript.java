@@ -1,5 +1,7 @@
 package gov.ca.cwds.service.scripts;
 
+import gov.ca.cwds.UniversalUserToken;
+import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
 import groovy.json.JsonOutput;
 import java.io.IOException;
 import javax.script.ScriptException;
@@ -9,10 +11,10 @@ import javax.script.ScriptException;
  */
 public class IdentityMappingScript extends Script {
     public IdentityMappingScript(String path) throws IOException {
-        super(path, "authorization");
+        super(path, "user");
     }
 
-    public String map(Object userAuthorization) throws ScriptException {
-        return JsonOutput.toJson(eval(userAuthorization));
+    public String map(UniversalUserToken user) throws ScriptException {
+        return JsonOutput.toJson(eval(user));
     }
 }
