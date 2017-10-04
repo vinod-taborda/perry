@@ -10,7 +10,8 @@ security:
      clientAuthenticationScheme: header
      scope: read
    resource:
-      userInfoUri: ${SAF_USER_INFO_URI:http://localhost:9081/identity-provider/me}
+      userInfoUri: ${SAF_USER_INFO_URI:http://localhost:9081/identity-provider/resource/me}
+      tokenInfoUri: ${SAF_VALIDATE_TOKEN_URI:http://localhost:9081/identity-provider/resource/validatetoken}
 spring:
       datasource:
           driver-class-name: com.ibm.db2.jcc.DB2Driver
