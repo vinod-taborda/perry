@@ -20,7 +20,7 @@ public class SafUserInfoTokenService extends UserInfoTokenServices {
 
   private SAFService safService;
   private String clientId;
-  @Autowired
+
   private PrincipalExtractor principalExtractor;
 
   public SafUserInfoTokenService(SAFService safService, String userInfoEndpointUrl,
@@ -55,4 +55,9 @@ public class SafUserInfoTokenService extends UserInfoTokenServices {
     return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
   }
 
+  @Override
+  @Autowired
+  public void setPrincipalExtractor(PrincipalExtractor principalExtractor) {
+    this.principalExtractor = principalExtractor;
+  }
 }

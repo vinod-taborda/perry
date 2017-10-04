@@ -23,6 +23,7 @@ dependencies {
     compileOnly('javax.servlet:javax.servlet-api:3.1.0')
     compileOnly('org.glassfish.jersey.core:jersey-client:2.25.1')
     compileOnly('javax.ws.rs:javax.ws.rs-api:2.0.1')
+    compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
     compile project(':jwt-security')
 
     testCompile group: 'junit', name: 'junit', version: '4.12'

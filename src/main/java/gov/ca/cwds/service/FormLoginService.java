@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 @Profile("dev")
 @Service
 public class FormLoginService implements LoginService {
-  @Autowired
+
   private TokenGeneratorService tokenGeneratorService;
-  @Autowired
+
   private JwtService jwtService;
 
   @Override
@@ -30,5 +30,15 @@ public class FormLoginService implements LoginService {
   @Override
   public String validate(String token) throws Exception {
     return jwtService.validate(token);
+  }
+
+  @Autowired
+  public void setTokenGeneratorService(TokenGeneratorService tokenGeneratorService) {
+    this.tokenGeneratorService = tokenGeneratorService;
+  }
+
+  @Autowired
+  public void setJwtService(JwtService jwtService) {
+    this.jwtService = jwtService;
   }
 }

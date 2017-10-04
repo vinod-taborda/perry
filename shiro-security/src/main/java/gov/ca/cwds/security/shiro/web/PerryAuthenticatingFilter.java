@@ -1,5 +1,6 @@
 package gov.ca.cwds.security.shiro.web;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.security.shiro.PerryShiroToken;
 import gov.ca.cwds.security.shiro.utils.Utils;
 import org.apache.shiro.SecurityUtils;
@@ -34,6 +35,7 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
    * @return the authentication token
    */
   @Override
+  @SuppressFBWarnings("CRLF_INJECTION_LOGS")// Utils.replaceCRLF usage!
   protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     String tokenFromRequest = getToken(httpServletRequest);

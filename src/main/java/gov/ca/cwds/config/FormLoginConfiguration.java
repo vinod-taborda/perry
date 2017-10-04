@@ -44,6 +44,7 @@ public class FormLoginConfiguration extends WebSecurityConfigurerAdapter {
                         "/images/**",
                         "/dev/**",
                         "/authn/validate*/**",
+                        "/authn/invalidate*/**",
                         "/manage/**",
                         "/templates/*").permitAll()
                 .anyRequest().authenticated()

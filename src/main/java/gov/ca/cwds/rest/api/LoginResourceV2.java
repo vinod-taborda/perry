@@ -1,6 +1,8 @@
 package gov.ca.cwds.rest.api;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.service.TokenLoginService;
+import gov.ca.cwds.service.TokenService;
 import gov.ca.cwds.service.WhiteList;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.core.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -24,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("LoginResourceV2")
 public class LoginResourceV2 {
 
-  @Autowired
-  TokenLoginService loginService;
-  @Autowired
-  WhiteList whiteList;
+
+  private TokenLoginService loginService;
+  private WhiteList whiteList;
+  private TokenService tokenService;
 
   /**
    *
@@ -44,6 +47,7 @@ public class LoginResourceV2 {
   @ApiOperation(
       value = "Login. Applications should direct users to this endpoint for login.  When authentication complete, user will be redirected back to callback with auth 'token' as a query parameter (endpoint used for backward compatibility)",
       code = 200)
+  @SuppressFBWarnings("UNVALIDATED_REDIRECT")//white list usage right before redirect
   public void loginV2(@NotNull @Context final HttpServletResponse response,
       @ApiParam(required = true, name = "callback",
           value = "URL to send the user back to after authentication") @RequestParam(name = "callback") String callback,
@@ -82,5 +86,38 @@ public class LoginResourceV2 {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return "Unauthorized";
     }
+  }
+
+  @POST
+  @RequestMapping("/authn/invalidate/v2")
+  @ApiOperation(
+      value = "Invalidate token",
+      code = 200)
+  public String invalidate(@NotNull @Context final HttpServletResponse response,
+      @NotNull @ApiParam(required = true, name = "token",
+          value = "The token to invalidate") @RequestParam("token") String token) {
+    try{
+      tokenService.invalidate(token);
+      response.setStatus(HttpServletResponse.SC_OK);
+      return "OK";
+    } catch (Exception e) {
+      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+      return "Invalid Token";
+    }
+  }
+
+  @Autowired
+  public void setLoginService(TokenLoginService loginService) {
+    this.loginService = loginService;
+  }
+
+  @Autowired
+  public void setWhiteList(WhiteList whiteList) {
+    this.whiteList = whiteList;
+  }
+
+  @Autowired
+  public void setTokenService(TokenService tokenService) {
+    this.tokenService = tokenService;
   }
 }
