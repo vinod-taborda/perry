@@ -1,5 +1,6 @@
 package gov.ca.cwds.data.persistence.auth;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -369,6 +370,7 @@ public class CwsOffice extends CmsPersistentObject {
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
+  @SuppressFBWarnings("MDM_BIGDECIMAL_EQUALS") //BigDecimal.equals used for equals/hashCode only
   public final boolean equals(Object obj) {
     if (this == obj) {
       return true;
