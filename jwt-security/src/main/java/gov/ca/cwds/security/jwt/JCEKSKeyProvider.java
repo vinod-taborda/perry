@@ -45,7 +45,7 @@ class JCEKSKeyProvider implements KeyProvider {
     }
   }
 
-  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN") //keystore path taken from config file
   private KeyStore getKeyStore() {
     try {
       KeyStore ks = KeyStore.getInstance("JCEKS");
