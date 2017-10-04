@@ -6,7 +6,7 @@ security:
      accessTokenUri: ${SAF_RETRIEVE_TOKEN_PATH:https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/token}
      userAuthorizationUri: ${SAF_AUTH_PATH:https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/oauth2/authorize}
      tokenName: oauth_token
-     authenticationScheme: query
+     authenticationScheme: header
      clientAuthenticationScheme: form
      scope: ${SAF_SCOPE:basicprofile,racfid}
    resource:
