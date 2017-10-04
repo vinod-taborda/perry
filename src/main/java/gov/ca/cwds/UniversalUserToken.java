@@ -1,5 +1,9 @@
 package gov.ca.cwds;
 
+import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -8,6 +12,16 @@ import java.util.Set;
 public class UniversalUserToken {
   private String userId;
   private Set<String> roles;
+  private Map<String, Object> parameters = new HashMap<>();
+  private UserAuthorization authorization;
+
+  public Object getParameter(String parameterName) {
+    return parameters.get(parameterName);
+  }
+
+  public Object setParameter(String parameterName, Object parameter) {
+    return parameters.put(parameterName, parameter);
+  }
 
   public String getUserId() {
     return userId;
@@ -27,5 +41,13 @@ public class UniversalUserToken {
 
   public String toString() {
     return userId;
+  }
+
+  public UserAuthorization getAuthorization() {
+    return authorization;
+  }
+
+  public void setAuthorization(UserAuthorization authorization) {
+    this.authorization = authorization;
   }
 }

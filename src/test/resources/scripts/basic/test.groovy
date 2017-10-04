@@ -1,1 +1,1 @@
-[user: authorization.userId, roles: ["none"], staffId: authorization.staffPersonId]
+[user: user.authorization.userId, roles: ["none"], staffId: user.authorization.staffPersonId]

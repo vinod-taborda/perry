@@ -20,47 +20,46 @@ import javax.transaction.Transactional;
 @Transactional
 public class IdentityMappingService {
 
-    private static final String DEFAULT_SP_ID_NAME = "default";
+  private static final String DEFAULT_SP_ID_NAME = "default";
 
 
-    private UserAuthorizationService userAuthorizationService;
+  private UserAuthorizationService userAuthorizationService;
 
-    private PerryProperties configuration;
+  private PerryProperties configuration;
 
-    public String map(UniversalUserToken subject, String providerId) {
-        IdentityMappingScript mappingScript = loadMappingScriptForServiceProvider(providerId);
-        if (mappingScript != null) {
-            UserAuthorization authorization = userAuthorizationService.find(subject.getUserId());
-            if(authorization != null) {
-                try {
-                    return mappingScript.map(authorization);
-                } catch (ScriptException e) {
-                    throw new IllegalArgumentException("Identity Mapping failed for service provider: " + providerId, e);
-                }
-            }
-        }
-        return subject.getUserId();
+  public String map(UniversalUserToken subject, String providerId) {
+    IdentityMappingScript mappingScript = loadMappingScriptForServiceProvider(providerId);
+    if (mappingScript != null) {
+      UserAuthorization authorization = userAuthorizationService.find(subject.getUserId());
+      subject.setAuthorization(authorization);
+      try {
+        return mappingScript.map(subject);
+      } catch (ScriptException e) {
+        throw new IllegalArgumentException("Identity Mapping failed for service provider: " + providerId, e);
+      }
     }
+    return subject.getUserId();
+  }
 
-    private IdentityMappingScript loadMappingScriptForServiceProvider(String serviceProviderId) {
-        return loadScript(StringUtils.isEmpty(serviceProviderId) ? DEFAULT_SP_ID_NAME : serviceProviderId);
-    }
+  private IdentityMappingScript loadMappingScriptForServiceProvider(String serviceProviderId) {
+    return loadScript(StringUtils.isEmpty(serviceProviderId) ? DEFAULT_SP_ID_NAME : serviceProviderId);
+  }
 
-    private IdentityMappingScript loadScript(String serviceProviderId) {
-        PerryProperties.ServiceProviderConfiguration spConfiguration = configuration.getServiceProviders().get(serviceProviderId);
-        if(spConfiguration != null) {
-            return spConfiguration.getIdentityMapping();
-        }
-        return null;
+  private IdentityMappingScript loadScript(String serviceProviderId) {
+    PerryProperties.ServiceProviderConfiguration spConfiguration = configuration.getServiceProviders().get(serviceProviderId);
+    if (spConfiguration != null) {
+      return spConfiguration.getIdentityMapping();
     }
+    return null;
+  }
 
-    @Autowired
-    public void setUserAuthorizationService(UserAuthorizationService userAuthorizationService) {
-        this.userAuthorizationService = userAuthorizationService;
-    }
+  @Autowired
+  public void setUserAuthorizationService(UserAuthorizationService userAuthorizationService) {
+    this.userAuthorizationService = userAuthorizationService;
+  }
 
-    @Autowired
-    public void setConfiguration(PerryProperties configuration) {
-        this.configuration = configuration;
-    }
+  @Autowired
+  public void setConfiguration(PerryProperties configuration) {
+    this.configuration = configuration;
+  }
 }
