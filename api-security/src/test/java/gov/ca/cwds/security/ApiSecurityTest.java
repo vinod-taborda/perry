@@ -3,7 +3,7 @@ package gov.ca.cwds.security;
 import com.google.inject.Inject;
 import gov.ca.cwds.security.authorizer.TestAuthorizer;
 import gov.ca.cwds.security.module.SecurityModule;
-import gov.ca.cwds.security.service.TestService;
+import gov.ca.cwds.testapp.service.TestService;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.junit.Before;
 import org.junit.Test;

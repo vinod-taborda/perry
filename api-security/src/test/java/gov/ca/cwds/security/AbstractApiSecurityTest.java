@@ -1,12 +1,11 @@
 package gov.ca.cwds.security;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import gov.ca.cwds.rest.BaseApiApplication;
 import gov.ca.cwds.security.module.SecurityModule;
-import gov.ca.cwds.security.module.TestModule;
-import gov.ca.cwds.security.realm.AbacRealm;
+import gov.ca.cwds.testapp.module.TestModule;
+import gov.ca.cwds.security.realm.TestRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.config.IniSecurityManagerFactory;
@@ -34,7 +33,7 @@ public class AbstractApiSecurityTest {
   }
 
   static void addPermission(String permission) {
-    AbacRealm.addPermission("case:read:1");
+    TestRealm.addPermission("case:read:1");
   }
 
   void initInjector(SecurityModule securityModule) throws Exception {

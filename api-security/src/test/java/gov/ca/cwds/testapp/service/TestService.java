@@ -1,4 +1,4 @@
-package gov.ca.cwds.security.service;
+package gov.ca.cwds.testapp.service;
 
 /**
  * Created by dmitry.rudenko on 10/6/2017.

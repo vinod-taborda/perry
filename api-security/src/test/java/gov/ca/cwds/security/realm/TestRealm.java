@@ -9,7 +9,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 /**
  * Created by dmitry.rudenko on 9/22/2017.
  */
-public class AbacRealm extends JwtRealm {
+public class TestRealm extends JwtRealm {
   private static SimpleAuthorizationInfo authorizationInfo;
   static {
     authorizationInfo = new SimpleAuthorizationInfo();

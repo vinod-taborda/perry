@@ -1,8 +1,8 @@
-package gov.ca.cwds.security.module;
+package gov.ca.cwds.testapp.module;
 
 import com.google.inject.AbstractModule;
-import gov.ca.cwds.security.service.TestService;
-import gov.ca.cwds.security.service.TestServiceImpl;
+import gov.ca.cwds.testapp.service.TestService;
+import gov.ca.cwds.testapp.service.TestServiceImpl;
 
 /**
  * Created by dmitry.rudenko on 10/6/2017.
