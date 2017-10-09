@@ -5,6 +5,7 @@ import gov.ca.cwds.security.annotations.Authorize;
 
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 /**
  * Created by dmitry.rudenko on 10/9/2017.
@@ -26,11 +27,11 @@ public class SecuredMethodMatcher extends AbstractMatcher<Method> {
   }
 
   private boolean hasAnnotatedPrameters(Method method) {
-    for (AnnotatedType annotatedType : method.getAnnotatedParameterTypes()) {
-      if (annotatedType.isAnnotationPresent(Authorize.class)) {
+    for (Parameter parameter : method.getParameters()) {
+      if (parameter.isAnnotationPresent(Authorize.class)) {
         return true;
       }
     }
-    return true;
+    return false;
   }
 }
