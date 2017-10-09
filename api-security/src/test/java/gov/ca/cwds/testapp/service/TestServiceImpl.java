@@ -4,6 +4,9 @@ import gov.ca.cwds.security.annotations.Authorize;
 import gov.ca.cwds.testapp.domain.Case;
 import gov.ca.cwds.testapp.domain.CaseDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by dmitry.rudenko on 10/6/2017.
  */
@@ -38,5 +41,18 @@ public class TestServiceImpl implements TestService {
     CaseDTO caseDTO = new CaseDTO();
     caseDTO.setCaseObject(caseObject);
     return caseDTO;
+  }
+
+  @Override
+  @Authorize("case:read:caseDTO.caseObject.id")
+  public List<CaseDTO> testFilter() {
+    List<CaseDTO> result = new ArrayList<>();
+    CaseDTO caseDTO = new CaseDTO();
+    caseDTO.setCaseObject(new Case(1L, "valid"));
+    result.add(caseDTO);
+    caseDTO = new CaseDTO();
+    caseDTO.setCaseObject(new Case(2L, "name"));
+    result.add(caseDTO);
+    return result;
   }
 }

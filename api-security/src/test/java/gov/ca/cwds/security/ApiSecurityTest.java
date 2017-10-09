@@ -8,6 +8,8 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 /**
  * Created by dmitry.rudenko on 10/6/2017.
  */
@@ -75,5 +77,13 @@ public class ApiSecurityTest extends AbstractApiSecurityTest {
   @Test(expected = UnauthorizedException.class)
   public void testRetUnauthorizedCompositeObject() throws Exception {
     testService.testReturnProtectedInstance();
+  }
+
+  @Test
+  public void testFilter() {
+    List<CaseDTO> result = testService.testFilter();
+    assert result.size() == 1;
+    assert result.iterator().next().getCaseObject().getName().equals("valid");
+
   }
 }
