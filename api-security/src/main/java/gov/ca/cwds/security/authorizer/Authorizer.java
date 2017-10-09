@@ -3,6 +3,7 @@ package gov.ca.cwds.security.authorizer;
 import org.apache.shiro.authz.AuthorizationException;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
  * Created by dmitry.rudenko on 9/25/2017.
@@ -45,7 +46,15 @@ public abstract class Authorizer<Type, ID> {
 
   @SuppressWarnings("unchecked")
   private <T> Class<T> getClass(int index) {
-    return ((Class<T>) ((ParameterizedType) getClass()
-            .getGenericSuperclass()).getActualTypeArguments()[index]);
+    return ((Class<T>) extractParameterizedType().getActualTypeArguments()[index]);
+  }
+
+  private ParameterizedType extractParameterizedType() {
+    Class clazz = getClass();
+    java.lang.reflect.Type type = clazz.getGenericSuperclass();
+    while (!(type instanceof ParameterizedType)) {
+      type = ((Class)type).getGenericSuperclass();
+    }
+    return (ParameterizedType) type;
   }
 }

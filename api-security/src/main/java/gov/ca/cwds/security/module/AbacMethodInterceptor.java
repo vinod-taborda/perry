@@ -1,7 +1,7 @@
 package gov.ca.cwds.security.module;
 
 import gov.ca.cwds.security.annotations.Authorize;
-import gov.ca.cwds.security.permission.PermissionString;
+import gov.ca.cwds.security.permission.AbacPermission;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.shiro.SecurityUtils;
@@ -26,84 +26,68 @@ public class AbacMethodInterceptor implements MethodInterceptor {
 
   @Override
   public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-    String[] permissions = methodInvocation.getMethod().getAnnotation(Authorize.class).value();
-    Set<PermissionString> resultPermissions = new HashSet<>();
-    for (String permission : permissions) {
-      PermissionString permissionString = new PermissionString(permission);
-      if (permissionString.isTemplate()) {
-        if (!permissionString.isResultPermission()) {
-          checkArgPermission(permissionString, methodInvocation);
-        } else {
-          resultPermissions.add(permissionString);
-        }
-      } else {
-        SecurityUtils.getSubject().checkPermission(permission);
-      }
-    }
+    checkParametersPermissions(methodInvocation);
 
     Object result = methodInvocation.proceed();
-    if (resultPermissions.isEmpty()) {
+    result = checkResultPermissions(result, methodInvocation);
+    return result;
+  }
+
+  private Object checkResultPermissions(Object result, MethodInvocation methodInvocation) throws IllegalAccessException, ScriptException, InstantiationException {
+    Authorize authorize = methodInvocation.getMethod().getAnnotation(Authorize.class);
+    if (authorize == null) {
       return result;
     }
     if (result instanceof Collection) {
-      return filterResult(resultPermissions, (Collection) result);
+      return filterResult(authorize, (Collection) result);
     } else {
-      checkResultPermissions(resultPermissions, result);
+      checkPermissions(authorize, result);
       return result;
     }
   }
 
-  private void checkArgPermission(PermissionString permissionString, MethodInvocation methodInvocation) throws Exception {
-    ScriptContext scriptContext = scriptContextFromArgs(methodInvocation);
-    checkIds(permissionString, scriptContext);
-  }
-
-  private void checkIds(PermissionString permissionString, ScriptContext scriptContext) {
-    Collection<Object> ids = selectIds(permissionString.getSelector(), scriptContext);
-    ids.stream()
-            .map(permissionString::apply)
-            .forEach(permission -> SecurityUtils.getSubject().checkPermission(permission));
-  }
-
-  private ScriptContext scriptContextFromArgs(MethodInvocation methodInvocation) {
-    ScriptContext scriptContext = new SimpleScriptContext();
-    for (int i = 0; i < methodInvocation.getMethod().getParameterCount(); i++) {
-      Parameter parameter = methodInvocation.getMethod().getParameters()[i];
-      scriptContext.setAttribute(parameter.getName(), methodInvocation.getArguments()[i], ScriptContext.ENGINE_SCOPE);
-    }
-    return scriptContext;
-  }
-
-  @SuppressWarnings("unchecked")
-  private Collection<Object> selectIds(String selector, ScriptContext scriptContext) {
-    try {
-      return (Collection<Object>) scriptEngine.eval("[" + selector + "].flatten()", scriptContext);
-    } catch (ScriptException e) {
-      throw new AuthorizationException(e);
+  private void checkParametersPermissions(MethodInvocation methodInvocation) throws ScriptException {
+    Parameter[] parameters = methodInvocation.getMethod().getParameters();
+    for (int i = 0; i < parameters.length; i++) {
+      Authorize authorize = parameters[i].getAnnotation(Authorize.class);
+      if (authorize != null) {
+        Object arg = methodInvocation.getArguments()[i];
+        checkPermissions(authorize, arg);
+      }
     }
   }
 
-  private void checkResultPermissions(Set<PermissionString> permissions, Object result)  {
-    permissions.forEach(permission -> checkResultPermission(permission, result));
-  }
-
-  private void checkResultPermission(PermissionString permission, Object result) {
-    ScriptContext scriptContext = scriptContextFromResult(result);
-    checkIds(permission, scriptContext);
-  }
-
-  private ScriptContext scriptContextFromResult(Object result) {
-    ScriptContext scriptContext = new SimpleScriptContext();
-    scriptContext.setAttribute(PermissionString.RESULT_KEYWORD, result, ScriptContext.ENGINE_SCOPE);
-    return scriptContext;
+  private void checkPermissions(Authorize authorize, Object object) throws ScriptException {
+    for (String permission : authorize.value()) {
+      checkPermission(permission, object);
+    }
   }
 
   @SuppressWarnings("unchecked")
-  private Collection filterResult(Set<PermissionString> permissions, Collection results) throws IllegalAccessException, InstantiationException, ScriptException {
+  private void checkPermission(String permission, Object arg) throws ScriptException {
+    AbacPermission abacPermission = new AbacPermission(permission);
+    String selector = abacPermission.getSecuredObject().toString();
+    int dotIndex = selector.indexOf('.');
+    String identifier;
+    if (dotIndex == -1) {
+      identifier = selector;
+    } else {
+      identifier = selector.substring(0, dotIndex);
+    }
+    ScriptContext scriptContext = new SimpleScriptContext();
+    scriptContext.setAttribute(identifier, arg, ScriptContext.ENGINE_SCOPE);
+    for (Object o : (Collection<Object>) scriptEngine.eval("[" + selector + "].flatten()", scriptContext)) {
+      abacPermission.setSecuredObject(o);
+      SecurityUtils.getSubject().checkPermission(abacPermission);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private Collection filterResult(Authorize authorize, Collection results) throws IllegalAccessException, InstantiationException, ScriptException {
     Collection out = initOutput(results);
     for (Object result : results) {
       try {
-        checkResultPermissions(permissions, result);
+        checkPermissions(authorize, result);
         out.add(result);
       } catch (AuthorizationException e) {
         //ignore

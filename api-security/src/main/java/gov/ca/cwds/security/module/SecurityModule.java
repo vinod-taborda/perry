@@ -20,7 +20,7 @@ public class SecurityModule extends AbstractModule {
     authorizers.forEach((name, authorizerClass) -> bind(Authorizer.class)
             .annotatedWith(Names.named(name))
             .to(authorizerClass));
-    bindInterceptor(Matchers.any(), Matchers.annotatedWith(Authorize.class), new AbacMethodInterceptor());
+    bindInterceptor(Matchers.any(), SecuredMethodMatcher.hasAuthorizeAnnotation(), new AbacMethodInterceptor());
   }
 
   public SecurityModule addAuthorizer(String permission, Class<? extends Authorizer> clazz) {
