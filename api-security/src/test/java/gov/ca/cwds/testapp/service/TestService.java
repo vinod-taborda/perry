@@ -9,4 +9,6 @@ public interface TestService {
    void testArg(String id);
 
    void testCompositeObject(CaseDTO caseDTO);
+
+   void testCompositeObjectList(CaseDTO caseDTO);
 }

@@ -12,8 +12,12 @@ public class TestServiceImpl implements TestService {
   }
 
   @Override
-
   public void testCompositeObject(@Authorize("case:read:caseDTO.caseObject.id") CaseDTO caseDTO) {
+    System.out.println();
+  }
+
+  @Override
+  public void testCompositeObjectList(@Authorize("case:read:caseDTO.cases.id") CaseDTO caseDTO) {
     System.out.println();
   }
 }

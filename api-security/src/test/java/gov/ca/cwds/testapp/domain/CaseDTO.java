@@ -1,5 +1,6 @@
 package gov.ca.cwds.testapp.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  */
 public class CaseDTO {
   private Case caseObject;
-  private List<Case> cases;
+  private List<Case> cases = new ArrayList<>();
 
   public Case getCaseObject() {
     return caseObject;
