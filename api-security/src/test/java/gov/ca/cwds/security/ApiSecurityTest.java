@@ -22,11 +22,11 @@ public class ApiSecurityTest extends AbstractApiSecurityTest {
 
   @Test(expected = UnauthorizedException.class)
   public void testUnauthorized() throws Exception {
-    testService.testArg("2", "a");
+    testService.testArg("2");
   }
 
   @Test
   public void testAuthorized() throws Exception {
-    testService.testArg("1", "a");
+    testService.testArg("1");
   }
 }
