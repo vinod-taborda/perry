@@ -36,8 +36,8 @@ public class AbstractApiSecurityTest {
     TestRealm.addPermission("case:read:1");
   }
 
-  void initInjector(SecurityModule securityModule) throws Exception {
-    Injector injector = Guice.createInjector(securityModule, new TestModule());
+  void initInjector() throws Exception {
+    Injector injector = Guice.createInjector(new TestModule());
     injector.injectMembers(this);
     Field field = BaseApiApplication.class.getDeclaredField("injector");
     field.setAccessible(true);

@@ -1,8 +1,6 @@
 package gov.ca.cwds.security;
 
 import com.google.inject.Inject;
-import gov.ca.cwds.security.authorizer.TestAuthorizer;
-import gov.ca.cwds.security.module.SecurityModule;
 import gov.ca.cwds.testapp.service.TestService;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.junit.Before;
@@ -19,7 +17,7 @@ public class ApiSecurityTest extends AbstractApiSecurityTest {
 
   @Before
   public void before() throws Exception {
-    initInjector(new SecurityModule().addAuthorizer("case:read", TestAuthorizer.class));
+    initInjector();
   }
 
   @Test(expected = UnauthorizedException.class)

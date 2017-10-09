@@ -3,13 +3,13 @@ package gov.ca.cwds.testapp.domain;
 /**
  * Created by dmitry.rudenko on 10/6/2017.
  */
-public class SecuredObject {
+public class Case {
   private Long id;
-  private String field;
+  private String name;
 
-  public SecuredObject(Long id, String field) {
+  public Case(Long id, String name) {
     this.id = id;
-    this.field = field;
+    this.name = name;
   }
 
   public Long getId() {
@@ -20,11 +20,11 @@ public class SecuredObject {
     this.id = id;
   }
 
-  public String getField() {
-    return field;
+  public String getName() {
+    return name;
   }
 
-  public void setField(String field) {
-    this.field = field;
+  public void setName(String name) {
+    this.name = name;
   }
 }

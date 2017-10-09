@@ -9,12 +9,12 @@ import org.apache.shiro.authz.permission.WildcardPermission;
  */
 
 public class AbacPermission extends WildcardPermission {
-  private String id;
+  private Object securedObject;
   private Authorizer authorizer;
 
-  public AbacPermission(String id, Authorizer authorizer, String wildCard) {
+  public AbacPermission(Object securedObject, Authorizer authorizer, String wildCard) {
     super(wildCard);
-    this.id = id;
+    this.securedObject = securedObject;
     this.authorizer = authorizer;
   }
 
@@ -32,8 +32,8 @@ public class AbacPermission extends WildcardPermission {
   }
 
   private boolean check() {
-    return id != null
+    return securedObject != null
             && authorizer != null
-            && authorizer.check(id);
+            && authorizer.check(securedObject);
   }
 }
