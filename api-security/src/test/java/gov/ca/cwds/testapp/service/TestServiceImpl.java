@@ -1,6 +1,7 @@
 package gov.ca.cwds.testapp.service;
 
 import gov.ca.cwds.security.annotations.Authorize;
+import gov.ca.cwds.testapp.domain.Case;
 import gov.ca.cwds.testapp.domain.CaseDTO;
 
 /**
@@ -19,5 +20,23 @@ public class TestServiceImpl implements TestService {
   @Override
   public void testCompositeObjectList(@Authorize("case:read:caseDTO.cases.id") CaseDTO caseDTO) {
     System.out.println();
+  }
+
+  @Override
+  @Authorize("case:read:caseDTO.caseObject.id")
+  public CaseDTO testReturnInstance() {
+    Case caseObject = new Case(1L, "");
+    CaseDTO caseDTO = new CaseDTO();
+    caseDTO.setCaseObject(caseObject);
+    return caseDTO;
+  }
+
+  @Override
+  @Authorize("case:read:caseDTO.caseObject.id")
+  public CaseDTO testReturnProtectedInstance() {
+    Case caseObject = new Case(2L, "");
+    CaseDTO caseDTO = new CaseDTO();
+    caseDTO.setCaseObject(caseObject);
+    return caseDTO;
   }
 }

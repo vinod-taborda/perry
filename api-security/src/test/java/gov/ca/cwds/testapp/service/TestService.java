@@ -6,9 +6,13 @@ import gov.ca.cwds.testapp.domain.CaseDTO;
  * Created by dmitry.rudenko on 10/6/2017.
  */
 public interface TestService {
-   void testArg(String id);
+  void testArg(String id);
 
-   void testCompositeObject(CaseDTO caseDTO);
+  void testCompositeObject(CaseDTO caseDTO);
 
-   void testCompositeObjectList(CaseDTO caseDTO);
+  void testCompositeObjectList(CaseDTO caseDTO);
+
+  CaseDTO testReturnInstance();
+
+  CaseDTO testReturnProtectedInstance() ;
 }
