@@ -2,10 +2,8 @@ package gov.ca.cwds.security;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import gov.ca.cwds.rest.BaseApiApplication;
 import gov.ca.cwds.security.module.SecurityModule;
 import gov.ca.cwds.testapp.module.TestModule;
-import gov.ca.cwds.security.realm.TestRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.config.IniSecurityManagerFactory;
@@ -32,14 +30,10 @@ public class AbstractApiSecurityTest {
     initShiro();
   }
 
-  static void addPermission(String permission) {
-    TestRealm.addPermission("case:read:1");
-  }
-
   void initInjector() throws Exception {
     Injector injector = Guice.createInjector(new TestModule());
     injector.injectMembers(this);
-    Field field = BaseApiApplication.class.getDeclaredField("injector");
+    Field field = SecurityModule.class.getDeclaredField("INJECTOR");
     field.setAccessible(true);
     field.set(null, injector);
   }
@@ -55,7 +49,6 @@ public class AbstractApiSecurityTest {
     setSubject(subjectUnderTest);
   }
 
-
   /**
    * Allows subclasses to set the currently executing {@link Subject} instance.
    *
@@ -66,8 +59,6 @@ public class AbstractApiSecurityTest {
     subjectThreadState = createThreadState(subject);
     subjectThreadState.bind();
   }
-
-
 
   protected static ThreadState createThreadState(Subject subject) {
     return new SubjectThreadState(subject);

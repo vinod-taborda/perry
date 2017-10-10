@@ -13,6 +13,6 @@ public class TestModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(TestService.class).to(TestServiceImpl.class);
-    install(new SecurityModule().addAuthorizer("case:read", CaseAuthorizer.class));
+    install(new SecurityModule(null).addAuthorizer("case:read", CaseAuthorizer.class));
   }
 }

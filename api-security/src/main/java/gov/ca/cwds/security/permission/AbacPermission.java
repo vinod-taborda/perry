@@ -2,10 +2,9 @@ package gov.ca.cwds.security.permission;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import gov.ca.cwds.rest.BaseApiApplication;
 import gov.ca.cwds.security.authorizer.Authorizer;
+import gov.ca.cwds.security.module.SecurityModule;
 import org.apache.shiro.authz.Permission;
-import org.apache.shiro.authz.permission.WildcardPermission;
 
 import java.util.Optional;
 
@@ -20,6 +19,9 @@ public class AbacPermission implements Permission {
   private static final String SUPPORTED_PERMISSION_PATTERN = "^[^:,*]+:[^:,*]+:[^:,*]+$";
   private static final String PARTS_DELIMITER = ":";
 
+  public AbacPermission() {
+
+  }
 
   public AbacPermission(String permissionString) {
     if (permissionString.matches(SUPPORTED_PERMISSION_PATTERN)) {
@@ -31,8 +33,7 @@ public class AbacPermission implements Permission {
       }
       this.securedObject = parts[2];
       this.authorizer = permissionHandler.get();
-    }
-    else {
+    } else {
       throw new IllegalArgumentException();
     }
   }
@@ -43,10 +44,6 @@ public class AbacPermission implements Permission {
 
   public void setSecuredObject(Object securedObject) {
     this.securedObject = securedObject;
-  }
-
-  public AbacPermission() {
-
   }
 
   @Override
@@ -64,11 +61,9 @@ public class AbacPermission implements Permission {
             && authorizer.check(securedObject);
   }
 
-
-
   private Optional<Authorizer> findPermissionHandler(String name) {
     try {
-      Authorizer authorizer = BaseApiApplication.getInjector().getInstance(Key.get(Authorizer.class, Names.named(name)));
+      Authorizer authorizer = SecurityModule.injector().getInstance(Key.get(Authorizer.class, Names.named(name)));
       return Optional.of(authorizer);
     } catch (Exception e) {
       return Optional.empty();
