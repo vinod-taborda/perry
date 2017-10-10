@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import gov.ca.cwds.testapp.domain.Case;
 import gov.ca.cwds.testapp.domain.CaseDTO;
 import gov.ca.cwds.testapp.service.TestService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,5 +86,16 @@ public class ApiSecurityTest extends AbstractApiSecurityTest {
     assert result.size() == 1;
     assert result.iterator().next().getCaseObject().getName().equals("valid");
 
+  }
+
+  @Test
+  public void testDirectCheck() {
+    SecurityUtils.getSubject().checkPermission("case:read:1");
+
+  }
+
+  @Test(expected = UnauthorizedException.class)
+  public void testDirectCheckUnauthorized() {
+    SecurityUtils.getSubject().checkPermission("case:read:2");
   }
 }
