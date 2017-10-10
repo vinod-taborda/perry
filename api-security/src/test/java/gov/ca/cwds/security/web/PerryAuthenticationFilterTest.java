@@ -1,7 +1,6 @@
-package gov.ca.cwds.security.shiro.web;
+package gov.ca.cwds.security.web;
 
-import gov.ca.cwds.security.shiro.PerryShiroToken;
-import static org.junit.Assert.*;
+import gov.ca.cwds.security.PerryShiroToken;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ public class PerryAuthenticationFilterTest {
     when(request.getParameter("token")).thenReturn(ACCESS_TOKEN);
     PerryAuthenticatingFilter perryAuthenticatingFilter = new PerryAuthenticatingFilter();
     PerryShiroToken authenticationToken = (PerryShiroToken) perryAuthenticatingFilter.createToken(request, response);
-    assertEquals(ACCESS_TOKEN, authenticationToken.getToken());
+    assert ACCESS_TOKEN.equals(authenticationToken.getToken());
   }
 
 }

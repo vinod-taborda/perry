@@ -5,9 +5,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
+import gov.ca.cwds.security.AuthenticationException;
 import gov.ca.cwds.security.annotations.Authorize;
 import gov.ca.cwds.security.authorizer.Authorizer;
-import gov.ca.cwds.security.shiro.AuthenticationException;
 
 import java.util.HashMap;
 import java.util.Map;

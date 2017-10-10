@@ -1,4 +1,4 @@
-package gov.ca.cwds.security.shiro.realms;
+package gov.ca.cwds.security.realm;
 
 import gov.ca.cwds.security.jwt.JwtConfiguration;
 import gov.ca.cwds.security.jwt.JwtService;

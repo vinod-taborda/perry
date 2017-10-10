@@ -1,4 +1,4 @@
-package gov.ca.cwds.security.shiro.utils;
+package gov.ca.cwds.security.utils;
 
 /**
  * Created by dmitry.rudenko on 9/29/2017.

@@ -1,7 +1,6 @@
 package gov.ca.cwds.security.realm;
 
 import gov.ca.cwds.security.permission.AbacPermission;
-import gov.ca.cwds.security.shiro.realms.JwtRealm;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.subject.PrincipalCollection;

@@ -1,4 +1,4 @@
-package gov.ca.cwds.security.shiro;
+package gov.ca.cwds.security;
 
 import org.junit.Test;
 

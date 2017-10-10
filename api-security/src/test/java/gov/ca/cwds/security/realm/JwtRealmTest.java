@@ -1,7 +1,7 @@
-package gov.ca.cwds.security.shiro.realms;
+package gov.ca.cwds.security.realm;
 
+import gov.ca.cwds.security.PerryShiroToken;
 import gov.ca.cwds.security.jwt.JwtConfiguration;
-import gov.ca.cwds.security.shiro.PerryShiroToken;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationInfo;

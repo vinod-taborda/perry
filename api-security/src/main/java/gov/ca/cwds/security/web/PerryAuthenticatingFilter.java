@@ -1,8 +1,8 @@
-package gov.ca.cwds.security.shiro.web;
+package gov.ca.cwds.security.web;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import gov.ca.cwds.security.shiro.PerryShiroToken;
-import gov.ca.cwds.security.shiro.utils.Utils;
+import gov.ca.cwds.security.PerryShiroToken;
+import gov.ca.cwds.security.utils.Utils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;

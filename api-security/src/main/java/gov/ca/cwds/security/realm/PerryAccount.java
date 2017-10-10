@@ -1,4 +1,4 @@
-package gov.ca.cwds.security.shiro.realms;
+package gov.ca.cwds.security.realm;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
