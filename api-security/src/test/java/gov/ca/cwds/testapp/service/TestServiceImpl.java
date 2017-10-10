@@ -16,7 +16,7 @@ public class TestServiceImpl implements TestService {
   }
 
   @Override
-  public void testCompositeObject(@Authorize("case:read:caseDTO.caseObject.id") CaseDTO caseDTO) {
+  public void testCompositeObject(@Authorize("case:read:caseDTO.caseObject") CaseDTO caseDTO) {
     System.out.println();
   }
 
@@ -26,7 +26,7 @@ public class TestServiceImpl implements TestService {
   }
 
   @Override
-  @Authorize("case:read:caseDTO.caseObject.id")
+  @Authorize("case:read:caseDTO.caseObject")
   public CaseDTO testReturnInstance() {
     Case caseObject = new Case(1L, "");
     CaseDTO caseDTO = new CaseDTO();

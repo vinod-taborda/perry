@@ -11,6 +11,10 @@ public class CaseAuthorizer extends Authorizer<Case, Long> {
     return id == 1L;
   }
 
+  public boolean checkInstance(Case instance) {
+    return this.checkId(instance.getId());
+  }
+
   public Long stringToId(String id) {
     return Long.valueOf(id);
   }
