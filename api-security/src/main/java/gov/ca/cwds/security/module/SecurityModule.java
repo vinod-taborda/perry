@@ -6,6 +6,7 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import gov.ca.cwds.security.AuthenticationException;
 import gov.ca.cwds.security.authorizer.Authorizer;
+import gov.ca.cwds.security.authorizer.BaseAuthorizer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map;
  * Created by dmitry.rudenko on 9/22/2017.
  */
 public class SecurityModule extends AbstractModule {
-  private Map<String, Class<? extends Authorizer>> authorizers = new HashMap<>();
+  private Map<String, Class<? extends BaseAuthorizer>> authorizers = new HashMap<>();
   private static InjectorProvider injectorProvider;
 
   public SecurityModule(InjectorProvider injector) {
@@ -36,7 +37,7 @@ public class SecurityModule extends AbstractModule {
     bindInterceptor(Matchers.inSubpackage("gov.ca.cwds"), SecuredMethodMatcher.hasAuthorizeAnnotation(), new AbacMethodInterceptor());
   }
 
-  public SecurityModule addAuthorizer(String permission, Class<? extends Authorizer> clazz) {
+  public SecurityModule addAuthorizer(String permission, Class<? extends BaseAuthorizer> clazz) {
     authorizers.put(permission, clazz);
     return this;
   }
