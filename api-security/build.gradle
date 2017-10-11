@@ -2,6 +2,8 @@ group 'gov.ca.cwds.api'
 version parent.version
 
 apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
@@ -45,4 +47,20 @@ dependencies {
     testCompile('org.apache.shiro:shiro-web:' + shiroVersion)
     testCompile('javax.servlet:javax.servlet-api:3.1.0')
     testCompile "org.mockito:mockito-core:1.+"
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+            groupId 'gov.ca.cwds.api'
+            artifactId 'api-security'
+            version version
+        }
+    }
+    repositories {
+        maven {
+            url "http://sonar.dev.cwds.io:8081/artifactory/repo"
+        }
+    }
 }
