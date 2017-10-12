@@ -10,8 +10,8 @@ import java.util.Map;
  * Created by dmitry.rudenko on 8/24/2017.
  */
 public class SmokeTest {
-  private long RETRY_PERIOD = 5 * 1000 * 60;//5 minutes
-  private long RETRY_TIMEOUT = 20 * 1000; //20 seconds;
+  private static final long RETRY_PERIOD = 5 * 1000 * 60;//5 minutes
+  private static final long RETRY_TIMEOUT = 20 * 1000; //20 seconds;
 
   @Test
   public void test() throws Exception {
