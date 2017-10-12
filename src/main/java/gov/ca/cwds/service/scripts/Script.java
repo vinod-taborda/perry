@@ -1,5 +1,7 @@
 package gov.ca.cwds.service.scripts;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import javax.script.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +16,7 @@ class Script {
     private String[] variables;
     private String script;
     private ScriptEngine scriptEngine;
-
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN") //script file location taken from property file only!
     Script(String filePath, String... variables) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(filePath));
         script = new String(bytes, StandardCharsets.UTF_8);

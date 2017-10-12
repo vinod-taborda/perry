@@ -83,7 +83,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
   }
 
   @SuppressWarnings("unchecked")
-  private Collection filterResult(Authorize authorize, Collection results) throws IllegalAccessException, InstantiationException, ScriptException {
+  private Collection filterResult(Authorize authorize, Collection results) throws ScriptException {
     Collection out = initOutput(results);
     for (Object result : results) {
       try {
