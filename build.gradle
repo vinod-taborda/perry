@@ -68,7 +68,7 @@ sonarqube {
         property "sonar.jacoco.reportPath", "${buildDir}/jacoco/test.exec"
         property "sonar.jacoco.itReportPath", "${buildDir}/jacoco/integrationTest.exec"
         //sonar doesn't recognize AOP and shiro library!!!
-        property "sonar.exclusions", "/gov/ca/cwds/security/**"
+        property "sonar.exclusions", "/src/main/java/gov/ca/cwds/security/**"
     }
 }
 
