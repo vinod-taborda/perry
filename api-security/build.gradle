@@ -1,0 +1,66 @@
+group 'gov.ca.cwds.api'
+version parent.version
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url "http://sonar.dev.cwds.io:8081/artifactory/repo"
+    }
+
+}
+
+project.ext {
+    shiroVersion = '1.2.3'
+    guiceVersion = '4.0'
+    jacksonVersion = '2.8.7'
+}
+dependencies {
+    compile group: 'org.apache.shiro', name: 'shiro-core', version: shiroVersion
+    compile group: 'org.apache.shiro', name: 'shiro-web', version: shiroVersion
+    compile 'org.codehaus.groovy:groovy-all:2.4.10'
+    compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
+    compile project(':jwt-security')
+
+    //PROVIDED
+    compileOnly group: 'commons-logging', name: 'commons-logging', version: '1.2'
+    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compileOnly('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
+    compileOnly group: 'com.google.inject', name: 'guice', version: guiceVersion
+    compileOnly('javax.servlet:javax.servlet-api:3.1.0')
+    compileOnly('org.glassfish.jersey.core:jersey-client:2.25.1')
+    compileOnly('javax.ws.rs:javax.ws.rs-api:2.0.1')
+
+    //TEST
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+    testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    testCompile('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
+    testCompile group: 'com.google.inject', name: 'guice', version: guiceVersion
+    testCompile('org.apache.shiro:shiro-core:' + shiroVersion)
+    testCompile('org.apache.shiro:shiro-web:' + shiroVersion)
+    testCompile('javax.servlet:javax.servlet-api:3.1.0')
+    testCompile "org.mockito:mockito-core:1.+"
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+            groupId 'gov.ca.cwds.api'
+            artifactId 'api-security'
+            version version
+        }
+    }
+    repositories {
+        maven {
+            url "http://sonar.dev.cwds.io:8081/artifactory/repo"
+        }
+    }
+}

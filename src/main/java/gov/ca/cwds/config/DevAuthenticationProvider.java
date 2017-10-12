@@ -1,5 +1,6 @@
 package gov.ca.cwds.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.PerryProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class DevAuthenticationProvider implements AuthenticationProvider {
             UsernamePasswordAuthenticationToken.class);
   }
 
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN") //user file location taken from property file only!
   private void tryAuthenticate(Authentication authentication) throws AuthenticationException {
     try {
       if (!StringUtils.isEmpty(perryProperties.getUsers())) {
