@@ -33,7 +33,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     return result;
   }
 
-  private Object checkResultPermissions(Object result, MethodInvocation methodInvocation) throws IllegalAccessException, ScriptException, InstantiationException {
+  private Object checkResultPermissions(Object result, MethodInvocation methodInvocation) throws ScriptException{
     Authorize authorize = methodInvocation.getMethod().getAnnotation(Authorize.class);
     if (authorize == null) {
       return result;
