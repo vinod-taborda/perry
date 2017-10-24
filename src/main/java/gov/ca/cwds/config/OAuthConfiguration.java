@@ -1,27 +1,37 @@
 package gov.ca.cwds.config;
 
 import gov.ca.cwds.config.OAuthConfiguration.ClientProperties;
+import gov.ca.cwds.data.auth.AssignmentUnitDao;
+import gov.ca.cwds.data.persistence.auth.AssignmentUnit;
 import gov.ca.cwds.service.OauthLogoutHandler;
 import gov.ca.cwds.service.SAFService;
 import gov.ca.cwds.service.oauth.SafUserInfoTokenService;
 import gov.ca.cwds.web.PerrySAFLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.token.ClientTokenServices;
+import org.springframework.security.oauth2.client.token.JdbcClientTokenServices;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.common.AuthenticationScheme;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+
+import javax.sql.DataSource;
 
 /**
  * Created by dmitry.rudenko on 5/23/2017.
@@ -30,6 +40,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 @EnableOAuth2Sso
 @Configuration
 @EnableConfigurationProperties(ClientProperties.class)
+//@EnableJpaRepositories ()
 public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -115,6 +126,31 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
     public void setClientAuthenticationScheme(AuthenticationScheme clientAuthenticationScheme) {
       this.clientAuthenticationScheme = clientAuthenticationScheme;
     }
+  }
+
+  @Bean
+  @Primary
+  @ConfigurationProperties("spring.datasource")
+  public DataSourceProperties dataSourceProperties() {
+    return new DataSourceProperties();
+  }
+
+  @Bean
+  @Primary
+  @ConfigurationProperties("spring.datasource")
+  public DataSource dataSource() {
+    return dataSourceProperties().initializeDataSourceBuilder().build();
+  }
+
+  @Bean(name = "entityManagerFactory")
+  @Primary
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+          EntityManagerFactoryBuilder builder) {
+    return builder
+            .dataSource(dataSource())
+            .packages(AssignmentUnit.class, AssignmentUnitDao.class)
+            .persistenceUnit("default")
+            .build();
   }
 
 }

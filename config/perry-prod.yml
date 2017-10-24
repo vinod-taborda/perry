@@ -15,6 +15,11 @@ security:
       revokeTokenUri: ${SAF_REVOKE_TOKEN_URI:https://sectest.dss.ca.gov/web1/dss_saf/data/v2/api/client/41/auth/revoketoken}
       logoutTokenUri: ${SAF_LOGOUT_URI:https://sectest.dss.ca.gov/web1/dss_saf/auth/v2/client/41/oauth2/logout}
 spring:
+      tokenStore:
+          driver-class-name: org.h2.Driver
+          url: ${TOKEN_STORE_JDBC_URL:jdbc:h2:mem:token_store;INIT=create table if not exists oauth_client_token( token_id varchar,  token blob, authentication_id varchar, user_name varchar, client_id varchar)}
+          username: ${TOKEN_STORE_USER:}
+          password: ${TOKEN_STORE_PASSWORD:}
       datasource:
           driver-class-name: com.ibm.db2.jcc.DB2Driver
           url: ${DB_CMS_JDBC_URL:jdbc:db2://192.168.99.100:50000/DB0TDEV}
