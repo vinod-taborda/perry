@@ -87,7 +87,7 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
     resource.setClientSecret(sso.getClientSecret());
     resource.setAuthenticationScheme(clientProperties.getAuthenticationScheme());
     resource.setClientAuthenticationScheme(clientProperties.getClientAuthenticationScheme());
-    return  new OAuth2RestTemplate(resource);
+    return new OAuth2RestTemplate(resource);
   }
 
   @Bean
