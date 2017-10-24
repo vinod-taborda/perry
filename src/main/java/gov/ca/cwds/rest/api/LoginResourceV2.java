@@ -1,6 +1,7 @@
 package gov.ca.cwds.rest.api;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import gov.ca.cwds.config.Constants;
 import gov.ca.cwds.service.TokenLoginService;
 import gov.ca.cwds.service.TokenService;
 import gov.ca.cwds.service.WhiteList;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
@@ -45,7 +47,7 @@ public class LoginResourceV2 {
   @RequestMapping("/authn/login/v2")
   @Transactional
   @ApiOperation(
-      value = "Login. Applications should direct users to this endpoint for login.  When authentication complete, user will be redirected back to callback with auth 'token' as a query parameter (endpoint used for backward compatibility)",
+      value = "Login. Applications should direct users to this endpoint for login.  When authentication complete, user will be redirected back to callback with access code as a query parameter (endpoint used for backward compatibility)",
       code = 200)
   @SuppressFBWarnings("UNVALIDATED_REDIRECT")//white list usage right before redirect
   public void loginV2(@NotNull @Context final HttpServletResponse response,
@@ -55,8 +57,26 @@ public class LoginResourceV2 {
           value = "Service provider id") @RequestParam(name = "sp_id", required = false) String spId)
       throws Exception {
     whiteList.validate("callback", callback);
-    String jwtToken = loginService.login(spId);
-    response.sendRedirect(callback + "?token=" + jwtToken);
+    String accessCode = loginService.login(spId);
+    response.sendRedirect(callback + "?access_code=" + accessCode);
+  }
+
+  //back-end only!
+  @GET
+  @RequestMapping(value = Constants.ISSUE_TOKEN_SERVICE_URL, produces = "application/json")
+  @ApiOperation(value = "Issue an authentication token", code = 200)
+  @ApiResponses(value = {@ApiResponse(code = 200, message = "authorized"),
+      @ApiResponse(code = 401, message = "Unauthorized")})
+  public String issueToken(@Context final HttpServletResponse response, @NotNull @ApiParam(required = true, name = "accessCode",
+      value = "The access code to get token") @RequestParam("accessCode") String accessCode) {
+    try {
+      return loginService.issueToken(accessCode);
+    } catch (Exception e) {
+      Logger.getLogger(LoginResource.class.getName()).info(e.getMessage());
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return "Unauthorized";
+    }
+
   }
 
   /**

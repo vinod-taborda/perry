@@ -5,6 +5,7 @@ package gov.ca.cwds.config;
  */
 public interface Constants {
   String LOGIN_SERVICE_URL = "/authn/login";
+  String ISSUE_TOKEN_SERVICE_URL = "/authn/issue-token";
   String VALIDATE_SERVICE_URL = "/authn/validate";
   String CALLBACK_PARAM = "callback";
 }

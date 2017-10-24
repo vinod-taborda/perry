@@ -1,9 +1,11 @@
 package gov.ca.cwds.service;
 
+import static gov.ca.cwds.service.TokenLoginServiceTestConf.ACCESS_CODE;
 import static gov.ca.cwds.service.TokenLoginServiceTestConf.TOKEN;
 import static gov.ca.cwds.service.TokenLoginServiceTestConf.TOKEN2;
 import static gov.ca.cwds.service.TokenLoginServiceTestConf.TOKEN_EXPIRED;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import gov.ca.cwds.UniversalUserToken;
@@ -12,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,9 +116,17 @@ public class TokenLoginServiceTest {
   @Test
   public void login() throws Exception {
     securityContext.setAuthentication(authentication);
+    String accessCode = loginService.login("providerId");
+    assertNotNull(accessCode);
+  }
+
+  @Test
+  @Ignore
+  public void issueToken() throws Exception {
+    securityContext.setAuthentication(authentication);
     clientContext.setAccessToken(oAuth2AccessToken);
-    String token = loginService.login("providerId");
-    assertEquals(TOKEN, token);
+    String accessCode = loginService.login("providerId");
+    assertNotNull(accessCode);
   }
 
   @Test
@@ -123,10 +134,13 @@ public class TokenLoginServiceTest {
     //First Login
     securityContext.setAuthentication(authentication);
     clientContext.setAccessToken(oAuth2AccessToken);
-    String token = loginService.login("providerId");
-    assertEquals(TOKEN, token);
+    String accessCode = loginService.login("providerId");
+    assertNotNull(accessCode);
 
-    String validateRes = loginService.validate(token);
+    String perryToken = loginService.issueToken(accessCode);
+    assertNotNull(perryToken);
+
+    String validateRes = loginService.validate(perryToken);
     assertEquals(USER_ID, validateRes);
     assertEquals(((InMemoryTokenStore)tokenStore).getAccessTokenCount(), 1);
 
@@ -150,7 +164,7 @@ public class TokenLoginServiceTest {
     String token2 = loginService.login("providerId");
     assertEquals(TOKEN2, token2);
     assertEquals(USER_ID2, loginService.validate(token2));
-    //Expired token should be deleted
+    //Expired accessCode should be deleted
     assertEquals(((InMemoryTokenStore)tokenStore).getAccessTokenCount(), 2);
     
   }

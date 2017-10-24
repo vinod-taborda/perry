@@ -28,6 +28,11 @@ public class FormLoginService implements LoginService {
   }
 
   @Override
+  public String issueToken(String accessCode) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public String validate(String token) throws Exception {
     return jwtService.validate(token);
   }

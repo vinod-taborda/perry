@@ -32,6 +32,11 @@ public class OauthLoginService implements LoginService {
     return jwtService.generate(UUID.randomUUID().toString(), userToken.getUserId(), jwtIdentity);
   }
 
+  @Override
+  public String issueToken(String accessCode) {
+    throw new UnsupportedOperationException();
+  }
+
   public String validate(String token) throws Exception {
     return jwtService.validate(token);
   }

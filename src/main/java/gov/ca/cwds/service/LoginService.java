@@ -6,5 +6,7 @@ package gov.ca.cwds.service;
 public interface LoginService {
     String login(String providerId) throws Exception;
 
+    String issueToken(String accessCode);
+
     String validate(String token) throws Exception;
 }

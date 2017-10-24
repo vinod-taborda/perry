@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginResourceV2Test {
   public static final String SP_ID = "sp_id";
   public static final String TOKEN = "token";
+  public static final String ACCESS_CODE = "accessCode";
   public static final String CALLBACK = "callback";
   public static final String JSON = "JSON";
   private LoginResourceV2 loginResource;
@@ -40,9 +41,9 @@ public class LoginResourceV2Test {
 
   @Test
   public void testLogin() throws Exception {
-    Mockito.when(loginService.login(SP_ID)).thenReturn(TOKEN);
+    Mockito.when(loginService.login(SP_ID)).thenReturn(ACCESS_CODE);
     loginResource.loginV2(response, CALLBACK, SP_ID);
-    Mockito.verify(response).sendRedirect(CALLBACK + "?token=" + TOKEN);
+    Mockito.verify(response).sendRedirect(CALLBACK + "?access_code=" + ACCESS_CODE);
   }
 
   @Test

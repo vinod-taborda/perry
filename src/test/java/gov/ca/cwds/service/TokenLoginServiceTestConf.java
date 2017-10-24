@@ -36,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 public class TokenLoginServiceTestConf {
 
   public static final String TOKEN = "token";
+  public static final String ACCESS_CODE = "accessCode";
   public static final String TOKEN_EXPIRED = "token_expired";
   public static final String TOKEN2 = "token2";
 
