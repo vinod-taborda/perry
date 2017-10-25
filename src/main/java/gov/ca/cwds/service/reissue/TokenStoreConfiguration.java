@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.token.ClientTokenServices;
 import org.springframework.security.oauth2.client.token.JdbcClientTokenServices;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 
 import javax.sql.DataSource;
 
@@ -30,6 +32,11 @@ public class TokenStoreConfiguration {
   @Bean
   public ClientTokenServices clientTokenServices() {
     return new JdbcClientTokenServices(tokenStoreDataSource());
+  }
+
+  @Bean
+  public AuthorizationCodeServices authorizationCodeServices() {
+    return new InMemoryAuthorizationCodeServices();
   }
 
 }

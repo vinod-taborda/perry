@@ -22,12 +22,13 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.UUID;
 
+import static gov.ca.cwds.config.Constants.IDENTITY;
+
 /**
  * Created by TPT2 on 10/24/2017.
  */
 @Service
 public class ReissueTokenService {
-  private static final String IDENTITY = "identity";
   @Value("${security.oauth2.resource.revokeTokenUri}")
   private String revokeTokenUri;
 
@@ -69,7 +70,7 @@ public class ReissueTokenService {
     }
   }
 
-  private OAuth2AccessToken removeAccessToken(String perryToken) {
+  public OAuth2AccessToken removeAccessToken(String perryToken) {
     Authentication authentication = toAuthentication(perryToken);
     OAuth2AccessToken accessToken = getAccessToken(authentication);
     clientTokenServices.removeAccessToken(resourceDetails, authentication);
@@ -89,7 +90,7 @@ public class ReissueTokenService {
     return new PreAuthenticatedAuthenticationToken(perryToken, "N/A");
   }
 
-  private OAuth2AccessToken getAccessToken(String perryToken) {
+  public OAuth2AccessToken getAccessToken(String perryToken) {
     return getAccessToken(toAuthentication(perryToken));
   }
 
@@ -101,7 +102,7 @@ public class ReissueTokenService {
     return accessToken;
   }
 
-  private String storeAccessToken(OAuth2AccessToken accessToken, String perryToken) {
+  public String storeAccessToken(OAuth2AccessToken accessToken, String perryToken) {
     Authentication authentication = toAuthentication(perryToken);
     clientTokenServices.saveAccessToken(resourceDetails, authentication, accessToken);
     return perryToken;
