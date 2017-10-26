@@ -1,15 +1,15 @@
 package gov.ca.cwds.rest.api;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import gov.ca.cwds.PerryProperties;
 import gov.ca.cwds.config.Constants;
-import gov.ca.cwds.service.LoginService;
 import gov.ca.cwds.service.WhiteList;
+import gov.ca.cwds.service.reissue.ReissueLoginService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +28,12 @@ import java.util.logging.Logger;
 @RestController
 public class LoginResource {
 
-  private LoginService loginService;
+  private ReissueLoginService loginService;
 
   private WhiteList whiteList;
+
+  @Autowired(required = false)
+  private OAuth2ClientContext clientContext;
 
   @GET
   @RequestMapping(Constants.LOGIN_SERVICE_URL)
@@ -39,14 +42,33 @@ public class LoginResource {
           value = "Login. Applications should direct users to this endpoint for login.  When authentication complete, user will be redirected back to callback with auth 'token' as a query parameter",
           code = 200)
   @SuppressFBWarnings("UNVALIDATED_REDIRECT")//white list usage right before redirect
+
+
   public void login(@NotNull @Context final HttpServletResponse response,
                     @ApiParam(required = true, name = "callback",
                             value = "URL to send the user back to after authentication") @RequestParam(Constants.CALLBACK_PARAM) String callback,
                     @ApiParam(name = "sp_id",
                             value = "Service provider id") @RequestParam(name = "sp_id", required = false) String spId) throws Exception {
-    String jwtToken = loginService.login(spId);
+    String accessCode = loginService.issueAccessCode(spId, clientContext);
     whiteList.validate("callback", callback);
-    response.sendRedirect(callback + "?token=" + jwtToken);
+    response.sendRedirect(callback + "?accessCode=" + accessCode);
+  }
+
+  @GET
+  @RequestMapping(value = Constants.TOKEN_SERVICE_URL, produces = "application/json")
+  @ApiOperation(value = "Get perry token", code = 200)
+  @ApiResponses(value = {@ApiResponse(code = 200, message = "authorized"),
+          @ApiResponse(code = 401, message = "Unauthorized")})
+  public String getToken(@Context final HttpServletResponse response, @NotNull @ApiParam(required = true, name = "accessCode",
+          value = "Access Code to map") @RequestParam("accessCode") String accessCode) {
+    try {
+      return loginService.issueToken(accessCode);
+    } catch (Exception e) {
+      Logger.getLogger(LoginResource.class.getName()).info(e.getMessage());
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return "Unauthorized";
+    }
+
   }
 
   //back-end only!
@@ -75,12 +97,13 @@ public class LoginResource {
   public String invalidate(@NotNull @Context final HttpServletResponse response,
                            @NotNull @ApiParam(required = true, name = "token",
                                    value = "The token to invalidate") @RequestParam("token") String token) {
+    loginService.invalidate(token);
     response.setStatus(HttpServletResponse.SC_OK);
     return "OK";
   }
 
   @Autowired
-  public void setLoginService(LoginService loginService) {
+  public void setLoginService(ReissueLoginService loginService) {
     this.loginService = loginService;
   }
 

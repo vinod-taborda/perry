@@ -66,7 +66,7 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     //  /authn/validate should be for backend only!
-    http.authorizeRequests().antMatchers("/authn/validate*/**", "/authn/invalidate*/**", "/templates/**", "/manage/**").permitAll()
+    http.authorizeRequests().antMatchers("/authn/validate*/**", "/authn/invalidate*/**", "/templates/**", "/manage/**", "/authn/token*/**").permitAll()
         .and()
           .logout()
             .logoutUrl("/authn/logout").permitAll()

@@ -15,7 +15,7 @@ import javax.sql.DataSource;
  * Created by TPT2 on 10/24/2017.
  */
 @Configuration
-public class TokenStoreConfiguration {
+public class ReissueConfiguration {
 
   @Bean(name = "tokenStoreDSProperties")
   @ConfigurationProperties("spring.tokenStore")

@@ -17,7 +17,9 @@ import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
+import org.springframework.security.oauth2.client.test.OAuth2ContextConfiguration;
 import org.springframework.security.oauth2.client.token.ClientTokenServices;
+import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -33,7 +35,7 @@ import static gov.ca.cwds.config.Constants.IDENTITY;
  * Created by TPT2 on 10/24/2017.
  */
 @Service
-public class ReissueTokenServiceImpl implements ReissueTokenService {
+public class ReissueLoginServiceImpl implements ReissueLoginService {
   @Value("${security.oauth2.resource.revokeTokenUri}")
   private String revokeTokenUri;
 
@@ -41,6 +43,8 @@ public class ReissueTokenServiceImpl implements ReissueTokenService {
   private OAuth2ProtectedResourceDetails resourceDetails;
   private ResourceServerProperties resourceServerProperties;
   private IdentityMappingService identityMappingService;
+  @Autowired
+  private OAuth2RestTemplate clientRestTemplate;
 
   private String storeAccessToken(OAuth2AccessToken accessToken) {
     return storeAccessToken(accessToken, generatePerryToken());
@@ -74,7 +78,6 @@ public class ReissueTokenServiceImpl implements ReissueTokenService {
   @Override
   public void invalidate(String perryToken) {
     OAuth2AccessToken accessToken = removeAccessToken(perryToken);
-    OAuth2RestTemplate restTemplate = createRestTemplate(null);
     try {
       HttpHeaders headers = new HttpHeaders();
       MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -82,7 +85,7 @@ public class ReissueTokenServiceImpl implements ReissueTokenService {
       params.add("token_type_hint", "access_token");
       headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
       HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-      restTemplate.postForEntity(revokeTokenUri, request, String.class).getBody();
+      clientRestTemplate.postForEntity(revokeTokenUri, request, String.class).getBody();
     } catch (Exception e) {
       throw new PerryException(
               "Token Revocation problem for revokeTokenUri = " + revokeTokenUri, e);
@@ -90,7 +93,7 @@ public class ReissueTokenServiceImpl implements ReissueTokenService {
   }
 
   @Override
-  public String mapAccessCode(String accessCode) {
+  public String issueToken(String accessCode) {
     OAuth2AccessToken accessToken = removeAccessToken(accessCode);
     return storeAccessToken(accessToken);
   }
@@ -103,8 +106,7 @@ public class ReissueTokenServiceImpl implements ReissueTokenService {
   }
 
   private OAuth2RestTemplate createRestTemplate(OAuth2AccessToken accessToken) {
-    OAuth2ClientContext clientContext = new DefaultOAuth2ClientContext(accessToken);
-    return new OAuth2RestTemplate(resourceDetails, clientContext);
+    return new OAuth2RestTemplate(resourceDetails, new DefaultOAuth2ClientContext(accessToken));
   }
 
   private String generatePerryToken() {
