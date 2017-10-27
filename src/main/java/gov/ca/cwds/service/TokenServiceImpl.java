@@ -1,7 +1,6 @@
 package gov.ca.cwds.service;
 
 import java.util.Map;
-import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +8,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author CWDS CALS API Team
  */
 @Profile("prod")
 @Service
-@Transactional
+@Transactional("transactionManager")
 public class TokenServiceImpl implements TokenService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TokenServiceImpl.class);

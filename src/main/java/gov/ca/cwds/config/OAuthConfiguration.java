@@ -7,8 +7,12 @@ import gov.ca.cwds.service.OauthLogoutHandler;
 import gov.ca.cwds.service.SAFService;
 import gov.ca.cwds.service.oauth.SafUserInfoTokenService;
 import gov.ca.cwds.web.PerrySAFLogoutSuccessHandler;
+import io.dropwizard.validation.PortRange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,17 +23,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.ClientTokenServices;
-import org.springframework.security.oauth2.client.token.JdbcClientTokenServices;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.common.AuthenticationScheme;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -40,7 +45,8 @@ import javax.sql.DataSource;
 @EnableOAuth2Sso
 @Configuration
 @EnableConfigurationProperties(ClientProperties.class)
-//@EnableJpaRepositories ()
+@EnableJpaRepositories(basePackageClasses = AssignmentUnitDao.class)
+@EntityScan(basePackageClasses = AssignmentUnit.class)
 public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -142,15 +148,41 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
     return dataSourceProperties().initializeDataSourceBuilder().build();
   }
 
-  @Bean(name = "entityManagerFactory")
+  @Bean
   @Primary
-  public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-          EntityManagerFactoryBuilder builder) {
-    return builder
-            .dataSource(dataSource())
-            .packages(AssignmentUnit.class, AssignmentUnitDao.class)
-            .persistenceUnit("default")
-            .build();
+  @ConfigurationProperties("spring.jpa")
+  public HibernateJpaVendorAdapter jpaVendorAdapter() {
+    return new HibernateJpaVendorAdapter();
   }
+
+  @Bean
+  @Primary
+  @ConfigurationProperties("spring.jpa")
+  public JpaProperties jpaProperties(){
+    return new JpaProperties();
+  }
+
+  @Bean
+  @Primary
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+    em.setDataSource(dataSource());
+    em.setJpaPropertyMap(jpaProperties().getHibernateProperties(dataSource()));
+    em.setPackagesToScan("gov.ca.cwds.data.persistence.auth", "gov.ca.cwds.data.auth");
+    em.setPersistenceUnitName("default");
+    em.setJpaVendorAdapter(jpaVendorAdapter());
+    return em;
+  }
+
+  @Bean
+  @Primary
+  public PlatformTransactionManager tokenTransactionManager() {
+    JpaTransactionManager transactionManager
+            = new JpaTransactionManager();
+    transactionManager.setEntityManagerFactory(
+            entityManagerFactory().getObject());
+    return transactionManager;
+  }
+
 
 }

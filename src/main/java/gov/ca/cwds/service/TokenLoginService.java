@@ -1,7 +1,6 @@
 package gov.ca.cwds.service;
 
 import gov.ca.cwds.UniversalUserToken;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.context.SecurityContext;
@@ -11,13 +10,14 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author CWDS CALS API Team
  */
 @Profile("prod")
 @Service
-@Transactional
+@Transactional("transactionManager")
 public class TokenLoginService implements LoginService {
 
   private static final String IDENTITY = "identity";
@@ -36,7 +36,7 @@ public class TokenLoginService implements LoginService {
   public String login(String providerId) throws Exception {
     SecurityContext securityContext = SecurityContextHolder.getContext();
 
-    OAuth2Authentication authentication = (OAuth2Authentication)securityContext.getAuthentication();
+    OAuth2Authentication authentication = (OAuth2Authentication) securityContext.getAuthentication();
     UniversalUserToken userToken = (UniversalUserToken) authentication.getPrincipal();
     OAuth2AccessToken accessToken = oauth2ClientContext.getAccessToken();
     String jwtIdentity = identityMappingService.map(userToken, providerId);

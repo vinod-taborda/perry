@@ -2,6 +2,8 @@ package gov.ca.cwds.service.reissue;
 
 import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.config.Constants;
+import gov.ca.cwds.data.reissue.model.PerryTokenEntity;
+import gov.ca.cwds.data.reissue.TokenRepository;
 import gov.ca.cwds.rest.api.domain.PerryException;
 import gov.ca.cwds.service.IdentityMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,12 @@ import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
-import org.springframework.security.oauth2.client.test.OAuth2ContextConfiguration;
 import org.springframework.security.oauth2.client.token.ClientTokenServices;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -35,6 +36,7 @@ import static gov.ca.cwds.config.Constants.IDENTITY;
  * Created by TPT2 on 10/24/2017.
  */
 @Service
+@Transactional("tokenTransactionManager")
 public class ReissueLoginServiceImpl implements ReissueLoginService {
   @Value("${security.oauth2.resource.revokeTokenUri}")
   private String revokeTokenUri;
@@ -43,8 +45,8 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
   private OAuth2ProtectedResourceDetails resourceDetails;
   private ResourceServerProperties resourceServerProperties;
   private IdentityMappingService identityMappingService;
-  @Autowired
   private OAuth2RestTemplate clientRestTemplate;
+  private TokenRepository tokenRepository;
 
   private String storeAccessToken(OAuth2AccessToken accessToken) {
     return storeAccessToken(accessToken, generatePerryToken());
@@ -129,7 +131,7 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
     return accessToken;
   }
 
-  public String storeAccessToken(OAuth2AccessToken accessToken, String perryToken) {
+  private String storeAccessToken(OAuth2AccessToken accessToken, String perryToken) {
     Authentication authentication = toAuthentication(perryToken);
     clientTokenServices.saveAccessToken(resourceDetails, authentication, accessToken);
     return perryToken;
@@ -153,5 +155,15 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
   @Autowired
   public void setIdentityMappingService(IdentityMappingService identityMappingService) {
     this.identityMappingService = identityMappingService;
+  }
+
+  @Autowired
+  public void setClientRestTemplate(OAuth2RestTemplate clientRestTemplate) {
+    this.clientRestTemplate = clientRestTemplate;
+  }
+
+  @Autowired
+  public void setTokenRepository(TokenRepository tokenRepository) {
+    this.tokenRepository = tokenRepository;
   }
 }

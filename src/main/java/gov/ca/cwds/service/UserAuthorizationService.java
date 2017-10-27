@@ -3,7 +3,6 @@ package gov.ca.cwds.service;
 import gov.ca.cwds.data.auth.*;
 import gov.ca.cwds.data.persistence.auth.StaffPerson;
 import gov.ca.cwds.data.persistence.auth.UserId;
-import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.auth.CwsOffice;
 import gov.ca.cwds.rest.api.domain.auth.StaffAuthorityPrivilege;
@@ -14,10 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -26,10 +24,10 @@ import java.util.stream.Collectors;
 
 /**
  * Business layer object to work on {@link UserAuthorization}
- * 
+ *
  * @author CWDS API Team
  */
-@Transactional
+@Transactional("transactionManager")
 @Service
 public class UserAuthorizationService {
 
@@ -51,7 +49,7 @@ public class UserAuthorizationService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see CrudsService#find(Serializable)
    */
   public UserAuthorization find(Serializable primaryKey) {
@@ -95,9 +93,9 @@ public class UserAuthorizationService {
     return this.cwsOfficeDao.findByStaffPersonId(staffPersonId).
             stream().
             map(cwsOffice ->
-              new CwsOffice(cwsOffice.getOfficeId(),
-                      cwsOffice.getGovernmentEntityType().toString(),
-                      cwsOffice.getCountySpecificCode())).collect(Collectors.toSet());
+                    new CwsOffice(cwsOffice.getOfficeId(),
+                            cwsOffice.getGovernmentEntityType().toString(),
+                            cwsOffice.getCountySpecificCode())).collect(Collectors.toSet());
   }
 
   private StaffPerson getStaffPerson(String staffPersonId) {
@@ -141,11 +139,11 @@ public class UserAuthorizationService {
     return this.staffAuthorityPrivilegeDao.findByFkuseridT(userId).
             stream().
             map(priv ->
-              new StaffAuthorityPrivilege(
-                      priv.getLevelOfAuthPrivilegeType().toString(),
-                      priv.getLevelOfAuthPrivilegeCode(),
-                      priv.getCountySpecificCode(),
-                      DomainChef.cookDate(priv.getEndDate()))).
+                    new StaffAuthorityPrivilege(
+                            priv.getLevelOfAuthPrivilegeType().toString(),
+                            priv.getLevelOfAuthPrivilegeCode(),
+                            priv.getCountySpecificCode(),
+                            DomainChef.cookDate(priv.getEndDate()))).
             collect(Collectors.toSet());
   }
 

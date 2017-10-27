@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.UUID;
 
 /**
@@ -18,7 +17,6 @@ import java.util.UUID;
 @Profile("prod")
 @Service
 @Primary
-@Transactional
 public class OauthLoginService implements LoginService {
   @Autowired
   IdentityMappingService identityMappingService;

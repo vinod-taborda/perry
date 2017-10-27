@@ -1,12 +1,9 @@
-package gov.ca.cwds.data.persistence.token;
-
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.util.SerializationUtils;
+package gov.ca.cwds.data.reissue.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.io.Serializable;
 import java.sql.Date;
 
@@ -14,14 +11,14 @@ import java.sql.Date;
  * Created by TPT2 on 10/24/2017.
  */
 @Entity
-@Table(name = "perry_token")
 public class PerryTokenEntity implements Serializable {
   @Id
   private String token;
+  private String accessCode;
   private String user;
-  private byte[] accessToken;
+  @Lob
+  private Serializable accessToken;
   private Date createdDate;
-  private TokenType tokenType;
 
   public String getUser() {
     return user;
@@ -31,11 +28,11 @@ public class PerryTokenEntity implements Serializable {
     this.user = user;
   }
 
-  public byte[] getAccessToken() {
+  public Serializable getAccessToken() {
     return accessToken;
   }
 
-  public void setAccessToken(byte[] accessToken) {
+  public void setAccessToken(Serializable accessToken) {
     this.accessToken = accessToken;
   }
 
@@ -47,12 +44,12 @@ public class PerryTokenEntity implements Serializable {
     this.createdDate = createdDate;
   }
 
-  public TokenType getTokenType() {
-    return tokenType;
+  public String getAccessCode() {
+    return accessCode;
   }
 
-  public void setTokenType(TokenType tokenType) {
-    this.tokenType = tokenType;
+  public void setAccessCode(String accessCode) {
+    this.accessCode = accessCode;
   }
 
   public String getToken() {

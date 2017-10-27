@@ -10,12 +10,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,6 +26,7 @@ import java.util.logging.Logger;
  * Created by dmitry.rudenko on 5/22/2017.
  */
 @RestController
+@Transactional("transactionManager")
 public class LoginResource {
 
   private ReissueLoginService loginService;
@@ -37,7 +38,6 @@ public class LoginResource {
 
   @GET
   @RequestMapping(Constants.LOGIN_SERVICE_URL)
-  @Transactional
   @ApiOperation(
           value = "Login. Applications should direct users to this endpoint for login.  When authentication complete, user will be redirected back to callback with auth 'token' as a query parameter",
           code = 200)
