@@ -26,7 +26,6 @@ import java.util.logging.Logger;
  * Created by dmitry.rudenko on 5/22/2017.
  */
 @RestController
-@Transactional("transactionManager")
 public class LoginResource {
 
   private ReissueLoginService loginService;

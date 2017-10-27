@@ -2,33 +2,27 @@ package gov.ca.cwds.service.reissue;
 
 import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.config.Constants;
-import gov.ca.cwds.data.reissue.model.PerryTokenEntity;
-import gov.ca.cwds.data.reissue.TokenRepository;
 import gov.ca.cwds.rest.api.domain.PerryException;
 import gov.ca.cwds.service.IdentityMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
-import org.springframework.security.oauth2.client.token.ClientTokenServices;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.util.UUID;
 
 import static gov.ca.cwds.config.Constants.IDENTITY;
 
@@ -36,21 +30,16 @@ import static gov.ca.cwds.config.Constants.IDENTITY;
  * Created by TPT2 on 10/24/2017.
  */
 @Service
-@Transactional("tokenTransactionManager")
+@Profile("prod")
 public class ReissueLoginServiceImpl implements ReissueLoginService {
   @Value("${security.oauth2.resource.revokeTokenUri}")
   private String revokeTokenUri;
 
-  private ClientTokenServices clientTokenServices;
   private OAuth2ProtectedResourceDetails resourceDetails;
   private ResourceServerProperties resourceServerProperties;
   private IdentityMappingService identityMappingService;
   private OAuth2RestTemplate clientRestTemplate;
-  private TokenRepository tokenRepository;
-
-  private String storeAccessToken(OAuth2AccessToken accessToken) {
-    return storeAccessToken(accessToken, generatePerryToken());
-  }
+  private ReissueTokenService tokenService;
 
   @Override
   public String issueAccessCode(String providerId, OAuth2ClientContext oauth2ClientContext) {
@@ -60,26 +49,31 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
     OAuth2AccessToken accessToken = oauth2ClientContext.getAccessToken();
     String identity = identityMappingService.map(userToken, providerId);
     accessToken.getAdditionalInformation().put(Constants.IDENTITY, identity);
-    return storeAccessToken(accessToken);
+    return tokenService.issueAccessCode(userToken.getUserId(), accessToken);
+  }
+
+  @Override
+  public String issueToken(String accessCode) {
+    return tokenService.getAccessTokenByAccessCode(accessCode);
   }
 
   @Override
   public String validate(String perryToken) {
-    OAuth2AccessToken accessToken = getAccessToken(perryToken);
+    OAuth2AccessToken accessToken = tokenService.getAccessTokenByPerryToken(perryToken);
     OAuth2RestTemplate restTemplate = createRestTemplate(accessToken);
     restTemplate.postForObject(resourceServerProperties.getTokenInfoUri(), null, String.class);
     String identity = (String) accessToken.getAdditionalInformation().get(IDENTITY);
     OAuth2AccessToken reissuedAccessToken = restTemplate.getOAuth2ClientContext().getAccessToken();
     if (reissuedAccessToken != accessToken) {
       reissuedAccessToken.getAdditionalInformation().put(IDENTITY, identity);
-      storeAccessToken(reissuedAccessToken, perryToken);
+      tokenService.updateAccessToken(perryToken, reissuedAccessToken);
     }
     return identity;
   }
 
   @Override
   public void invalidate(String perryToken) {
-    OAuth2AccessToken accessToken = removeAccessToken(perryToken);
+    OAuth2AccessToken accessToken = tokenService.deleteToken(perryToken);
     try {
       HttpHeaders headers = new HttpHeaders();
       MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -94,52 +88,8 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
     }
   }
 
-  @Override
-  public String issueToken(String accessCode) {
-    OAuth2AccessToken accessToken = removeAccessToken(accessCode);
-    return storeAccessToken(accessToken);
-  }
-
-  private OAuth2AccessToken removeAccessToken(String perryToken) {
-    Authentication authentication = toAuthentication(perryToken);
-    OAuth2AccessToken accessToken = getAccessToken(authentication);
-    clientTokenServices.removeAccessToken(resourceDetails, authentication);
-    return accessToken;
-  }
-
   private OAuth2RestTemplate createRestTemplate(OAuth2AccessToken accessToken) {
     return new OAuth2RestTemplate(resourceDetails, new DefaultOAuth2ClientContext(accessToken));
-  }
-
-  private String generatePerryToken() {
-    return UUID.randomUUID().toString();
-  }
-
-  private Authentication toAuthentication(String perryToken) {
-    return new PreAuthenticatedAuthenticationToken(perryToken, "N/A");
-  }
-
-  private OAuth2AccessToken getAccessToken(String perryToken) {
-    return getAccessToken(toAuthentication(perryToken));
-  }
-
-  private OAuth2AccessToken getAccessToken(Authentication authentication) {
-    OAuth2AccessToken accessToken = clientTokenServices.getAccessToken(resourceDetails, authentication);
-    if (accessToken == null) {
-      throw new PerryException("invalid request");
-    }
-    return accessToken;
-  }
-
-  private String storeAccessToken(OAuth2AccessToken accessToken, String perryToken) {
-    Authentication authentication = toAuthentication(perryToken);
-    clientTokenServices.saveAccessToken(resourceDetails, authentication, accessToken);
-    return perryToken;
-  }
-
-  @Autowired
-  public void setClientTokenServices(ClientTokenServices clientTokenServices) {
-    this.clientTokenServices = clientTokenServices;
   }
 
   @Autowired
@@ -163,7 +113,7 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
   }
 
   @Autowired
-  public void setTokenRepository(TokenRepository tokenRepository) {
-    this.tokenRepository = tokenRepository;
+  public void setTokenService(ReissueTokenService tokenService) {
+    this.tokenService = tokenService;
   }
 }

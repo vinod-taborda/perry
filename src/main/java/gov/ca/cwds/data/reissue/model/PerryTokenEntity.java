@@ -1,11 +1,8 @@
 package gov.ca.cwds.data.reissue.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Created by TPT2 on 10/24/2017.
@@ -18,7 +15,8 @@ public class PerryTokenEntity implements Serializable {
   private String user;
   @Lob
   private Serializable accessToken;
-  private Date createdDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date createdDate = new Date();
 
   public String getUser() {
     return user;
