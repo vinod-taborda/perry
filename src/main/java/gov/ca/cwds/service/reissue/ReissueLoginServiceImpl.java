@@ -4,6 +4,7 @@ import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.config.Constants;
 import gov.ca.cwds.rest.api.domain.PerryException;
 import gov.ca.cwds.service.IdentityMappingService;
+import gov.ca.cwds.service.oauth.OAuth2RestTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -34,11 +35,10 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
   @Value("${security.oauth2.resource.revokeTokenUri}")
   private String revokeTokenUri;
 
-  private OAuth2ProtectedResourceDetails resourceDetails;
   private ResourceServerProperties resourceServerProperties;
   private IdentityMappingService identityMappingService;
-  private OAuth2RestTemplate clientRestTemplate;
   private ReissueTokenService tokenService;
+  private OAuth2RestTemplateService restClientService;
 
   @Override
   public String issueAccessCode(String providerId, OAuth2ClientContext oauth2ClientContext) {
@@ -59,7 +59,7 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
   @Override
   public String validate(String perryToken) {
     OAuth2AccessToken accessToken = tokenService.getAccessTokenByPerryToken(perryToken);
-    OAuth2RestTemplate restTemplate = createRestTemplate(accessToken);
+    OAuth2RestTemplate restTemplate = restClientService.restTemplate(accessToken);
     restTemplate.postForObject(resourceServerProperties.getTokenInfoUri(), null, String.class);
     String identity = (String) accessToken.getAdditionalInformation().get(IDENTITY);
     OAuth2AccessToken reissuedAccessToken = restTemplate.getOAuth2ClientContext().getAccessToken();
@@ -80,20 +80,11 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
       params.add("token_type_hint", "access_token");
       headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
       HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-      clientRestTemplate.postForEntity(revokeTokenUri, request, String.class).getBody();
+      restClientService.clientRestTemplate().postForEntity(revokeTokenUri, request, String.class).getBody();
     } catch (Exception e) {
       throw new PerryException(
               "Token Revocation problem for revokeTokenUri = " + revokeTokenUri, e);
     }
-  }
-
-  private OAuth2RestTemplate createRestTemplate(OAuth2AccessToken accessToken) {
-    return new OAuth2RestTemplate(resourceDetails, new DefaultOAuth2ClientContext(accessToken));
-  }
-
-  @Autowired
-  public void setResourceDetails(OAuth2ProtectedResourceDetails resourceDetails) {
-    this.resourceDetails = resourceDetails;
   }
 
   @Autowired
@@ -107,8 +98,8 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
   }
 
   @Autowired
-  public void setClientRestTemplate(OAuth2RestTemplate clientRestTemplate) {
-    this.clientRestTemplate = clientRestTemplate;
+  public void setRestClientService(OAuth2RestTemplateService restClientService) {
+    this.restClientService = restClientService;
   }
 
   @Autowired
