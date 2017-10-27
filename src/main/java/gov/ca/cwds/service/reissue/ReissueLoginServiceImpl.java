@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -49,7 +48,7 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
     OAuth2AccessToken accessToken = oauth2ClientContext.getAccessToken();
     String identity = identityMappingService.map(userToken, providerId);
     accessToken.getAdditionalInformation().put(Constants.IDENTITY, identity);
-    return tokenService.issueAccessCode(userToken.getUserId(), accessToken);
+    return tokenService.issueAccessCode(userToken, accessToken);
   }
 
   @Override

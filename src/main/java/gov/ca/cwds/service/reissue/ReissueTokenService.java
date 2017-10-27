@@ -1,5 +1,6 @@
 package gov.ca.cwds.service.reissue;
 
+import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.data.reissue.TokenRepository;
 import gov.ca.cwds.data.reissue.model.PerryTokenEntity;
 import gov.ca.cwds.rest.api.domain.PerryException;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by TPT2 on 10/27/2017.
@@ -27,14 +27,14 @@ public class ReissueTokenService {
   private TokenRepository tokenRepository;
   private RandomValueStringGenerator generator = new RandomValueStringGenerator();
 
-  public String issueAccessCode(String user, OAuth2AccessToken accessToken) {
+  public String issueAccessCode(UniversalUserToken userToken, OAuth2AccessToken accessToken) {
     String accessCode = generator.generate();
     PerryTokenEntity perryTokenEntity = new PerryTokenEntity();
-    perryTokenEntity.setUser(user);
+    perryTokenEntity.setUser(userToken.getUserId());
     perryTokenEntity.setAccessCode(accessCode);
     perryTokenEntity.setAccessToken((Serializable) accessToken);
-    perryTokenEntity.setToken(UUID.randomUUID().toString());
-    tokenRepository.deleteByUser(user);
+    perryTokenEntity.setToken(userToken.getToken());
+    tokenRepository.deleteByUser(userToken.getUserId());
     tokenRepository.save(perryTokenEntity);
     return accessCode;
   }
