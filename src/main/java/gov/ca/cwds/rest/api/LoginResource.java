@@ -32,9 +32,6 @@ public class LoginResource {
 
   private WhiteList whiteList;
 
-  @Autowired(required = false)
-  private OAuth2ClientContext clientContext;
-
   @GET
   @RequestMapping(Constants.LOGIN_SERVICE_URL)
   @ApiOperation(
@@ -48,7 +45,7 @@ public class LoginResource {
                             value = "URL to send the user back to after authentication") @RequestParam(Constants.CALLBACK_PARAM) String callback,
                     @ApiParam(name = "sp_id",
                             value = "Service provider id") @RequestParam(name = "sp_id", required = false) String spId) throws Exception {
-    String accessCode = loginService.issueAccessCode(spId, clientContext);
+    String accessCode = loginService.issueAccessCode(spId);
     whiteList.validate("callback", callback);
     response.sendRedirect(callback + "?accessCode=" + accessCode);
   }

@@ -1,7 +1,6 @@
 package gov.ca.cwds.service.reissue;
 
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Profile("dev")
 public class ReissueLoginServiceDev implements ReissueLoginService {
   @Override
-  public String issueAccessCode(String providerId, OAuth2ClientContext oauth2ClientContext) {
+  public String issueAccessCode(String providerId) {
     return null;
   }
 

@@ -34,6 +34,8 @@ import static gov.ca.cwds.config.Constants.IDENTITY;
 public class ReissueLoginServiceImpl implements ReissueLoginService {
   @Value("${security.oauth2.resource.revokeTokenUri}")
   private String revokeTokenUri;
+  @Autowired(required = false)
+  private OAuth2ClientContext clientContext;
 
   private ResourceServerProperties resourceServerProperties;
   private IdentityMappingService identityMappingService;
@@ -41,11 +43,11 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
   private OAuth2RestTemplateService restClientService;
 
   @Override
-  public String issueAccessCode(String providerId, OAuth2ClientContext oauth2ClientContext) {
+  public String issueAccessCode(String providerId) {
     SecurityContext securityContext = SecurityContextHolder.getContext();
     OAuth2Authentication authentication = (OAuth2Authentication) securityContext.getAuthentication();
     UniversalUserToken userToken = (UniversalUserToken) authentication.getPrincipal();
-    OAuth2AccessToken accessToken = oauth2ClientContext.getAccessToken();
+    OAuth2AccessToken accessToken = clientContext.getAccessToken();
     String identity = identityMappingService.map(userToken, providerId);
     accessToken.getAdditionalInformation().put(Constants.IDENTITY, identity);
     return tokenService.issueAccessCode(userToken, accessToken);
