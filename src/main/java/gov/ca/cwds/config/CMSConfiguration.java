@@ -2,6 +2,7 @@ package gov.ca.cwds.config;
 
 import gov.ca.cwds.data.auth.AssignmentUnitDao;
 import gov.ca.cwds.data.persistence.auth.AssignmentUnit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
@@ -54,10 +55,11 @@ public class CMSConfiguration {
 
   @Bean
   @Primary
-  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+  @Autowired
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
     LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-    em.setDataSource(dataSource());
-    em.setJpaPropertyMap(jpaProperties().getHibernateProperties(dataSource()));
+    em.setDataSource(dataSource);
+    em.setJpaPropertyMap(jpaProperties().getHibernateProperties(dataSource));
     em.setPackagesToScan("gov.ca.cwds.data.persistence.auth", "gov.ca.cwds.data.auth");
     em.setPersistenceUnitName("default");
     em.setJpaVendorAdapter(jpaVendorAdapter());
@@ -66,11 +68,12 @@ public class CMSConfiguration {
 
   @Bean
   @Primary
-  public PlatformTransactionManager tokenTransactionManager() {
+  @Autowired
+  public PlatformTransactionManager tokenTransactionManager(DataSource dataSource) {
     JpaTransactionManager transactionManager
             = new JpaTransactionManager();
     transactionManager.setEntityManagerFactory(
-            entityManagerFactory().getObject());
+            entityManagerFactory(dataSource).getObject());
     return transactionManager;
   }
 }
