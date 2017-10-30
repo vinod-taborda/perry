@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @Transactional("tokenTransactionManager")
 @Profile("prod")
-public class ReissueTokenService {
+public class TokenService {
   @Value("${perry.jwt.timeout}")
   private int accessCodeTimeout;
   private TokenRepository tokenRepository;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Profile("dev")
-public class ReissueLoginServiceDev implements ReissueLoginService {
+public class LoginServiceDev implements LoginService {
   @Override
   public String issueAccessCode(String providerId) {
     return null;

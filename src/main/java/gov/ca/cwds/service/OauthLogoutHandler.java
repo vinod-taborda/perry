@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import gov.ca.cwds.UniversalUserToken;
-import gov.ca.cwds.service.reissue.ReissueLoginService;
+import gov.ca.cwds.service.reissue.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class OauthLogoutHandler implements LogoutHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OauthLogoutHandler.class);
-  private ReissueLoginService loginService;
+  private LoginService loginService;
 
   @Override
   public void logout(HttpServletRequest request, HttpServletResponse response,
@@ -38,7 +38,7 @@ public class OauthLogoutHandler implements LogoutHandler {
   }
 
   @Autowired
-  public void setLoginService(ReissueLoginService loginService) {
+  public void setLoginService(LoginService loginService) {
     this.loginService = loginService;
   }
 }

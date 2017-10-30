@@ -3,14 +3,12 @@ package gov.ca.cwds.rest.api;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.config.Constants;
 import gov.ca.cwds.service.WhiteList;
-import gov.ca.cwds.service.reissue.ReissueLoginService;
+import gov.ca.cwds.service.reissue.LoginService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +26,7 @@ import java.util.logging.Logger;
 @RestController
 public class LoginResource {
 
-  private ReissueLoginService loginService;
+  private LoginService loginService;
 
   private WhiteList whiteList;
 
@@ -99,7 +97,7 @@ public class LoginResource {
   }
 
   @Autowired
-  public void setLoginService(ReissueLoginService loginService) {
+  public void setLoginService(LoginService loginService) {
     this.loginService = loginService;
   }
 

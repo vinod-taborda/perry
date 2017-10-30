@@ -14,10 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,7 @@ import static gov.ca.cwds.config.Constants.IDENTITY;
  */
 @Service
 @Profile("prod")
-public class ReissueLoginServiceImpl implements ReissueLoginService {
+public class LoginServiceImpl implements LoginService {
   @Value("${security.oauth2.resource.revokeTokenUri}")
   private String revokeTokenUri;
   @Autowired(required = false)
@@ -39,7 +37,7 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
 
   private ResourceServerProperties resourceServerProperties;
   private IdentityMappingService identityMappingService;
-  private ReissueTokenService tokenService;
+  private TokenService tokenService;
   private OAuth2RestTemplateService restClientService;
 
   @Override
@@ -105,7 +103,7 @@ public class ReissueLoginServiceImpl implements ReissueLoginService {
   }
 
   @Autowired
-  public void setTokenService(ReissueTokenService tokenService) {
+  public void setTokenService(TokenService tokenService) {
     this.tokenService = tokenService;
   }
 }
