@@ -28,7 +28,7 @@ public abstract class AbstractRealm extends AuthorizingRealm {
   /**
    * primary principal equals to username secondary principal equals to user token
    */
-  private static final int PRINCIPALS_COUNT = 2;
+  private static final int PRINCIPALS_COUNT = 3;
 
   private ObjectMapper objectMapper;
 
@@ -65,14 +65,12 @@ public abstract class AbstractRealm extends AuthorizingRealm {
     String json = validate(tokenString);
 
     PerryAccount perryAccount = map(json);
-    return getAuthenticationInfo(perryAccount);
+    return getAuthenticationInfo(perryAccount, tokenString);
   }
 
   /**
    * Maps payload to user info. For more complex user info override this method. User info will be
-   * accessible as secondary principal: <p> Subject subject = SecurityUtils.getSubject(); List
-   * principals = subject.getPrincipals().asList(); PerryAccount account = (PerryAccount)
-   * principals.get(1);
+   * accessible as secondary principal: <p>PerrySubject.getPerryAccount();</p>
    *
    * @param json payload
    * @return mapped payload
@@ -87,10 +85,11 @@ public abstract class AbstractRealm extends AuthorizingRealm {
     }
   }
 
-  private AuthenticationInfo getAuthenticationInfo(PerryAccount perryAccount) {
+  private AuthenticationInfo getAuthenticationInfo(PerryAccount perryAccount, String token) {
     List<Object> principals = new ArrayList<>();
     principals.add(perryAccount.getUser());
     principals.add(perryAccount);
+    principals.add(token);
     PrincipalCollection principalCollection = new SimplePrincipalCollection(principals, getName());
     return new SimpleAuthenticationInfo(principalCollection, "N/A");
   }

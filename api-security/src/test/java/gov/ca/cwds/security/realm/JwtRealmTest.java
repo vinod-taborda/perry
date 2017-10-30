@@ -38,14 +38,14 @@ public class JwtRealmTest {
   }
 
   @Test
-  public void testDoGetAuthorizationInfo() {
+  public void testDoGetAuthorizationInfo() throws Exception {
     PerryAccount perryAccount = perryAccount();
-    List<Object> principals = Arrays.asList(perryAccount.getUser(), perryAccount);
+    String jwtToken = generateToken(perryAccount.getUser());
+    List<Object> principals = Arrays.asList(perryAccount.getUser(), perryAccount, jwtToken);
     PrincipalCollection principalCollection =
             new SimplePrincipalCollection(principals, "testRealm");
     AuthorizationInfo authorizationInfo = jwtRealm.doGetAuthorizationInfo(principalCollection);
     Assert.assertEquals(perryAccount.getRoles(), authorizationInfo.getRoles());
-
   }
 
   @Test
@@ -53,11 +53,12 @@ public class JwtRealmTest {
     String jwtToken = generateToken("testuser");
     AuthenticationToken token = new PerryShiroToken(jwtToken);
     AuthenticationInfo authenticationInfo = jwtRealm.doGetAuthenticationInfo(token);
-    Assert.assertEquals(2, authenticationInfo.getPrincipals().asList().size());
+    Assert.assertEquals(3, authenticationInfo.getPrincipals().asList().size());
     Assert.assertEquals(authenticationInfo.getPrincipals().asList().get(0), "testuser");
     PerryAccount perryAccount = (PerryAccount) authenticationInfo.getPrincipals().asList().get(1);
     Assert.assertEquals("testuser", perryAccount.getUser());
     Assert.assertEquals(new HashSet<>(Arrays.asList("role1", "role2")), perryAccount.getRoles());
+    Assert.assertEquals(authenticationInfo.getPrincipals().asList().get(2), jwtToken);
   }
 
   private String generateToken(String subject) throws Exception {
