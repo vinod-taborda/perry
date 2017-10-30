@@ -20,7 +20,6 @@ import java.util.List;
  */
 @Service
 @Transactional("tokenTransactionManager")
-@Profile("prod")
 public class TokenService {
   @Value("${perry.jwt.timeout}")
   private int accessCodeTimeout;
