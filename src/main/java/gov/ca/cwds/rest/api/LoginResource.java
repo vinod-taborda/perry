@@ -3,7 +3,7 @@ package gov.ca.cwds.rest.api;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.config.Constants;
 import gov.ca.cwds.service.WhiteList;
-import gov.ca.cwds.service.reissue.LoginService;
+import gov.ca.cwds.service.LoginService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;

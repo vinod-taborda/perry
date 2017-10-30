@@ -1,9 +1,8 @@
-package gov.ca.cwds.service.reissue;
+package gov.ca.cwds.service;
 
 import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.config.Constants;
 import gov.ca.cwds.rest.api.domain.PerryException;
-import gov.ca.cwds.service.IdentityMappingService;
 import gov.ca.cwds.service.oauth.OAuth2RestTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

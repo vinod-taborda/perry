@@ -1,4 +1,4 @@
-package gov.ca.cwds.service.reissue;
+package gov.ca.cwds.service;
 
 /**
  * Created by TPT2 on 10/24/2017.

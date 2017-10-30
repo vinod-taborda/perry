@@ -1,4 +1,4 @@
-package gov.ca.cwds.service.reissue;
+package gov.ca.cwds.service;
 
 import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.data.reissue.TokenRepository;
