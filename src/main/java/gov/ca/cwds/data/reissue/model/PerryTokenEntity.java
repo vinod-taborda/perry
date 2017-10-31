@@ -8,14 +8,20 @@ import java.util.Date;
  * Created by TPT2 on 10/24/2017.
  */
 @Entity
+@Table(name = "perry_token")
 public class PerryTokenEntity implements Serializable {
   @Id
+  @Column(name = "token")
   private String token;
+  @Column(name = "access_code")
   private String accessCode;
+  @Column(name = "user_id")
   private String user;
   @Lob
+  @Column(name = "access_token")
   private Serializable accessToken;
   @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "created_date")
   private Date createdDate = new Date();
 
   public String getUser() {
