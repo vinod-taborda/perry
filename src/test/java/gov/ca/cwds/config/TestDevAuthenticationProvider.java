@@ -1,6 +1,7 @@
 package gov.ca.cwds.config;
 
 import gov.ca.cwds.PerryProperties;
+import gov.ca.cwds.UniversalUserToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +29,8 @@ public class TestDevAuthenticationProvider {
     Authentication authentication =
             authenticationProvider.authenticate(
                     authentication());
-    assert authentication.getPrincipal().equals("user");
+    assert authentication.getPrincipal() instanceof UniversalUserToken;
+    assert ((UniversalUserToken)authentication.getPrincipal()).getUserId().equals("user");
     assert authentication.getCredentials().equals("N/A");
     assert authentication instanceof UsernamePasswordAuthenticationToken;
     assert authentication.getAuthorities().size() == 1;
