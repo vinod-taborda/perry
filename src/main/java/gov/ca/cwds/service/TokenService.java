@@ -30,7 +30,7 @@ public class TokenService {
     PerryTokenEntity perryTokenEntity = new PerryTokenEntity();
     perryTokenEntity.setUser(userToken.getUserId());
     perryTokenEntity.setAccessCode(accessCode);
-    perryTokenEntity.setAccessToken((Serializable) accessToken);
+    perryTokenEntity.writeAccessToken(accessToken);
     perryTokenEntity.setToken(userToken.getToken());
     tokenRepository.deleteByUser(userToken.getUserId());
     tokenRepository.save(perryTokenEntity);
@@ -62,16 +62,15 @@ public class TokenService {
 
   public OAuth2AccessToken deleteToken(String token) {
     PerryTokenEntity perryTokenEntity = tokenRepository.findOne(token);
-    OAuth2AccessToken accessToken = (OAuth2AccessToken) perryTokenEntity.getAccessToken();
+    OAuth2AccessToken accessToken = perryTokenEntity.readAccessToken();
     tokenRepository.delete(token);
     return accessToken;
   }
 
   public OAuth2AccessToken getAccessTokenByPerryToken(String token) {
     PerryTokenEntity perryTokenEntity = tokenRepository.findOne(token);
-    return (OAuth2AccessToken) perryTokenEntity.getAccessToken();
+    return perryTokenEntity.readAccessToken();
   }
-
 
   @Autowired
   public void setTokenRepository(TokenRepository tokenRepository) {

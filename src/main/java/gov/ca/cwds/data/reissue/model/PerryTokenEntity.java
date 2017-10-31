@@ -1,5 +1,8 @@
 package gov.ca.cwds.data.reissue.model;
 
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.util.SerializationUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -17,9 +20,8 @@ public class PerryTokenEntity implements Serializable {
   private String accessCode;
   @Column(name = "user_id")
   private String user;
-  @Lob
   @Column(name = "access_token")
-  private Serializable accessToken;
+  private byte[] accessToken;
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "created_date")
   private Date createdDate = new Date();
@@ -32,12 +34,22 @@ public class PerryTokenEntity implements Serializable {
     this.user = user;
   }
 
-  public Serializable getAccessToken() {
+  public byte[] getAccessToken() {
     return accessToken;
   }
 
-  public void setAccessToken(Serializable accessToken) {
+  public void setAccessToken(byte[] accessToken) {
     this.accessToken = accessToken;
+  }
+
+  @Transient
+  public OAuth2AccessToken readAccessToken() {
+    return (OAuth2AccessToken) SerializationUtils.deserialize(accessToken);
+  }
+
+  @Transient
+  public void writeAccessToken(OAuth2AccessToken oAuth2AccessToken) {
+    accessToken = SerializationUtils.serialize(oAuth2AccessToken);
   }
 
   public Date getCreatedDate() {
