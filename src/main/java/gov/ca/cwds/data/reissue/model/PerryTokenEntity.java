@@ -20,8 +20,6 @@ public class PerryTokenEntity implements Serializable {
   private String accessCode;
   @Column(name = "user_id")
   private String user;
-  //@Lob
-
   @Column(name = "access_token", length = 20000)
   private byte[] accessToken;
   @Temporal(TemporalType.TIMESTAMP)
