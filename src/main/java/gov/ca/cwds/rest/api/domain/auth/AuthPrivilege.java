@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * Enumerated types for Auth Privilege from xtools
- * 
+ *
  * @author CWDS API Team
  */
 public enum AuthPrivilege {
@@ -36,7 +36,7 @@ public enum AuthPrivilege {
 
   /**
    * Description
-   * 
+   *
    * @return description
    */
   public String getDescription() {

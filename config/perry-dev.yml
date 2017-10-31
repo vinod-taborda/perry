@@ -27,6 +27,21 @@ perry:
         keyPassword : ${KEYSTORE_KEY_PASSWORD:test}
         encAlias:  ${KEYSTORE_ENC_ALIAS:enc128}
         encKeyPassword: ${KEYSTORE_ENC_KEY_PASSWORD:test}
+    tokenStore:
+      datasource:
+        driver-class-name: org.h2.Driver
+        url: ${TOKEN_STORE_JDBC_URL:jdbc:h2:mem:token_store}
+        username: ${TOKEN_STORE_USER:}
+        password: ${TOKEN_STORE_PASSWORD:}
+      jpa:
+        database: h2
+        show_sql: true
+        properties:
+           hibernate.cache.use_query_cache: false
+           hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
+           hibernate.dialect: org.hibernate.dialect.H2Dialect
+           hibernate.ddl-auto: create
+           hibernate.default_schema: ${TOKEN_STORE_SCHEMA:}
     serviceProviders:
       default:
         identityMapping: 'config/default.groovy'
@@ -50,7 +65,7 @@ endpoints:
   configprops:
     enabled: false
 server:
-  context-path: ${CONTEXT_PATH:/}
+  context-path: ${CONTEXT_PATH:/perry}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
   port: ${HTTPS_PORT:8090}
   ssl:

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Class representing a CWS Office.
- * 
+ *
  * @author CWDS API Team
  */
 @ApiModel
@@ -42,14 +42,14 @@ public class CwsOffice {
 
   /**
    * JSON Constructor
-   * 
-   * @param officeId the office Id
+   *
+   * @param officeId             the office Id
    * @param governmentEntityType the government entity type
-   * @param countyCode the county code
+   * @param countyCode           the county code
    */
   public CwsOffice(@JsonProperty("office_id") String officeId,
-      @JsonProperty("government_entity_type") String governmentEntityType,
-      @JsonProperty("county_code") String countyCode) {
+                   @JsonProperty("government_entity_type") String governmentEntityType,
+                   @JsonProperty("county_code") String countyCode) {
     super();
     this.officeId = officeId;
     this.governmentEntityType = governmentEntityType;
@@ -57,7 +57,6 @@ public class CwsOffice {
     this.countyCode = countyCode;
     this.county = GovernmentEntityType.findByCountyCd(countyCode).getDescription();
   }
-
 
 
   private String getGovernmentEntityTypeDescription(String type) {
@@ -72,14 +71,12 @@ public class CwsOffice {
   }
 
 
-
   /**
    * @return the officeId
    */
   public String getOfficeId() {
     return officeId;
   }
-
 
 
   /**
@@ -90,14 +87,12 @@ public class CwsOffice {
   }
 
 
-
   /**
    * @return the governmentEntityTypeDesc
    */
   public String getGovernmentEntityTypeDesc() {
     return governmentEntityTypeDesc;
   }
-
 
 
   /**
@@ -108,14 +103,12 @@ public class CwsOffice {
   }
 
 
-
   /**
    * @return the countyDesc
    */
   public String getCounty() {
     return county;
   }
-
 
 
   /*
@@ -130,13 +123,12 @@ public class CwsOffice {
     result = prime * result + ((countyCode == null) ? 0 : countyCode.hashCode());
     result = prime * result + ((county == null) ? 0 : county.hashCode());
     result =
-        prime * result + ((governmentEntityType == null) ? 0 : governmentEntityType.hashCode());
+            prime * result + ((governmentEntityType == null) ? 0 : governmentEntityType.hashCode());
     result = prime * result
-        + ((governmentEntityTypeDesc == null) ? 0 : governmentEntityTypeDesc.hashCode());
+            + ((governmentEntityTypeDesc == null) ? 0 : governmentEntityTypeDesc.hashCode());
     result = prime * result + ((officeId == null) ? 0 : officeId.hashCode());
     return result;
   }
-
 
 
   /*

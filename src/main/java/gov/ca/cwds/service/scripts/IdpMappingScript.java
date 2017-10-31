@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class IdpMappingScript extends Script {
   public IdpMappingScript(String path) throws IOException {
-    super(path, "universalUserToken",  "idpToken");
+    super(path, "universalUserToken", "idpToken");
   }
 
   public UniversalUserToken map(Map idpToken) throws ScriptException {
