@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Class representing a Staff Person Unit of Authority.
- * 
+ *
  * @author CWDS API Team
  */
 @ApiModel
@@ -45,12 +45,12 @@ public class StaffUnitAuthority {
 
   /**
    * JSON Constructor
-   * 
-   * @param unitAuthorityType the unit authority
-   * @param assignedUnit the assigned unit
+   *
+   * @param unitAuthorityType   the unit authority
+   * @param assignedUnit        the assigned unit
    * @param assignedUnitEndDate the end date for the assigned unit
-   * @param countyCode the county code
-   * @param endDate the endDate
+   * @param countyCode          the county code
+   * @param endDate             the endDate
    */
   public StaffUnitAuthority(@JsonProperty("unit_authority_code") String unitAuthorityType,
                             @JsonProperty("assigned_unit") String assignedUnit,
@@ -59,7 +59,7 @@ public class StaffUnitAuthority {
     super();
     this.unitAuthorityCode = unitAuthorityType;
     this.unitAuthorityCodeDesc =
-        UnitAuthority.findByUnitAuthorityCode(unitAuthorityType).getDescription();
+            UnitAuthority.findByUnitAuthorityCode(unitAuthorityType).getDescription();
     this.assignedUnit = assignedUnit;
     this.assignedUnitEndDate = assignedUnitEndDate;
     this.countyCode = countyCode;
@@ -140,7 +140,7 @@ public class StaffUnitAuthority {
     result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
     result = prime * result + ((unitAuthorityCode == null) ? 0 : unitAuthorityCode.hashCode());
     result =
-        prime * result + ((unitAuthorityCodeDesc == null) ? 0 : unitAuthorityCodeDesc.hashCode());
+            prime * result + ((unitAuthorityCodeDesc == null) ? 0 : unitAuthorityCodeDesc.hashCode());
     return result;
   }
 

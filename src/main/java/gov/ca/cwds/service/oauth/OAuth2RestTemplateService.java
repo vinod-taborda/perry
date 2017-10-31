@@ -1,6 +1,5 @@
 package gov.ca.cwds.service.oauth;
 
-import gov.ca.cwds.config.OAuthConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.context.annotation.Profile;
@@ -44,7 +43,7 @@ public class OAuth2RestTemplateService {
   }
 
   public OAuth2RestTemplate clientRestTemplate() {
-      return clientTemplate;
+    return clientTemplate;
   }
 
   @Autowired

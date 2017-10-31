@@ -20,43 +20,43 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableConfigurationProperties()
 public class FormLoginConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private DevAuthenticationProvider authProvider;
+  @Autowired
+  private DevAuthenticationProvider authProvider;
 
-    @Autowired
-    private LoginServiceValidatorFilter loginServiceValidatorFilter;
+  @Autowired
+  private LoginServiceValidatorFilter loginServiceValidatorFilter;
 
-    @Autowired
-    private PerryLogoutSuccessHandler perryLogoutSuccessHandler;
+  @Autowired
+  private PerryLogoutSuccessHandler perryLogoutSuccessHandler;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider);
-    }
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.authenticationProvider(authProvider);
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers(
-                        "/login*",
-                        "/css/**",
-                        "/images/**",
-                        "/dev/**",
-                        "/authn/validate*/**",
-                        "/authn/invalidate*/**",
-                        "/manage/**",
-                        "/templates/*").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login.html")
-                .defaultSuccessUrl("/index.html")
-                .loginProcessingUrl("/login")
-                .failureUrl("/login.html?error=true")
-                .and()
-                .logout().logoutUrl("/authn/logout").permitAll().logoutSuccessHandler(perryLogoutSuccessHandler)
-                .and().csrf().disable()
-                .addFilterBefore(loginServiceValidatorFilter, UsernamePasswordAuthenticationFilter.class);
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http
+            .authorizeRequests()
+            .antMatchers(
+                    "/login*",
+                    "/css/**",
+                    "/images/**",
+                    "/dev/**",
+                    "/authn/validate*/**",
+                    "/authn/invalidate*/**",
+                    "/manage/**",
+                    "/templates/*").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin()
+            .loginPage("/login.html")
+            .defaultSuccessUrl("/index.html")
+            .loginProcessingUrl("/login")
+            .failureUrl("/login.html?error=true")
+            .and()
+            .logout().logoutUrl("/authn/logout").permitAll().logoutSuccessHandler(perryLogoutSuccessHandler)
+            .and().csrf().disable()
+            .addFilterBefore(loginServiceValidatorFilter, UsernamePasswordAuthenticationFilter.class);
+  }
 }

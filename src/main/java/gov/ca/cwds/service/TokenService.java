@@ -6,7 +6,6 @@ import gov.ca.cwds.data.reissue.model.PerryTokenEntity;
 import gov.ca.cwds.rest.api.domain.PerryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.stereotype.Service;
@@ -47,7 +46,7 @@ public class TokenService {
       tokenRepository.delete(tokens);
       throw new PerryException("Access Code: " + accessCode + " is not unique");
     }
-    PerryTokenEntity perryTokenEntity = tokens.iterator().next();
+    PerryTokenEntity perryTokenEntity = tokens.get(0);
     long expirationTime = perryTokenEntity.getCreatedDate().getTime() + accessCodeTimeout * 60 * 1000;
     if (System.currentTimeMillis() > expirationTime) {
       tokenRepository.delete(perryTokenEntity);

@@ -14,88 +14,88 @@ import java.util.*;
  */
 @ConfigurationProperties(prefix = "perry")
 public class PerryProperties {
-    @NestedConfigurationProperty
-    private JwtConfiguration jwt;
+  @NestedConfigurationProperty
+  private JwtConfiguration jwt;
 
-    @NestedConfigurationProperty
-    private IdentityProviderConfiguration identityProvider;
+  @NestedConfigurationProperty
+  private IdentityProviderConfiguration identityProvider;
 
-    private String users;
+  private String users;
 
-    private List<String> whiteList = new ArrayList<>();
+  private List<String> whiteList = new ArrayList<>();
 
-    private Map<String, ServiceProviderConfiguration> serviceProviders = new HashMap<>();
+  private Map<String, ServiceProviderConfiguration> serviceProviders = new HashMap<>();
 
-    public static class IdentityProviderConfiguration {
-        private IdpMappingScript idpMapping;
+  public static class IdentityProviderConfiguration {
+    private IdpMappingScript idpMapping;
 
-        public IdpMappingScript getIdpMapping() {
-            return idpMapping;
-        }
-
-        public void setIdpMapping(String idpMapping) throws IOException {
-            this.idpMapping = new IdpMappingScript(idpMapping);
-        }
+    public IdpMappingScript getIdpMapping() {
+      return idpMapping;
     }
 
-    public static class ServiceProviderConfiguration {
-        private String id;
-        private IdentityMappingScript identityMapping;
+    public void setIdpMapping(String idpMapping) throws IOException {
+      this.idpMapping = new IdpMappingScript(idpMapping);
+    }
+  }
 
-        public String getId() {
-            return id;
-        }
+  public static class ServiceProviderConfiguration {
+    private String id;
+    private IdentityMappingScript identityMapping;
 
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public IdentityMappingScript getIdentityMapping() {
-            return identityMapping;
-        }
-
-        public void setIdentityMapping(String identityMapping) throws IOException {
-            this.identityMapping = new IdentityMappingScript(identityMapping);
-        }
+    public String getId() {
+      return id;
     }
 
-    public List<String> getWhiteList() {
-        return whiteList;
+    public void setId(String id) {
+      this.id = id;
     }
 
-    public void setWhiteList(String whiteList) {
-        this.whiteList = Arrays.asList(whiteList.split("\\s"));
+    public IdentityMappingScript getIdentityMapping() {
+      return identityMapping;
     }
 
-    public JwtConfiguration getJwt() {
-        return jwt;
+    public void setIdentityMapping(String identityMapping) throws IOException {
+      this.identityMapping = new IdentityMappingScript(identityMapping);
     }
+  }
 
-    public void setJwt(JwtConfiguration jwt) {
-        this.jwt = jwt;
-    }
+  public List<String> getWhiteList() {
+    return whiteList;
+  }
 
-    public Map<String, ServiceProviderConfiguration> getServiceProviders() {
-        return serviceProviders;
-    }
+  public void setWhiteList(String whiteList) {
+    this.whiteList = Arrays.asList(whiteList.split("\\s"));
+  }
 
-    public void setServiceProviders(Map<String, ServiceProviderConfiguration> serviceProviders) {
-        this.serviceProviders = serviceProviders;
-    }
+  public JwtConfiguration getJwt() {
+    return jwt;
+  }
 
-    public IdentityProviderConfiguration getIdentityProvider() {
-        return identityProvider;
-    }
+  public void setJwt(JwtConfiguration jwt) {
+    this.jwt = jwt;
+  }
 
-    public void setIdentityProvider(IdentityProviderConfiguration identityProvider) {
-        this.identityProvider = identityProvider;
-    }
+  public Map<String, ServiceProviderConfiguration> getServiceProviders() {
+    return serviceProviders;
+  }
 
-    public String getUsers() {
-        return users;
-    }
+  public void setServiceProviders(Map<String, ServiceProviderConfiguration> serviceProviders) {
+    this.serviceProviders = serviceProviders;
+  }
 
-    public void setUsers(String users) {
-        this.users = users;
-    }
+  public IdentityProviderConfiguration getIdentityProvider() {
+    return identityProvider;
+  }
+
+  public void setIdentityProvider(IdentityProviderConfiguration identityProvider) {
+    this.identityProvider = identityProvider;
+  }
+
+  public String getUsers() {
+    return users;
+  }
+
+  public void setUsers(String users) {
+    this.users = users;
+  }
 }

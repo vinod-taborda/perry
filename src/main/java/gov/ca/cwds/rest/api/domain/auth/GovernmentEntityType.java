@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Enumerated types for GovernmentEntityType, for FKS_META_T =GVR_ENTC.
- * 
+ *
  * @author CWDS API Team
  */
 public enum GovernmentEntityType implements ApiSysCodeAware {
@@ -349,7 +349,7 @@ public enum GovernmentEntityType implements ApiSysCodeAware {
 
   public static GovernmentEntityType findByCountyCd(String countyCd) {
     return mapByCountyCd.containsKey(countyCd) ? mapByCountyCd.get(countyCd)
-        : GovernmentEntityType.NONE;
+            : GovernmentEntityType.NONE;
   }
 
 

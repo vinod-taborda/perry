@@ -12,7 +12,7 @@ import java.util.Date;
 
 /**
  * {@link CmsPersistentObject} representing a StaffPersonUnitAuthority.
- * 
+ *
  * @author CWDS API Team
  */
 @Entity
@@ -50,7 +50,7 @@ public class StaffUnitAuthority extends CmsPersistentObject {
 
   /**
    * Default constructor
-   * 
+   * <p>
    * Required for Hibernate
    */
   public StaffUnitAuthority() {
@@ -58,16 +58,16 @@ public class StaffUnitAuthority extends CmsPersistentObject {
   }
 
   /**
-   * @param authorityCode The authorityCode
+   * @param authorityCode      The authorityCode
    * @param countySpecificCode The countySpecificCode
-   * @param endDate The endDate
-   * @param fkasgUnit The fkasgUnit
-   * @param staffPersonId The staffPersonId
-   * @param startDate The startDate
-   * @param thirdId The thirdId
+   * @param endDate            The endDate
+   * @param fkasgUnit          The fkasgUnit
+   * @param staffPersonId      The staffPersonId
+   * @param startDate          The startDate
+   * @param thirdId            The thirdId
    */
   public StaffUnitAuthority(String authorityCode, String countySpecificCode, Date endDate,
-      String fkasgUnit, String staffPersonId, Date startDate, String thirdId) {
+                            String fkasgUnit, String staffPersonId, Date startDate, String thirdId) {
     super();
     this.authorityCode = authorityCode;
     this.countySpecificCode = countySpecificCode;
@@ -80,7 +80,7 @@ public class StaffUnitAuthority extends CmsPersistentObject {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see gov.ca.cwds.data.persistence.PersistentObject#getPrimaryKey()
    */
   @Override
@@ -139,7 +139,7 @@ public class StaffUnitAuthority extends CmsPersistentObject {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see Object#hashCode()
    */
   @Override
@@ -154,11 +154,11 @@ public class StaffUnitAuthority extends CmsPersistentObject {
     result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
     result = prime * result + ((thirdId == null) ? 0 : thirdId.hashCode());
     result =
-        prime * result
-            + ((super.getLastUpdatedId() == null) ? 0 : super.getLastUpdatedId().hashCode());
+            prime * result
+                    + ((super.getLastUpdatedId() == null) ? 0 : super.getLastUpdatedId().hashCode());
     result =
-        prime * result
-            + ((super.getLastUpdatedTime() == null) ? 0 : super.getLastUpdatedTime().hashCode());
+            prime * result
+                    + ((super.getLastUpdatedTime() == null) ? 0 : super.getLastUpdatedTime().hashCode());
     return result;
   }
 
