@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @Transactional("tokenTransactionManager")
 public class TokenService {
-  @Value("${perry.jwt.timeout}")
+  @Value("${perry.jwt.timeout:10}")
   private int accessCodeTimeout;
   private TokenRepository tokenRepository;
   private RandomValueStringGenerator generator = new RandomValueStringGenerator();
