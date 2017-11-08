@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -13,7 +12,7 @@ import java.util.List;
  *
  * @author CWDS API Team
  */
-@Transactional
+
 @Repository
 public interface StaffAuthorityPrivilegeDao extends ReadOnlyRepository<StaffAuthorityPrivilege, String> {
 

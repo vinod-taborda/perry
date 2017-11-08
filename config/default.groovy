@@ -21,7 +21,7 @@ def supervisor = authorization.unitAuthority != null && authorization.unitAuthor
 
 
 [user       : authorization.userId,
- roles      : [supervisor ? "Supervisor" : "SocialWorker"],
+ roles      : user.roles + [supervisor ? "Supervisor" : "SocialWorker"],
  staffId    : authorization.staffPersonId,
  county_name: authorization.county,
  county_code: authorization.staffPerson.countyCode,

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import gov.ca.cwds.data.persistence.PersistentObject;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -16,7 +14,7 @@ import java.util.Date;
 
 /**
  * {@link PersistentObject} representing a UserId
- * 
+ *
  * @author CWDS API Team
  */
 
@@ -57,7 +55,7 @@ public class UserId extends CmsPersistentObject {
 
   /**
    * Default constructor
-   * 
+   * <p>
    * Required for Hibernate
    */
   public UserId() {
@@ -66,17 +64,17 @@ public class UserId extends CmsPersistentObject {
 
   /**
    * Constructor
-   * 
-   * @param endDate The endDate
-   * @param endTime The endTime
-   * @param fkfpstfprt The fkfpstfprt
-   * @param staffPersonId The staffPersonId
-   * @param id The id
-   * @param logonId The logonId
+   *
+   * @param endDate          The endDate
+   * @param endTime          The endTime
+   * @param fkfpstfprt       The fkfpstfprt
+   * @param staffPersonId    The staffPersonId
+   * @param id               The id
+   * @param logonId          The logonId
    * @param systemDomainType The system domain type
    */
   public UserId(Date endDate, Date endTime, String fkfpstfprt, String staffPersonId, String id,
-      String logonId, Short systemDomainType) {
+                String logonId, Short systemDomainType) {
     super();
     this.endDate = endDate;
     this.endTime = endTime;
@@ -89,7 +87,7 @@ public class UserId extends CmsPersistentObject {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see PersistentObject#getPrimaryKey()
    */
   @Override
@@ -148,7 +146,7 @@ public class UserId extends CmsPersistentObject {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see Object#hashCode()
    */
   @Override
@@ -163,9 +161,9 @@ public class UserId extends CmsPersistentObject {
     result = prime * result + ((staffPersonId == null) ? 0 : staffPersonId.hashCode());
     result = prime * result + ((systemDomainType == null) ? 0 : systemDomainType.hashCode());
     result = prime * result
-        + ((super.getLastUpdatedId() == null) ? 0 : super.getLastUpdatedId().hashCode());
+            + ((super.getLastUpdatedId() == null) ? 0 : super.getLastUpdatedId().hashCode());
     result = prime * result
-        + ((super.getLastUpdatedTime() == null) ? 0 : super.getLastUpdatedTime().hashCode());
+            + ((super.getLastUpdatedTime() == null) ? 0 : super.getLastUpdatedTime().hashCode());
     return result;
   }
 

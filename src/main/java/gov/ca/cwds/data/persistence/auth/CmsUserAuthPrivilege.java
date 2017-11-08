@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Enumerated type container for CMS authorization privileges.
- * 
+ *
  * @author CWDS API Team
  */
 public final class CmsUserAuthPrivilege {
@@ -50,11 +50,11 @@ public final class CmsUserAuthPrivilege {
 
   /**
    * An evil singleton.
-   * 
+   * <p>
    * <p>
    * Immutable enum service. Probably fine.
    * </p>
-   * 
+   *
    * @return singleton instance
    */
   public static final CmsUserAuthPrivilege getInstance() {
@@ -63,7 +63,7 @@ public final class CmsUserAuthPrivilege {
 
   /**
    * Look up unit authority code.
-   * 
+   *
    * @param code single character unit authority code
    * @return matching unit authority
    */
@@ -73,7 +73,7 @@ public final class CmsUserAuthPrivilege {
 
   /**
    * Look up user level privileges by SYS_ID.
-   * 
+   *
    * @param sysId system code id, per table SYS_CD_C
    * @return matching user privilege
    */
@@ -83,7 +83,7 @@ public final class CmsUserAuthPrivilege {
 
   /**
    * Look up authorization level by SYS_ID.
-   * 
+   *
    * @param sysId system code id, per table SYS_CD_C
    * @return matching user privilege
    */
@@ -93,7 +93,7 @@ public final class CmsUserAuthPrivilege {
 
   /**
    * Look up description of authorization privilege type
-   * 
+   *
    * @param type the sysId String value
    * @return the description
    */
@@ -112,7 +112,7 @@ public final class CmsUserAuthPrivilege {
    * Find a system code description by SYS_ID either user authorization privilege,
    * {@link UserAuthPriv}, or authorization level (state, county, global, etc.),
    * {@link AuthorizationLevel}.
-   * 
+   *
    * @param sysId code to look up
    * @return the code's description
    */
@@ -135,11 +135,11 @@ public final class CmsUserAuthPrivilege {
    * AUTHORITY_CODE - This represents the type of authority a designated STAFF PERSON has for a
    * particular ASSIGNMENT UNIT. The valid values are (S = Supervisor, A = Approval Authority, T =
    * Assignment Transfer Authority, B = Both the Approval and Assignment
-   * 
+   * <p>
    * <p>
    * Taken from table STAFF_PERSON_UNIT_AUTHORITY.
    * </p>
-   * 
+   *
    * @author CWDS API Team
    */
   public enum UnitAuthority {
@@ -174,7 +174,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Get the single char unit authority code.
-     * 
+     *
      * @return unit authority code
      */
     public String getUnitAuthCode() {
@@ -183,7 +183,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Get description of the unit authority code.
-     * 
+     *
      * @return the unit auth code description.
      */
     public String getDescription() {
@@ -193,7 +193,7 @@ public final class CmsUserAuthPrivilege {
 
   /**
    * Enumerated types for user authorization privileges, for FKS_META_T = LVL_ATHC.
-   * 
+   *
    * @author CWDS API Team
    */
   public enum AuthorizationLevel {
@@ -235,7 +235,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Primary key of CMS system code table.
-     * 
+     *
      * @return system code PK
      */
     public long getSysId() {
@@ -244,7 +244,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Description of this system code.
-     * 
+     *
      * @return system code description
      */
     public String getDescription() {
@@ -253,7 +253,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Relative order of system code in category. Authorization level only has one category.
-     * 
+     *
      * @return system code order
      */
     public String getOrderInCategory() {
@@ -264,7 +264,7 @@ public final class CmsUserAuthPrivilege {
 
   /**
    * Enumerated types for user authorization privileges, for FKS_META_T = PRIVLG_C.
-   * 
+   *
    * @author CWDS API Team
    */
   public enum UserAuthPriv {
@@ -469,7 +469,7 @@ public final class CmsUserAuthPrivilege {
     }
 
     private UserAuthPriv(long sysId, String shortDsc, long categoryId, String orderInCategory,
-        boolean active) {
+                         boolean active) {
       this.sysId = sysId;
       this.description = shortDsc;
       this.categoryId = categoryId;
@@ -479,7 +479,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Primary key of CMS system code table.
-     * 
+     *
      * @return system code PK
      */
     public long getSysId() {
@@ -488,7 +488,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Get category of this system code or zero if none.
-     * 
+     *
      * @return system code category
      */
     public long getCategoryId() {
@@ -497,7 +497,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Description of this system code.
-     * 
+     *
      * @return system code description
      */
     public String getDescription() {
@@ -506,7 +506,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * Relative order of system code in category
-     * 
+     *
      * @return system code order
      */
     public String getOrderInCategory() {
@@ -515,7 +515,7 @@ public final class CmsUserAuthPrivilege {
 
     /**
      * A handful of privileges are marked as inactive.
-     * 
+     *
      * @return whether the privilege is active
      */
     public boolean isActive() {

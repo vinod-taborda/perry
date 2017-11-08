@@ -13,24 +13,26 @@ import java.util.stream.IntStream;
  * Created by dmitry.rudenko on 5/9/2017.
  */
 class Script {
-    private String[] variables;
-    private String script;
-    private ScriptEngine scriptEngine;
-    @SuppressFBWarnings("PATH_TRAVERSAL_IN") //script file location taken from property file only!
-    Script(String filePath, String... variables) throws IOException {
-        byte[] bytes = Files.readAllBytes(Paths.get(filePath));
-        script = new String(bytes, StandardCharsets.UTF_8);
-        this.variables = variables;
-        int dotIndex = filePath.lastIndexOf('.');
-        String fileExtension = dotIndex == -1 ? "" : filePath.substring(dotIndex + 1);
-        ScriptEngineManager factory = new ScriptEngineManager();
-        scriptEngine = factory.getEngineByName(fileExtension);
-    }
+  private String[] variables;
+  private String script;
+  private ScriptEngine scriptEngine;
 
-    Object eval(Object... objects) throws ScriptException {
-        ScriptContext scriptContext = new SimpleScriptContext();
-        IntStream.range(0, variables.length)
-                .forEach(i -> scriptContext.setAttribute(variables[i], objects[i], ScriptContext.ENGINE_SCOPE));
-        return scriptEngine.eval(script, scriptContext);
-    }
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
+    //script file location taken from property file only!
+  Script(String filePath, String... variables) throws IOException {
+    byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+    script = new String(bytes, StandardCharsets.UTF_8);
+    this.variables = variables;
+    int dotIndex = filePath.lastIndexOf('.');
+    String fileExtension = dotIndex == -1 ? "" : filePath.substring(dotIndex + 1);
+    ScriptEngineManager factory = new ScriptEngineManager();
+    scriptEngine = factory.getEngineByName(fileExtension);
+  }
+
+  Object eval(Object... objects) throws ScriptException {
+    ScriptContext scriptContext = new SimpleScriptContext();
+    IntStream.range(0, variables.length)
+            .forEach(i -> scriptContext.setAttribute(variables[i], objects[i], ScriptContext.ENGINE_SCOPE));
+    return scriptEngine.eval(script, scriptContext);
+  }
 }

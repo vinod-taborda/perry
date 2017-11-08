@@ -2,6 +2,7 @@ package gov.ca.cwds.config;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.PerryProperties;
+import gov.ca.cwds.UniversalUserToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -19,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.UUID;
 
 /**
  * username format: user:role1,role2
@@ -35,8 +37,11 @@ public class DevAuthenticationProvider implements AuthenticationProvider {
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     tryAuthenticate(authentication);
     String userName = authentication.getName();
+    UniversalUserToken userToken = new UniversalUserToken();
+    userToken.setToken(UUID.randomUUID().toString());
+    userToken.setUserId(userName);
     return new UsernamePasswordAuthenticationToken(
-            userName, "N/A", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+            userToken, "N/A", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
   }
 
   @Override

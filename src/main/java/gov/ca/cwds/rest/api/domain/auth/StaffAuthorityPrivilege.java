@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Class representing a Staff Person Authority Privilege.
- * 
+ *
  * @author CWDS API Team
  */
 @ApiModel
@@ -47,11 +47,11 @@ public class StaffAuthorityPrivilege {
 
   /**
    * JSON Constructor
-   * 
+   *
    * @param authPrivilegeType the authority privilege type
    * @param authPrivilegeCode the authority privilege code
-   * @param countyCode the county code
-   * @param endDate the endDate
+   * @param countyCode        the county code
+   * @param endDate           the endDate
    */
   public StaffAuthorityPrivilege(@JsonProperty("auth_privilege_type") String authPrivilegeType,
                                  @JsonProperty("auth_privilege_code") String authPrivilegeCode,
@@ -59,7 +59,7 @@ public class StaffAuthorityPrivilege {
     super();
     this.authPrivilegeType = authPrivilegeType;
     this.authPrivilegeTypeDesc =
-        CmsUserAuthPrivilege.getInstance().getUserAuthPrivDescription(authPrivilegeType);
+            CmsUserAuthPrivilege.getInstance().getUserAuthPrivDescription(authPrivilegeType);
     this.authPrivilegeCode = authPrivilegeCode;
     this.authPrivilegeCodeDesc = AuthPrivilege.getAuthPrivilegeDescription(authPrivilegeCode);
     this.countyCode = countyCode;
@@ -135,10 +135,10 @@ public class StaffAuthorityPrivilege {
     int result = 1;
     result = prime * result + ((authPrivilegeCode == null) ? 0 : authPrivilegeCode.hashCode());
     result =
-        prime * result + ((authPrivilegeCodeDesc == null) ? 0 : authPrivilegeCodeDesc.hashCode());
+            prime * result + ((authPrivilegeCodeDesc == null) ? 0 : authPrivilegeCodeDesc.hashCode());
     result = prime * result + ((authPrivilegeType == null) ? 0 : authPrivilegeType.hashCode());
     result =
-        prime * result + ((authPrivilegeTypeDesc == null) ? 0 : authPrivilegeTypeDesc.hashCode());
+            prime * result + ((authPrivilegeTypeDesc == null) ? 0 : authPrivilegeTypeDesc.hashCode());
     result = prime * result + ((county == null) ? 0 : county.hashCode());
     result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
     result = prime * result + ((countyCode == null) ? 0 : countyCode.hashCode());
