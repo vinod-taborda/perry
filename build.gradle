@@ -35,7 +35,7 @@ targetCompatibility = 1.8
 project.ext {
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
-    projectMajorVersion = '0.4.3.1-SNAPSHOT'
+    projectMajorVersion = '0.4.3.2-SNAPSHOT'
     mainclass = 'gov.ca.cwds.PerryApplication'
 
     releaseDocker = System.getProperty("ReleaseDocker")
