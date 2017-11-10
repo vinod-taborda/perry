@@ -20,26 +20,26 @@ node ('dora-slave'){
    stage('Build'){
 		def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar'
    }
-   stage('Unit Tests') {
-       buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport', switches: '--info'
-   }
-   stage('SonarQube analysis'){
-		withSonarQubeEnv('Core-SonarQube') {
-			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info', tasks: 'sonarqube'
-        }
-    }
-   stage('License Report') {
-   		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'downloadLicenses'
-   		publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/license', reportFiles: 'license-dependency.html', reportName: 'License Report', reportTitles: 'License summary'])
-   }
+//   stage('Unit Tests') {
+//       buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport', switches: '--info'
+//   }
+//   stage('SonarQube analysis'){
+//		withSonarQubeEnv('Core-SonarQube') {
+//			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info', tasks: 'sonarqube'
+//        }
+//    }
+//   stage('License Report') {
+//   		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'downloadLicenses'
+//   		publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/license', reportFiles: 'license-dependency.html', reportName: 'License Report', reportTitles: 'License summary'])
+//   }
 
-	stage ('Push to artifactory'){
-	    rtGradle.deployer repo:'libs-snapshot', server: serverArti
-	    //rtGradle.deployer repo:'libs-release', server: serverArti
-	    rtGradle.deployer.deployArtifacts = true
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		rtGradle.deployer.deployArtifacts = false
-	}
+//	stage ('Push to artifactory'){
+//	    rtGradle.deployer repo:'libs-snapshot', server: serverArti
+//	    //rtGradle.deployer repo:'libs-release', server: serverArti
+//	    rtGradle.deployer.deployArtifacts = true
+//		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
+//		rtGradle.deployer.deployArtifacts = false
+//	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {
            buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=$release -DBuildNumber=$BUILD_NUMBER'
