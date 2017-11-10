@@ -57,7 +57,7 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
     //  /authn/validate should be for backend only!
     http.authorizeRequests()
             .antMatchers("/authn/validate*/**", "/authn/invalidate*/**", "/templates/**", "/manage/**").permitAll()
-            .antMatchers("/perry-login.html").denyAll()
+            //.antMatchers("/perry-login.html").denyAll()
         .and()
           .logout()
             .logoutUrl("/authn/logout").permitAll()
