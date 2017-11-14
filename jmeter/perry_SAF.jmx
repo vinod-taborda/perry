@@ -15,7 +15,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="CLIENT-ID" elementType="Argument">
             <stringProp name="Argument.name">CLIENT-ID</stringProp>
-            <stringProp name="Argument.value">Put client id here</stringProp>
+            <stringProp name="Argument.value">!!!!PUT CLIENT_ID_HERE!!!</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="IDP-PROTOCOL" elementType="Argument">
@@ -65,9 +65,9 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">5</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">2</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">0</stringProp>
         <longProp name="ThreadGroup.start_time">1510262347000</longProp>
         <longProp name="ThreadGroup.end_time">1510262347000</longProp>
@@ -296,7 +296,7 @@
             <stringProp name="RegexExtractor.match_number"></stringProp>
           </RegexExtractor>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Request Verification Token" enabled="true">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Device Log Id" enabled="true">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">deviceLogID</stringProp>
             <stringProp name="RegexExtractor.regex">name=&quot;deviceLogID&quot; type=&quot;hidden&quot; value=&quot;(.*)&quot;</stringProp>
@@ -488,7 +488,7 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login to Perry version 2" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login to Perry version 1" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -496,7 +496,7 @@
           <stringProp name="HTTPSampler.port">${PERRY-PORT}</stringProp>
           <stringProp name="HTTPSampler.protocol">${PERRY-PROTOCOL}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/${PERRY-CONTEXT-ROOT}/authn/login/v2?callback=/perry/demo-sp.html</stringProp>
+          <stringProp name="HTTPSampler.path">/${PERRY-CONTEXT-ROOT}/authn/login?callback=/perry/demo-sp.html</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -517,7 +517,7 @@
           </RegexExtractor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Validate Perry token v2" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Validate Perry token v1" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -525,7 +525,7 @@
           <stringProp name="HTTPSampler.port">${PERRY-PORT}</stringProp>
           <stringProp name="HTTPSampler.protocol">${PERRY-PROTOCOL}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/${PERRY-CONTEXT-ROOT}/authn/validate/v2?token=${token}</stringProp>
+          <stringProp name="HTTPSampler.path">/${PERRY-CONTEXT-ROOT}/authn/validate?token=${token}</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
