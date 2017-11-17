@@ -34,8 +34,8 @@ node ('dora-slave'){
    }
 
 	stage ('Push to artifactory'){
-	    rtGradle.deployer repo:'libs-local', server: serverArti
-	    //rtGradle.deployer repo:'libs-release', server: serverArti
+	    //rtGradle.deployer repo:'libs-local', server: serverArti
+	    rtGradle.deployer repo:'libs-release', server: serverArti
 	    rtGradle.deployer.deployArtifacts = true
 		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
 		rtGradle.deployer.deployArtifacts = false
