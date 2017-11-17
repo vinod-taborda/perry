@@ -40,7 +40,8 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     //  /authn/validate should be for backend only!
     http.authorizeRequests().antMatchers("/authn/validate*/**", "/authn/invalidate*/**", "/templates/**", "/manage/**", "/authn/token*/**").permitAll()
-            .and()
+        .antMatchers("/login.html").denyAll()
+        .and()
             .logout()
             .logoutUrl("/authn/logout").permitAll()
             .addLogoutHandler(tokenRevocationLogoutHandler)
