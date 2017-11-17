@@ -40,8 +40,8 @@ project.ext {
 
     releaseDocker = System.getProperty("ReleaseDocker")
     buildNumber = System.getProperty("BuildNumber")
-//    projectVersion = projectMajorVersion + '-SNAPSHOT'
-    projectVersion = projectMajorVersion
+    projectVersion = projectMajorVersion + '-SNAPSHOT'
+//    projectVersion = projectMajorVersion
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
     
     // assume that Windows users use the Docker Toolbox
