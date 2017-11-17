@@ -6,26 +6,21 @@ import gov.ca.cwds.service.LoginService;
 import gov.ca.cwds.service.WhiteList;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.core.Context;
-import java.util.logging.Logger;
 
 /**
- * Created by dmitry.rudenko on 5/22/2017.
+ * Created by TPT2 on 11/15/2017.
  */
-@RestController
+@Controller
 public class LoginResource {
-
   private LoginService loginService;
 
   private WhiteList whiteList;
@@ -46,54 +41,6 @@ public class LoginResource {
     String accessCode = loginService.issueAccessCode(spId);
     whiteList.validate("callback", callback);
     response.sendRedirect(callback + "?accessCode=" + accessCode);
-  }
-
-  @GET
-  @RequestMapping(value = Constants.TOKEN_SERVICE_URL, produces = "application/json")
-  @ApiOperation(value = "Get perry token", code = 200)
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "authorized"),
-          @ApiResponse(code = 401, message = "Unauthorized")})
-  public String getToken(@Context final HttpServletResponse response, @NotNull @ApiParam(required = true, name = "accessCode",
-          value = "Access Code to map") @RequestParam("accessCode") String accessCode) {
-    try {
-      return loginService.issueToken(accessCode);
-    } catch (Exception e) {
-      Logger.getLogger(LoginResource.class.getName()).info(e.getMessage());
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return "Unauthorized";
-    }
-
-  }
-
-  //back-end only!
-  @GET
-  @RequestMapping(value = Constants.VALIDATE_SERVICE_URL, produces = "application/json")
-  @ApiOperation(value = "Validate an authentication token", code = 200)
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "authorized"),
-          @ApiResponse(code = 401, message = "Unauthorized")})
-  public String validateToken(@Context final HttpServletResponse response, @NotNull @ApiParam(required = true, name = "token",
-          value = "The token to validate") @RequestParam("token") String token) {
-    try {
-      return loginService.validate(token);
-    } catch (Exception e) {
-      Logger.getLogger(LoginResource.class.getName()).info(e.getMessage());
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return "Unauthorized";
-    }
-
-  }
-
-  @POST
-  @RequestMapping("/authn/invalidate")
-  @ApiOperation(
-          value = "Invalidate token",
-          code = 200)
-  public String invalidate(@NotNull @Context final HttpServletResponse response,
-                           @NotNull @ApiParam(required = true, name = "token",
-                                   value = "The token to invalidate") @RequestParam("token") String token) {
-    loginService.invalidate(token);
-    response.setStatus(HttpServletResponse.SC_OK);
-    return "OK";
   }
 
   @Autowired

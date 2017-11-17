@@ -10,10 +10,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -32,12 +29,18 @@ public class LoginServiceValidatorFilter extends GenericFilterBean {
 
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-    HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-    if (requestMatcher.matches(httpServletRequest)) {
-      validate(httpServletRequest);
-      Logger.getLogger(this.getClass().getName()).fine("LOGIN SERVICE: Authentication process is started");
+    try {
+      HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+      if (requestMatcher.matches(httpServletRequest)) {
+        validate(httpServletRequest);
+        Logger.getLogger(this.getClass().getName()).fine("LOGIN SERVICE: Authentication process is started");
+      }
+
+      filterChain.doFilter(servletRequest, servletResponse);
+    }catch (Exception e) {
+      servletRequest.setAttribute("e", e);
+      servletRequest.getRequestDispatcher("/error").forward(servletRequest, servletResponse);
     }
-    filterChain.doFilter(servletRequest, servletResponse);
   }
 
   protected void validate(HttpServletRequest servletRequest) {
