@@ -35,13 +35,13 @@ targetCompatibility = 1.8
 project.ext {
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
-    projectMajorVersion = '0.4.5'
+    projectMajorVersion = '0.4.5-HF1'
     mainclass = 'gov.ca.cwds.PerryApplication'
 
     releaseDocker = System.getProperty("ReleaseDocker")
     buildNumber = System.getProperty("BuildNumber")
-    projectVersion = projectMajorVersion + '-SNAPSHOT'
-    //    projectVersion = projectMajorVersion
+    //projectVersion = projectMajorVersion + '-SNAPSHOT'
+    projectVersion = projectMajorVersion
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
     
     // assume that Windows users use the Docker Toolbox
