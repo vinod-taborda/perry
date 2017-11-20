@@ -3,20 +3,24 @@ package gov.ca.cwds.config;
 
 import gov.ca.cwds.rest.api.domain.PerryException;
 import gov.ca.cwds.service.WhiteList;
+import gov.ca.cwds.web.error.LoginResourceExceptionHandler;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.logging.Logger;
 
-import static gov.ca.cwds.config.Constants.CALLBACK_PARAM;
-import static gov.ca.cwds.config.Constants.LOGIN_SERVICE_URL;
+import static gov.ca.cwds.config.Constants.*;
 
 /**
  * Created by dmitry.rudenko on 9/14/2017.
@@ -29,18 +33,18 @@ public class LoginServiceValidatorFilter extends GenericFilterBean {
 
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-    try {
-      HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-      if (requestMatcher.matches(httpServletRequest)) {
+    HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+    if (requestMatcher.matches(httpServletRequest)) {
+      try {
         validate(httpServletRequest);
-        Logger.getLogger(this.getClass().getName()).fine("LOGIN SERVICE: Authentication process is started");
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
+        servletRequest.setAttribute(EXCEPTION_ATTRIBUTE, e);
+        servletRequest.getRequestDispatcher("/" + ERROR_CONTROLLER).forward(servletRequest, servletResponse);
+        return;
       }
-
-      filterChain.doFilter(servletRequest, servletResponse);
-    }catch (Exception e) {
-      servletRequest.setAttribute("e", e);
-      servletRequest.getRequestDispatcher("/error").forward(servletRequest, servletResponse);
     }
+    filterChain.doFilter(servletRequest, servletResponse);
   }
 
   protected void validate(HttpServletRequest servletRequest) {
