@@ -286,6 +286,6 @@
     </h1>
     <p class="lead">See logs for more details</p>
 </div>
-<p th:text="${#httpServletRequest.getAttribute('e')}" th:unless="${#httpServletRequest.getAttribute('e') == null}">Test</p>
+<p th:text="${#httpServletRequest.getAttribute('javax.servlet.error.exception')}" >Test</p>
 </body>
 </html>

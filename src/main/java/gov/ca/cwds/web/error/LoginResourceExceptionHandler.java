@@ -9,7 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import static gov.ca.cwds.config.Constants.ERROR_CONTROLLER;
-import static gov.ca.cwds.config.Constants.EXCEPTION_ATTRIBUTE;
+import static javax.servlet.RequestDispatcher.ERROR_EXCEPTION;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 /**
@@ -23,7 +23,7 @@ public class LoginResourceExceptionHandler {
   protected ModelAndView handleException(Exception ex, WebRequest request) {
     logger.error(ex.getMessage(), ex);
     ModelAndView modelAndView = new ModelAndView(ERROR_CONTROLLER);
-    request.setAttribute(EXCEPTION_ATTRIBUTE, ex, SCOPE_REQUEST);
+    request.setAttribute(ERROR_EXCEPTION, ex, SCOPE_REQUEST);
     return modelAndView;
   }
 }
