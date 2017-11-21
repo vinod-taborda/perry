@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import static gov.ca.cwds.config.Constants.*;
 import static javax.servlet.RequestDispatcher.ERROR_EXCEPTION;
+import static javax.servlet.RequestDispatcher.ERROR_MESSAGE;
 
 /**
  * Created by dmitry.rudenko on 9/14/2017.
@@ -37,7 +38,7 @@ public class LoginServiceValidatorFilter extends GenericFilterBean {
         validate(httpServletRequest);
       } catch (Exception e) {
         logger.error(e.getMessage(), e);
-        servletRequest.setAttribute(ERROR_EXCEPTION, e);
+        servletRequest.setAttribute(ERROR_MESSAGE, e.getMessage());
         servletRequest.getRequestDispatcher("/" + ERROR_CONTROLLER).forward(servletRequest, servletResponse);
         return;
       }
