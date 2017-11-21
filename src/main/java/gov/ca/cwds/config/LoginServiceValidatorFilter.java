@@ -16,10 +16,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.logging.Logger;
 
-import static gov.ca.cwds.config.Constants.CALLBACK_PARAM;
-import static gov.ca.cwds.config.Constants.LOGIN_SERVICE_URL;
+import static gov.ca.cwds.config.Constants.*;
+import static javax.servlet.RequestDispatcher.ERROR_MESSAGE;
 
 /**
  * Created by dmitry.rudenko on 9/14/2017.
@@ -34,8 +33,14 @@ public class LoginServiceValidatorFilter extends GenericFilterBean {
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
     HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
     if (requestMatcher.matches(httpServletRequest)) {
-      validate(httpServletRequest);
-      Logger.getLogger(this.getClass().getName()).fine("LOGIN SERVICE: Authentication process is started");
+      try {
+        validate(httpServletRequest);
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
+        servletRequest.setAttribute(ERROR_MESSAGE, e.getMessage());
+        servletRequest.getRequestDispatcher("/" + ERROR_CONTROLLER).forward(servletRequest, servletResponse);
+        return;
+      }
     }
     filterChain.doFilter(servletRequest, servletResponse);
   }
