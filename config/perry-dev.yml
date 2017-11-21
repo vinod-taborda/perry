@@ -47,6 +47,8 @@ perry:
         identityMapping: 'config/default.groovy'
     users: ${USERS:}
     whiteList: ${WHITE_LIST:/perry/demo-sp.html}
+    homePageUrl: ${HOME_PAGE_URL:/}
+    showErrors: ${SHOW_ERRORS:true}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}

@@ -31,36 +31,26 @@
     </div>
 
     <button class="btn btn-lg btn-success btn-block"
-            name="homepage" value="homepage" onclick="window.location.href='/perry'">Back to Homepage
+            name="homepage" value="homepage" th:onclick="'window.location.href=\'' + ${@errorView.getProperties().getHomePageUrl()} + '\''">Back to Homepage
     </button>
 
     <!--id: if no stacktrace available this button should be hidden-->
-    <button class="btn btn-lg  btn-primary btn-block" data-toggle="collapse"
+    <button th:if="${@errorView.getProperties().isShowErrors()}" class="btn btn-lg  btn-primary btn-block" data-toggle="collapse"
             data-target="#stacktrace" aria-expanded="false" aria-controls="stacktrace"
             name="homepage" value="homepage">Check Logs
     </button>
 
     <br/>
 
-    <div class="collapse" id="stacktrace">
+    <div th:if="${@errorView.getProperties().isShowErrors()}" class="collapse" id="stacktrace">
         <pre>
         <span th:text="${#httpServletRequest.getAttribute('javax.servlet.error.message')}"></span>
-        <span th:text="${#httpServletRequest.getAttribute('javax.servlet.error.exception')}"></span>
         </pre>
     </div>
 
 </div>
 
-<div class="text-center panel-footer">
-    <p>
-        <a href="http://www.cdss.ca.gov/Conditions-of-Use" target="_blank">Conditions of Use</a> |
-        <a href="http://www.cdss.ca.gov/Privacy-Policy" target="_blank">Privacy Policy</a> |
-        <a href="http://www.cdss.ca.gov/Notice-on-Collection" target="_blank">Privacy Notice On
-            Collection</a>
-        <br/>
-        © 2017 CDSS
-    </p>
-</div>
+
 
 <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>

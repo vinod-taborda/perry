@@ -66,6 +66,8 @@ perry:
               hibernate.dialect: org.hibernate.dialect.ProgressDialect
               hibernate.ddl-auto: none
               hibernate.default_schema: ${TOKEN_STORE_SCHEMA:perry}
+    homePageUrl: ${HOME_PAGE_URL:/}
+    showErrors: ${SHOW_ERRORS:true}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}

@@ -22,6 +22,10 @@ public class PerryProperties {
 
   private String users;
 
+  private String homePageUrl;
+
+  private boolean showErrors;
+
   private List<String> whiteList = new ArrayList<>();
 
   private Map<String, ServiceProviderConfiguration> serviceProviders = new HashMap<>();
@@ -97,5 +101,21 @@ public class PerryProperties {
 
   public void setUsers(String users) {
     this.users = users;
+  }
+
+  public String getHomePageUrl() {
+    return homePageUrl;
+  }
+
+  public void setHomePageUrl(String homePageUrl) {
+    this.homePageUrl = homePageUrl;
+  }
+
+  public boolean isShowErrors() {
+    return showErrors;
+  }
+
+  public void setShowErrors(boolean showErrors) {
+    this.showErrors = showErrors;
   }
 }
