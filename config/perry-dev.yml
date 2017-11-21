@@ -29,9 +29,11 @@ perry:
         encKeyPassword: ${KEYSTORE_ENC_KEY_PASSWORD:test}
     serviceProviders:
       default:
-        identityMapping: 'config/default.groovy'
+        identityMapping: config/default.groovy
     users: ${USERS:}
     whiteList: ${WHITE_LIST:*}
+    homePageUrl: ${HOME_PAGE_URL:/}
+    showErrors: ${SHOW_ERRORS:true}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}
@@ -50,7 +52,7 @@ endpoints:
   configprops:
     enabled: false
 server:
-  context-path: ${CONTEXT_PATH:/}
+  context-path: ${CONTEXT_PATH:/perry}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
   port: ${HTTPS_PORT:8090}
   ssl:

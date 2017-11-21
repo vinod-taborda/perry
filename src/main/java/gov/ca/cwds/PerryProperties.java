@@ -26,6 +26,10 @@ public class PerryProperties {
 
     private Map<String, ServiceProviderConfiguration> serviceProviders = new HashMap<>();
 
+    private String homePageUrl;
+
+    private boolean showErrors;
+
     public static class IdentityProviderConfiguration {
         private IdpMappingScript idpMapping;
 
@@ -97,5 +101,21 @@ public class PerryProperties {
 
     public void setUsers(String users) {
         this.users = users;
+    }
+
+    public String getHomePageUrl() {
+        return homePageUrl;
+    }
+
+    public void setHomePageUrl(String homePageUrl) {
+        this.homePageUrl = homePageUrl;
+    }
+
+    public boolean isShowErrors() {
+        return showErrors;
+    }
+
+    public void setShowErrors(boolean showErrors) {
+        this.showErrors = showErrors;
     }
 }

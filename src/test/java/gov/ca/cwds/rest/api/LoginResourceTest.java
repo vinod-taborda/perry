@@ -41,26 +41,5 @@ public class LoginResourceTest {
     Mockito.verify(response).sendRedirect(CALLBACK + "?token=" + TOKEN);
   }
 
-  @Test
-  public void testValidateToken() throws Exception {
-    Mockito.when(loginService.validate(TOKEN)).thenReturn(JSON);
-    String json = loginResource.validateToken(response, TOKEN);
-    assert json.equals(JSON);
-  }
 
-  @Test
-  public void testValidateFailedToken() throws Exception {
-    Mockito.when(loginService.validate(TOKEN)).thenThrow(new Exception());
-    String json = loginResource.validateToken(response, TOKEN);
-    Mockito.verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    assert json.equals("Unauthorized");
-  }
-
-  @Test
-  public void testInvalidateToken() throws Exception {
-    Mockito.when(loginService.validate(TOKEN)).thenThrow(new Exception());
-    String json = loginResource.invalidate(response, TOKEN);
-    Mockito.verify(response).setStatus(HttpServletResponse.SC_OK);
-    assert json.equals("OK");
-  }
 }

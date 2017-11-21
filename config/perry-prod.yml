@@ -51,6 +51,8 @@ perry:
       intake:
         identityMapping: ${SP_INTAKE_IDENTITY_MAPPING_SCRIPT:config/intake.groovy}
     whiteList: ${WHITE_LIST:*} # urls separated by spaces.
+    homePageUrl: ${HOME_PAGE_URL:/}
+    showErrors: ${SHOW_ERRORS:true}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}

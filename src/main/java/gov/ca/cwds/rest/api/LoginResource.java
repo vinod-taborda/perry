@@ -1,14 +1,11 @@
 package gov.ca.cwds.rest.api;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import gov.ca.cwds.PerryProperties;
 import gov.ca.cwds.config.Constants;
 import gov.ca.cwds.service.LoginService;
 import gov.ca.cwds.service.WhiteList;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,9 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.core.Context;
-import java.util.logging.Logger;
 
 /**
  * Created by dmitry.rudenko on 5/22/2017.
@@ -47,36 +42,6 @@ public class LoginResource {
     String jwtToken = loginService.login(spId);
     whiteList.validate("callback", callback);
     response.sendRedirect(callback + "?token=" + jwtToken);
-  }
-
-  //back-end only!
-  @GET
-  @RequestMapping(value = Constants.VALIDATE_SERVICE_URL, produces = "application/json")
-  @ApiOperation(value = "Validate an authentication token", code = 200)
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "authorized"),
-          @ApiResponse(code = 401, message = "Unauthorized")})
-  public String validateToken(@Context final HttpServletResponse response, @NotNull @ApiParam(required = true, name = "token",
-          value = "The token to validate") @RequestParam("token") String token) {
-    try {
-      return loginService.validate(token);
-    } catch (Exception e) {
-      Logger.getLogger(LoginResource.class.getName()).info(e.getMessage());
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return "Unauthorized";
-    }
-
-  }
-
-  @POST
-  @RequestMapping("/authn/invalidate")
-  @ApiOperation(
-          value = "Invalidate token",
-          code = 200)
-  public String invalidate(@NotNull @Context final HttpServletResponse response,
-                           @NotNull @ApiParam(required = true, name = "token",
-                                   value = "The token to invalidate") @RequestParam("token") String token) {
-    response.setStatus(HttpServletResponse.SC_OK);
-    return "OK";
   }
 
   @Autowired
