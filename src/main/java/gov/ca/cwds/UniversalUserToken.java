@@ -2,6 +2,7 @@ package gov.ca.cwds;
 
 import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Set;
 /**
  * Created by dmitry.rudenko on 7/28/2017.
  */
-public class UniversalUserToken {
+public class UniversalUserToken implements Serializable {
   private String userId;
   private Set<String> roles = new LinkedHashSet<>();
   private String token;

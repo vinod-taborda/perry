@@ -22,12 +22,13 @@ public final class PerrySubject {
     return (String) principals.get(0);
   }
 
-  public static PerryAccount getPerryAccount() {
+  @SuppressWarnings("unchecked")
+  public static <T extends PerryAccount> T getPerryAccount() {
     List principals = getPrincipals();
     if (principals.size() < 2) {
       throw new AuthorizationException("Incorrect principals: no Perry Account. Check Perry version and application security configuration.");
     }
-    return (PerryAccount) principals.get(1);
+    return (T) principals.get(1);
   }
 
   public static String getToken() {

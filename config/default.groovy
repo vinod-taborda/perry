@@ -25,5 +25,6 @@ def supervisor = authorization.unitAuthority != null && authorization.unitAuthor
  staffId    : authorization.staffPersonId,
  county_name: authorization.county,
  county_code: authorization.staffPerson.countyCode,
- privileges : privileges]
+ privileges : privileges,
+ government_entity_type: authorization.cwsOffice ? authorization.cwsOffice.first().governmentEntityTypeDesc : null]
 
