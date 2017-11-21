@@ -1,1 +1,55 @@
-asfadsfasd
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+    <meta charset="utf-8"/>
+    <title>Page not found</title>
+    <meta name="description" content="Access Denied"/>
+    <meta
+            content='width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1'
+            name='viewport'/>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/accessdenied.css" rel="stylesheet"/>
+
+</head>
+
+<body>
+<div class="error-page-background">
+</div>
+
+<div class="error-page-panel">
+
+    <img src="images/CWDS-Logo-Login.png" alt="CWDS Logo"
+         id="client_logo" class="img-rounded img-responsive"/>
+
+    <br/>
+
+    <div class="alert alert-warning" role="alert">
+        <b>Page not found</b>
+        <p></p>
+    </div>
+
+    <button class="btn btn-lg btn-success btn-block"
+            name="homepage" value="homepage" onclick="window.location.href='/perry'">Back to Homepage
+    </button>
+
+    <br/>
+
+</div>
+
+<div class="text-center panel-footer">
+    <p>
+        <a href="http://www.cdss.ca.gov/Conditions-of-Use" target="_blank">Conditions of Use</a> |
+        <a href="http://www.cdss.ca.gov/Privacy-Policy" target="_blank">Privacy Policy</a> |
+        <a href="http://www.cdss.ca.gov/Notice-on-Collection" target="_blank">Privacy Notice On
+            Collection</a>
+        <br/>
+        © 2017 CDSS
+    </p>
+</div>
+
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
