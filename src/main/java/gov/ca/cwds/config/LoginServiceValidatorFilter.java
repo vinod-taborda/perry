@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static gov.ca.cwds.config.Constants.*;
-import static javax.servlet.RequestDispatcher.ERROR_EXCEPTION;
 import static javax.servlet.RequestDispatcher.ERROR_MESSAGE;
 
 /**
