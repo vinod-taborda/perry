@@ -131,7 +131,7 @@ public class TokenLoginServiceTestConf {
   public UserIdDao userIdDao() {
     return new UserIdDao() {
       @Override
-      public List<UserId> findByLogonId(String logonId) {
+      public List<UserId> findActiveByLogonId(String logonId) {
         return new ArrayList<>();
       }
 

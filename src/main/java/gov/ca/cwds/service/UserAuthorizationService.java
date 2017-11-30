@@ -3,7 +3,6 @@ package gov.ca.cwds.service;
 import gov.ca.cwds.data.auth.*;
 import gov.ca.cwds.data.persistence.auth.StaffPerson;
 import gov.ca.cwds.data.persistence.auth.UserId;
-import gov.ca.cwds.rest.api.Request;
 import gov.ca.cwds.rest.api.domain.DomainChef;
 import gov.ca.cwds.rest.api.domain.auth.CwsOffice;
 import gov.ca.cwds.rest.api.domain.auth.StaffAuthorityPrivilege;
@@ -14,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -59,7 +57,7 @@ public class UserAuthorizationService {
     LOGGER.info(primaryKey.toString());
 
     final String userId = ((String) primaryKey).trim();
-    List<UserId> userList = userIdDao.findByLogonId(userId);
+    List<UserId> userList = userIdDao.findActiveByLogonId(userId);
 
 
     if (userList != null && !userList.isEmpty()) {
