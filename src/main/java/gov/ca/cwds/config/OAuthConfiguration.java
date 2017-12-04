@@ -22,6 +22,8 @@ import org.springframework.security.oauth2.common.AuthenticationScheme;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * Created by dmitry.rudenko on 5/23/2017.
@@ -30,6 +32,8 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 @EnableOAuth2Sso
 @Configuration
 @EnableConfigurationProperties(ClientProperties.class)
+@EnableRedisHttpSession
+@EnableSpringHttpSession
 public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
