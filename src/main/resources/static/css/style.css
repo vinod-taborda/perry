@@ -1,0 +1,53 @@
+html, body {
+  background-color: #fff;
+}
+
+.login-image, .login-panel {
+  height: 100vh;
+  float: left;
+  width: 50%;
+}
+
+.login-panel {
+  padding: 12.5vh;
+  background-color: #f1f1f1;
+}
+
+.login-panel h1 {
+  margin-top: 0;
+}
+
+.login-box {
+  width: 100%;
+}
+
+.login-message {
+  color: #FF0000;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-weight: bold;
+}
+
+.login-invalid {
+  color: #FF0000;
+  font-weight: bold;
+}
+
+.login-image {
+  padding: 80px;
+}
+
+@media ( max-width: 768px) {
+  .login-image {
+    display: none;
+  }
+
+  .login-panel {
+    width: 100%;
+    padding: 5vh;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
