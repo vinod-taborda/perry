@@ -1,6 +1,7 @@
 <html>
 <head>
   <title>CWDS Login</title>
+  <meta charset="UTF-8">
   <link href="css/california.css" rel="stylesheet"/>
   <link rel="stylesheet" href="./css/style.css">
 </head>
@@ -13,7 +14,7 @@
     individual,
     living or deceased, into the system, including but not limited any of the following alone or in
     any combination of an individual's name,
-    Social Security Number, physical description, home address, personal telephone number, driver’s
+    Social Security Number, physical description, home address, personal telephone number, driver's
     license or California ID number,
     financial account numbers, education history, medical information, health insurance information,
     employment information,
@@ -37,11 +38,10 @@
 </div>
 <div class='login-panel'>
   <div class='login-box'>
-    <form method="POST" action="login">
+    <form method="POST" id="login-form" action="login">
       <div id="error" class='login-message'><!--{{message}}--></div>
 
       <img src="images/CWDS-Logo---Color-Horizontal.png"/>
-
 
       <label for="username">Authorization JSON</label>
       <input name="username" id="username" onblur="validateLoginString()">
@@ -56,4 +56,3 @@
 <script src="./js/script.js"></script>
 </body>
 </html>
-
