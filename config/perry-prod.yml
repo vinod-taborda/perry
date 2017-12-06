@@ -79,7 +79,7 @@ server:
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
   port: ${HTTPS_PORT:8090}
   ssl:
-    enabled: true
+    enabled: ${SSL_ENABLED:false}
     keyStoreType: JCEKS
     trustStoreType: JCEKS
     keyStore: ${KEYSTORE_PATH:config/enc.jceks}
