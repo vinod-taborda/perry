@@ -22,9 +22,6 @@ import org.springframework.security.oauth2.common.AuthenticationScheme;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
-import org.springframework.session.data.redis.config.ConfigureRedisAction;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * Created by dmitry.rudenko on 5/23/2017.
@@ -33,8 +30,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableOAuth2Sso
 @Configuration
 @EnableConfigurationProperties(ClientProperties.class)
-@EnableRedisHttpSession
-@EnableSpringHttpSession
 public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -55,11 +50,6 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
   @Primary
   public SafUserInfoTokenService userInfoTokenServices() {
     return new SafUserInfoTokenService(safService, sso.getUserInfoUri(), sso.getClientId());
-  }
-
-  @Bean
-  public static ConfigureRedisAction configureRedisAction() {
-    return ConfigureRedisAction.NO_OP;
   }
 
   @Override
@@ -88,7 +78,7 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
     resource.setClientSecret(sso.getClientSecret());
     resource.setAuthenticationScheme(clientProperties.getAuthenticationScheme());
     resource.setClientAuthenticationScheme(clientProperties.getClientAuthenticationScheme());
-    return  new OAuth2RestTemplate(resource);
+    return new OAuth2RestTemplate(resource);
   }
 
   @Bean
@@ -97,7 +87,7 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   @ConfigurationProperties(prefix = "security.oauth2.client")
-  public static class ClientProperties{
+  public static class ClientProperties {
 
     private String accessTokenUri;
 
