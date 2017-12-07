@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
+import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
@@ -54,6 +55,11 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
   @Primary
   public SafUserInfoTokenService userInfoTokenServices() {
     return new SafUserInfoTokenService(safService, sso.getUserInfoUri(), sso.getClientId());
+  }
+
+  @Bean
+  public static ConfigureRedisAction configureRedisAction() {
+    return ConfigureRedisAction.NO_OP;
   }
 
   @Override
