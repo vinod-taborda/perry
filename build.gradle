@@ -89,6 +89,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:springVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:springVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:springVersion
     compile group:"org.springframework.boot", name:"spring-boot-starter-actuator", version:springVersion
     compile group:"org.springframework.boot", name:"spring-boot-starter-data-redis", version:springVersion
 
