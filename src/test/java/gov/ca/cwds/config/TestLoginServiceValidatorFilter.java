@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.FilterChain;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,7 +36,7 @@ public class TestLoginServiceValidatorFilter {
     validatorFilter.doFilter(httpServletRequest, httpServletResponse, Mockito.mock(FilterChain.class));
   }
 
-  @Test(expected = PerryException.class)
+  @Test
   public void testLoginUrlMatchesAndInvalidCallback() throws IOException, ServletException {
     LoginServiceValidatorFilter validatorFilter = new LoginServiceValidatorFilter();
     RequestMatcher requestMatcher = Mockito.mock(RequestMatcher.class);
@@ -44,6 +45,8 @@ public class TestLoginServiceValidatorFilter {
     HttpServletResponse httpServletResponse = Mockito.mock(HttpServletResponse.class);
     Mockito.when(requestMatcher.matches(httpServletRequest)).thenReturn(true);
     Mockito.when(httpServletRequest.getRequestURI()).thenReturn("requestUrl");
+    RequestDispatcher requestDispatcher = Mockito.mock(RequestDispatcher.class);
+    Mockito.when(httpServletRequest.getRequestDispatcher("/error")).thenReturn(requestDispatcher);
     Mockito.when(httpServletRequest.getParameter("callback")).thenReturn("invalidCallbackUrl");
     WhiteList whiteList = new WhiteList();
     PerryProperties perryProperties = new PerryProperties();
@@ -51,6 +54,7 @@ public class TestLoginServiceValidatorFilter {
     whiteList.setConfiguration(perryProperties);
     validatorFilter.setWhiteList(whiteList);
     validatorFilter.doFilter(httpServletRequest, httpServletResponse, Mockito.mock(FilterChain.class));
+    Mockito.verify(requestDispatcher).forward(httpServletRequest, httpServletResponse);
   }
 
   @Test
