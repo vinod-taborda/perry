@@ -40,7 +40,7 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     String tokenFromRequest = getToken(httpServletRequest);
     if(isNullOrEmpty(tokenFromRequest)) {
-      LOGGER.warn("Authorization Token must be passed as request parameter (`{}`) or in the (`{}`) header", PARAM_TOKEN, HEADER_AUTHORIZATION);
+      LOGGER.warn("Authorization Token must be passed as request parameter [{}] or in the [{}] header", PARAM_TOKEN, HEADER_AUTHORIZATION);
       throw new AuthenticationException("Authentication failed");
     }
     PerryShiroToken token = new PerryShiroToken(tokenFromRequest);
@@ -69,7 +69,7 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
     String token = getToken(httpServletRequest);
 
     if (token == null) {
-      LOGGER.debug("No token - Denying Access");
+      LOGGER.warn("No token - Denying Access");
       WebUtils.toHttp(response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No token provided");
     }
 
@@ -88,7 +88,7 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
   @Override
   protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e,
       ServletRequest request, ServletResponse response) {
-    LOGGER.debug("Invalid Token - Denying Access");
+    LOGGER.warn("Invalid Token - Denying Access. Token [{}]", ((PerryShiroToken) token).getToken());
     try {
       WebUtils.toHttp(response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token not valid");
       return false;
@@ -111,11 +111,8 @@ public class PerryAuthenticatingFilter extends AuthenticatingFilter {
   protected boolean onLoginSuccess(AuthenticationToken token, Subject subject,
       ServletRequest request, ServletResponse response) throws Exception {
     Subject currentUser = SecurityUtils.getSubject();
-    // we should never get here. we don't have sessions on APIs
     String userName = currentUser.getPrincipal().toString();
-    LOGGER.warn("Existing session when no sessions should be allowed, {}", userName);
-
-    LOGGER.info(userName);
+    LOGGER.info("User [{}] successfully logged into the system", userName);
     return super.onLoginSuccess(token, subject, request, response);
   }
 
