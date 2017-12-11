@@ -13,6 +13,10 @@ spring:
               hibernate.dialect: org.hibernate.dialect.DB2Dialect
               hibernate.ddl-auto: none
               hibernate.default_schema: test
+      redis:
+          host: ${REDIS_HOST:192.168.99.100}
+          password: ${REDIS_PASSWORD:}
+          port: ${REDIS_PORT:6379}
 perry:
     jwt:
       timeout: ${TOKEN_TIMEOUT:30} #minutes
