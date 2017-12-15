@@ -6,7 +6,7 @@ node ('dora-slave'){
       string(defaultValue: 'SNAPSHOT', description: 'Release version (if not SNAPSHOT will be released to lib-release repository)', name: 'VERSION'),
       string(defaultValue: 'latest', description: '', name: 'APP_VERSION'),
       string(defaultValue: 'development', description: '', name: 'branch'),
-      booleanParam(defaultValue: false, description: '', name: 'release'),
+      //booleanParam(defaultValue: false, description: '', name: 'release'),
       booleanParam(defaultValue: true, description: 'Enable NewRelic APM', name: 'USE_NEWRELIC'),
       string(defaultValue: 'inventories/tpt2dev/hosts.yml', description: '', name: 'inventory')
       ]), pipelineTriggers([pollSCM('H/5 * * * *')])])
@@ -53,8 +53,12 @@ node ('dora-slave'){
 	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=$release -DBuildNumber=$BUILD_NUMBER'
-       }
+	       if (params.VERSION != "SNAPSHOT") {
+             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=true -DBuildNumber=$BUILD_NUMBER'
+         } else {
+             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=false -DBuildNumber=$BUILD_NUMBER'
+         }
+     }
 	}
 	stage('Clean Workspace') {
 		archiveArtifacts artifacts: '**/perry*.jar,readme.txt', fingerprint: true
