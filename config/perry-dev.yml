@@ -50,7 +50,7 @@ perry:
       default:
         identityMapping: config/default.groovy
     users: ${USERS:}
-    whiteList: ${WHITE_LIST:/perry/demo-sp.html}
+    whiteList: ${WHITE_LIST:*}
     homePageUrl: ${HOME_PAGE_URL:/}
     showErrors: ${SHOW_ERRORS:true}
 management:
