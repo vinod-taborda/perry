@@ -176,6 +176,20 @@ task checkDockerService {
     }
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            url artifactoryRepo
+        }
+    }
+}
+
 task publishDocker(dependsOn: ':docker-perry:dockerPerryPublish') {
     doLast {
         println 'Published'
