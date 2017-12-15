@@ -13,6 +13,10 @@ spring:
               hibernate.dialect: org.hibernate.dialect.DB2Dialect
               hibernate.ddl-auto: none
               hibernate.default_schema: test
+      redis:
+          host: ${REDIS_HOST:192.168.99.100}
+          password: ${REDIS_PASSWORD:}
+          port: ${REDIS_PORT:6379}
 perry:
     jwt:
       timeout: ${TOKEN_TIMEOUT:30} #minutes
@@ -44,7 +48,7 @@ perry:
            hibernate.default_schema: ${TOKEN_STORE_SCHEMA:}
     serviceProviders:
       default:
-        identityMapping: 'config/default.groovy'
+        identityMapping: config/default.groovy
     users: ${USERS:}
     whiteList: ${WHITE_LIST:/perry/demo-sp.html}
     homePageUrl: ${HOME_PAGE_URL:/}
@@ -71,7 +75,7 @@ server:
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
   port: ${HTTPS_PORT:8090}
   ssl:
-    enabled: true
+    enabled: ${SSL_ENABLED:false}
     keyStoreType: JCEKS
     trustStoreType: JCEKS
     keyStore: ${KEYSTORE_PATH:config/enc.jceks}

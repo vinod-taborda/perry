@@ -9,7 +9,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import static gov.ca.cwds.config.Constants.ERROR_CONTROLLER;
-import static javax.servlet.RequestDispatcher.ERROR_EXCEPTION;
 import static javax.servlet.RequestDispatcher.ERROR_MESSAGE;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 

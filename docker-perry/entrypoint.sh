@@ -11,4 +11,8 @@ else
   JAVA_OPTS="-Dspring.profiles.active=dev"
 fi
 
+if [ "$REDIS_ENABLED" = true ] ; then
+    JAVA_OPTS="$JAVA_OPTS,redis"
+fi
+
 java ${CWDS_OPTS} ${JAVA_OPTS} -jar perry.jar server ${PERRY_CONFIG}

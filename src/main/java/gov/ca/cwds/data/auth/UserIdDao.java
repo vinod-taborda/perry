@@ -1,6 +1,8 @@
 package gov.ca.cwds.data.auth;
 
 import gov.ca.cwds.data.persistence.auth.UserId;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 @Repository
 public interface UserIdDao extends ReadOnlyRepository<UserId, String> {
 
-  List<UserId> findByLogonId(String logonId);
+  @Query("SELECT U FROM UserId U WHERE U.logonId = :logonId AND U.endDate is null")
+  List<UserId> findActiveByLogonId(@Param("logonId") String logonId);
 
 }
