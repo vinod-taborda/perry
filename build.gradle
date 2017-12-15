@@ -33,21 +33,26 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 project.ext {
+    versionPropertyValue = System.properties.getProperty('version')
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
     projectMajorVersion = '0.5.1'
     mainclass = 'gov.ca.cwds.PerryApplication'
-
     releaseDocker = System.getProperty("ReleaseDocker")
     buildNumber = System.getProperty("BuildNumber")
-    projectVersion = projectMajorVersion + '-SNAPSHOT'
-//    projectVersion = projectMajorVersion
+    snapshotVersion = projectMajorVersion + '-SNAPSHOT'
+    projectVersion = ((versionPropertyValue != null ) ? versionPropertyValue : snapshotVersion)
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
     
     // assume that Windows users use the Docker Toolbox
     buildEnv = System.env.BUILD_ENV ?: (Os.isFamily(Os.FAMILY_WINDOWS) ? 'WIN_DEV' : 'JENKINS')
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
     devDockerPort = 2376
+
+    // Publishing configuration
+    snapshotMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/repo"
+    releaseMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
+    artifactoryRepo = ((versionPropertyValue != null ) ? releaseMavenRepo : snapshotMavenRepo)
 }
 
 println "ReleaseDocker: " + releaseDocker

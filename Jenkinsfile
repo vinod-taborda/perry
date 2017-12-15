@@ -3,6 +3,7 @@ node ('dora-slave'){
    def rtGradle = Artifactory.newGradleBuild()
    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), disableConcurrentBuilds(), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
    parameters([
+      string(defaultValue: 'SNAPSHOT', description: 'Release version (if not SNAPSHOT will be released to lib-release repository)', name: 'VERSION'),
       string(defaultValue: 'latest', description: '', name: 'APP_VERSION'),
       string(defaultValue: 'development', description: '', name: 'branch'),
       booleanParam(defaultValue: false, description: '', name: 'release'),
@@ -18,7 +19,13 @@ node ('dora-slave'){
 		  rtGradle.useWrapper = true
    }
    stage('Build'){
-		def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar'
+     if (params.VERSION != "SNAPSHOT" ) {
+         echo "!!!! BUILD RELEASE VERSION ${params.VERSION}"
+         def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'clean jar -Dversion=${VERSION}'
+     } else {
+         echo "!!!! BUILD SNAPSHOT VERSION"
+         def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'clean jar'
+     }
    }
    stage('Unit Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport', switches: '--info'
@@ -34,11 +41,15 @@ node ('dora-slave'){
    }
 
 	stage ('Push to artifactory'){
-	    rtGradle.deployer repo:'libs-snapshot', server: serverArti
-	    //rtGradle.deployer repo:'libs-release', server: serverArti
-	    rtGradle.deployer.deployArtifacts = true
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		rtGradle.deployer.deployArtifacts = false
+    rtGradle.deployer.deployArtifacts = true
+    if (params.VERSION != "SNAPSHOT") {
+        echo "!!!! PUSH RELEASE VERSION ${params.VERSION}"
+        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish -Dversion=${VERSION}'
+    } else {
+        echo "!!!! PUSH SNAPSHOT VERSION"
+        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish'
+    }
+    rtGradle.deployer.deployArtifacts = false
 	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {

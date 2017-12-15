@@ -29,9 +29,7 @@ publishing {
     }
     repositories {
         maven {
-            //TODO : set to http url
-            url "http://sonar.dev.cwds.io:8081/artifactory/libs-snapshot"
-//            url "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
+            url artifactoryRepo
         }
     }
 }
