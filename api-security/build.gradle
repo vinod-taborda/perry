@@ -3,7 +3,6 @@ version parent.version
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
@@ -59,6 +58,7 @@ publishing {
         }
     }
     repositories {
+        mavenLocal()
         maven {
             artifactoryRepo
         }

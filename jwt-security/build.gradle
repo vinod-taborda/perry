@@ -3,12 +3,15 @@ version projectVersion
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven {
+        url "http://sonar.dev.cwds.io:8081/artifactory/repo"
+    }
 }
 
 dependencies {
