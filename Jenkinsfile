@@ -54,7 +54,7 @@ node ('dora-slave'){
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {
 	       if (params.VERSION != "SNAPSHOT") {
-             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=true -DBuildNumber=$BUILD_NUMBER'
+             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=true -DBuildNumber=$BUILD_NUMBER -Dversion=${VERSION}'
          } else {
              buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=false -DBuildNumber=$BUILD_NUMBER'
          }
