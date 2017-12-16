@@ -39,7 +39,6 @@ public class FormLoginConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/authn/login").authenticated()
-                .antMatchers("/authn/login/").authenticated()
                 .antMatchers("/**").permitAll()
                 .and()
                 .formLogin()

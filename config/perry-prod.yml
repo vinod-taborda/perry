@@ -57,8 +57,6 @@ perry:
     whiteList: ${WHITE_LIST:*} # urls separated by spaces.
     homePageUrl: ${HOME_PAGE_URL:/}
     showErrors: ${SHOW_ERRORS:true}
-        identityMapping: ${SP_INTAKE_IDENTITY_MAPPING_SCRIPT:config/intake.groovy}
-    whiteList: ${WHITE_LIST} # urls separated by spaces.
     tokenStore:
         datasource:
             driver-class-name: org.postgresql.Driver
@@ -74,8 +72,6 @@ perry:
               hibernate.dialect: org.hibernate.dialect.ProgressDialect
               hibernate.ddl-auto: none
               hibernate.default_schema: ${TOKEN_STORE_SCHEMA:perry}
-    homePageUrl: ${HOME_PAGE_URL:/}
-    showErrors: ${SHOW_ERRORS:true}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}
@@ -83,16 +79,16 @@ management:
     enabled: false
   ssl:
     enabled: false
-endpoints:
-  enabled: false
-  health:
-    enabled: true
-  info:
+  endpoints:
     enabled: false
-  env:
-    enabled: false
-  configprops:
-    enabled: false
+    health:
+      enabled: true
+    info:
+      enabled: false
+    env:
+      enabled: false
+    configprops:
+      enabled: false
 server:
   context-path: ${CONTEXT_PATH:/perry}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
