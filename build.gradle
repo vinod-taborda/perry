@@ -110,7 +110,7 @@ dependencies {
     //h2 dev mode
     compile group: 'com.h2database', name: 'h2', version: '1.4.196'
 
-    compile group: 'com.ibm', name: 'db2jcc4', version: '4.0.0'
+    compile group: 'com.ibm', name: 'db2jcc4', version: '4.21.29'
     compile group: 'com.ibm', name: 'db2jcc_license_cisuz', version: '4.0.0'
 
     compile ('gov.ca.cwds.api:api-core:0.19.118') {

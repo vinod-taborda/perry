@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * Created by dmitry.rudenko on 5/23/2017.
@@ -22,8 +20,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @Profile("prod")
 @EnableOAuth2Sso
 @Configuration
-@EnableRedisHttpSession
-@EnableSpringHttpSession
 public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired

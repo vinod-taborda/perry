@@ -30,14 +30,14 @@ spring:
               hibernate.ddl-auto: none
               hibernate.default_schema: ${DB_CMS_SCHEMA:CWSINT}
       redis:
-          host:  ${REDIS_HOST:192.168.99.100}
+          host: ${REDIS_HOST:192.168.99.100}
           password: ${REDIS_PASSWORD:}
           port: ${REDIS_PORT:6379}
 perry:
     identityProvider:
       idpMapping: ${IDP_MAPPING_SCRIPT:config/idp.groovy}
     jwt:
-      timeout: ${TOKEN_TIMEOUT:10} #minutes
+      timeout: ${TOKEN_TIMEOUT:30} #minutes
       issuer: ${TOKEN_ISSUER:perry}
       encryptionEnabled: ${TOKEN_ENCRYPTION_ENABLED:true}
       encryptionMethod: ${TOKEN_ENCRYPTION_METHOD:A256GCM}
@@ -54,7 +54,9 @@ perry:
         identityMapping: ${SP_IDENTITY_MAPPING_SCRIPT:config/default.groovy}
       intake:
         identityMapping: ${SP_INTAKE_IDENTITY_MAPPING_SCRIPT:config/intake.groovy}
-    whiteList: ${WHITE_LIST} # urls separated by spaces.
+    whiteList: ${WHITE_LIST:*} # urls separated by spaces.
+    homePageUrl: ${HOME_PAGE_URL:/}
+    showErrors: ${SHOW_ERRORS:true}
     tokenStore:
         datasource:
             driver-class-name: org.postgresql.Driver
@@ -70,8 +72,6 @@ perry:
               hibernate.dialect: org.hibernate.dialect.ProgressDialect
               hibernate.ddl-auto: none
               hibernate.default_schema: ${TOKEN_STORE_SCHEMA:perry}
-    homePageUrl: ${HOME_PAGE_URL:/}
-    showErrors: ${SHOW_ERRORS:true}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}
@@ -79,22 +79,22 @@ management:
     enabled: false
   ssl:
     enabled: false
-endpoints:
-  enabled: false
-  health:
-    enabled: true
-  info:
+  endpoints:
     enabled: false
-  env:
-    enabled: false
-  configprops:
-    enabled: false
+    health:
+      enabled: true
+    info:
+      enabled: false
+    env:
+      enabled: false
+    configprops:
+      enabled: false
 server:
   context-path: ${CONTEXT_PATH:/perry}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
   port: ${HTTPS_PORT:8090}
   ssl:
-    enabled: true
+    enabled: ${SSL_ENABLED:false}
     keyStoreType: JCEKS
     trustStoreType: JCEKS
     keyStore: ${KEYSTORE_PATH:config/enc.jceks}

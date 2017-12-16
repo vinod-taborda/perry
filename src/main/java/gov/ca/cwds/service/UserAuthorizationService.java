@@ -57,7 +57,7 @@ public class UserAuthorizationService {
     LOGGER.info(primaryKey.toString());
 
     final String userId = ((String) primaryKey).trim();
-    List<UserId> userList = userIdDao.findByLogonId(userId);
+    List<UserId> userList = userIdDao.findActiveByLogonId(userId);
 
 
     if (userList != null && !userList.isEmpty()) {
