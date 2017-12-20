@@ -25,15 +25,9 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
 
-group = 'gov.ca.cwds.api'
-
-description = """perry"""
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 project.ext {
     versionPropertyValue = System.properties.getProperty('version')
+    projectGroup = 'gov.ca.cwds.api'
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
     projectMajorVersion = '0.5.1'
@@ -53,7 +47,22 @@ project.ext {
     snapshotMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/repo"
     releaseMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
     artifactoryRepo = ((versionPropertyValue != null ) ? releaseMavenRepo : snapshotMavenRepo)
+
+    shiroVersion = '1.2.3'
+    guiceVersion = '4.0'
+    jacksonVersion = '2.8.7'
+    commonsLangVersion = '3.6'
+    commonsIoVersion = '2.5'
+    servletApiVersion = '3.1.0'
+
 }
+
+group = projectGroup
+
+description = """perry"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 println "ReleaseDocker: " + releaseDocker
 println "Build: " + buildNumber

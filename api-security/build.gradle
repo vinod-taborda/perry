@@ -1,4 +1,4 @@
-group 'gov.ca.cwds.api'
+group projectGroup
 version parent.version
 
 apply plugin: 'java'
@@ -14,24 +14,20 @@ repositories {
     }
 }
 
-project.ext {
-    shiroVersion = '1.2.3'
-    guiceVersion = '4.0'
-    jacksonVersion = '2.8.7'
-}
 dependencies {
     compile group: 'org.apache.shiro', name: 'shiro-core', version: shiroVersion
     compile group: 'org.apache.shiro', name: 'shiro-web', version: shiroVersion
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
     compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
     compile project(':jwt-security')
+    compile project(':api-security-common')
 
     //PROVIDED
     compileOnly group: 'commons-logging', name: 'commons-logging', version: '1.2'
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compileOnly('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
     compileOnly group: 'com.google.inject', name: 'guice', version: guiceVersion
-    compileOnly('javax.servlet:javax.servlet-api:3.1.0')
+    compileOnly('javax.servlet:javax.servlet-api:' + servletApiVersion)
     compileOnly('org.glassfish.jersey.core:jersey-client:2.25.1')
     compileOnly('javax.ws.rs:javax.ws.rs-api:2.0.1')
 
@@ -51,7 +47,7 @@ publishing {
     publications {
         library(MavenPublication) {
             from components.java
-            groupId 'gov.ca.cwds.api'
+            groupId projectGroup
             artifactId 'api-security'
             version version
         }
