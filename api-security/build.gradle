@@ -19,6 +19,7 @@ dependencies {
     compile group: 'org.apache.shiro', name: 'shiro-web', version: shiroVersion
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
     compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: commonsLangVersion
     compile project(':jwt-security')
     compile project(':api-security-common')
 
