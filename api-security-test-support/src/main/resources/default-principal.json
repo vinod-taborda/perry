@@ -1,4 +1,9 @@
 {
+  "user": "Onotole",
   "staffId": "0X5",
-  "privileges": ["Resource Mgmt Placement Facility Maint", "SOC158 Application"]
+  "privileges": [
+    "CWS Case Management System",
+    "Resource Mgmt Placement Facility Maint",
+    "SOC158 Application"
+  ]
 }

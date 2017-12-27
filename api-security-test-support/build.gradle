@@ -17,6 +17,7 @@ repositories {
 dependencies {
 
     compileOnly project(':api-security-common')
+    compileOnly project(':api-security')
 
     compile group: 'org.apache.shiro', name: 'shiro-web', version: shiroVersion
     compile group: 'org.apache.commons', name: 'commons-lang3', version: commonsLangVersion
