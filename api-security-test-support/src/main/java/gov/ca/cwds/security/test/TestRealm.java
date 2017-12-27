@@ -1,5 +1,9 @@
 package gov.ca.cwds.security.test;
 
+import gov.ca.cwds.security.permission.AbacPermission;
+import gov.ca.cwds.security.realm.PerryAccount;
+import java.util.Collection;
+import java.util.Collections;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -8,9 +12,6 @@ import org.apache.shiro.authz.Permission;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * @author CWDS CALS API Team
@@ -35,7 +36,7 @@ public class TestRealm extends AuthorizingRealm {
 
       @Override
       public Collection<Permission> getObjectPermissions() {
-        return Collections.EMPTY_LIST;
+        return Collections.singletonList(new AbacPermission());
       }
     };
   }
@@ -43,12 +44,13 @@ public class TestRealm extends AuthorizingRealm {
   @Override
   protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
           throws AuthenticationException {
-
+    final PerryAccount principal = (PerryAccount) token.getPrincipal();
     return new AuthenticationInfo() {
       @Override
       public PrincipalCollection getPrincipals() {
         SimplePrincipalCollection principalCollection = new SimplePrincipalCollection();
-        principalCollection.add(token.getPrincipal(), REALM_NAME);
+        principalCollection.add(principal.getUser(), REALM_NAME);
+        principalCollection.add(principal, REALM_NAME);
         return principalCollection;
       }
 
