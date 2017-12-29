@@ -25,17 +25,11 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
 
-group = 'gov.ca.cwds.api'
-
-description = """perry"""
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 project.ext {
+    projectGroup = 'gov.ca.cwds.api'
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
-    projectMajorVersion = '0.5.1'
+    projectMajorVersion = '0.5.4'
     mainclass = 'gov.ca.cwds.PerryApplication'
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
     
@@ -56,7 +50,23 @@ project.ext {
     snapshotMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/repo"
     releaseMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
     artifactoryRepo = (isRelease ? releaseMavenRepo : snapshotMavenRepo)
+
+    shiroVersion = '1.2.3'
+    guiceVersion = '4.0'
+    jacksonVersion = '2.8.7'
+    servletApiVersion = '3.1.0'
+
+    commonsLangVersion = '3.6'
+    commonsIoVersion = '2.5'
+
 }
+
+group = projectGroup
+
+description = """perry"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 println "Release: " + isRelease
 println "Build: " + buildNumber
@@ -113,7 +123,7 @@ dependencies {
     //h2 dev mode
     compile group: 'com.h2database', name: 'h2', version: '1.4.196'
 
-    compile group: 'com.ibm', name: 'db2jcc4', version: '4.0.0'
+    compile group: 'com.ibm', name: 'db2jcc4', version: '4.21.29'
     compile group: 'com.ibm', name: 'db2jcc_license_cisuz', version: '4.0.0'
 
     compile ('gov.ca.cwds.api:api-core:0.19.118') {

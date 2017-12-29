@@ -33,7 +33,7 @@ public class UserIdDaoIT {
   public void testFindByLogonId() {
     String logonId = "logonId";
     entityManager.merge(entity("id", logonId));
-    List<UserId> users = userIdDao.findByLogonId(logonId);
+    List<UserId> users = userIdDao.findActiveByLogonId(logonId);
     assertThat(users.size(), is(1));
   }
 

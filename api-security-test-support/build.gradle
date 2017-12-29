@@ -1,0 +1,45 @@
+group projectGroup
+version projectVersion
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url "http://sonar.dev.cwds.io:8081/artifactory/repo"
+    }
+}
+
+dependencies {
+
+    compileOnly project(':api-security-common')
+    compileOnly project(':api-security')
+
+    compile group: 'org.apache.shiro', name: 'shiro-web', version: shiroVersion
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: commonsLangVersion
+    compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: servletApiVersion
+
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+            groupId projectGroup
+            artifactId 'api-security-test-support'
+            version version
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            url artifactoryRepo
+        }
+    }
+}
+
