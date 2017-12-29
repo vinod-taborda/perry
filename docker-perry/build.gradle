@@ -5,7 +5,7 @@ def targetDockerHubRepository = rootProject.name
 def dockerImageName = targetDockerHubOrganization + '/' + targetDockerHubRepository
 def dockerTag = projectVersion
 
-println "ReleaseDocker: " + releaseDocker
+println "Release: " + isRelease
 println "Docker Tag: " + dockerTag
 
 def perryDistFileName = "perry-${projectVersion}.jar"
