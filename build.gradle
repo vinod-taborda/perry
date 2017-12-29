@@ -25,17 +25,18 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
 
+group = 'gov.ca.cwds.api'
+
+description = """perry"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 project.ext {
-    versionPropertyValue = System.properties.getProperty('version')
-    projectGroup = 'gov.ca.cwds.api'
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
-    projectMajorVersion = '0.5.4'
+    projectMajorVersion = '0.5.1'
     mainclass = 'gov.ca.cwds.PerryApplication'
-    releaseDocker = System.getProperty("ReleaseDocker")
-    buildNumber = System.getProperty("BuildNumber")
-    snapshotVersion = projectMajorVersion + '-SNAPSHOT'
-    projectVersion = ((versionPropertyValue != null ) ? versionPropertyValue : snapshotVersion)
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
     
     // assume that Windows users use the Docker Toolbox
@@ -43,29 +44,21 @@ project.ext {
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
     devDockerPort = 2376
 
+    isRelease = System.getProperty("Release") == "true"
+    buildNumber = System.getProperty('BuildNumber')
+    customVersion = System.getProperty('CustomVersion')
+
+    projectSnapshotVersion = projectMajorVersion + "-SNAPSHOT"
+    projectReleaseVersion = (customVersion == null || customVersion == "" || customVersion.startsWith('$') ? projectMajorVersion + '_' + buildNumber + '-RC' : customVersion )
+    projectVersion = (isRelease ? projectReleaseVersion : projectSnapshotVersion )
+
     // Publishing configuration
     snapshotMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/repo"
     releaseMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
-    artifactoryRepo = ((versionPropertyValue != null ) ? releaseMavenRepo : snapshotMavenRepo)
-
-    shiroVersion = '1.2.3'
-    guiceVersion = '4.0'
-    jacksonVersion = '2.8.7'
-    servletApiVersion = '3.1.0'
-
-    commonsLangVersion = '3.6'
-    commonsIoVersion = '2.5'
-
+    artifactoryRepo = (isRelease ? releaseMavenRepo : snapshotMavenRepo)
 }
 
-group = projectGroup
-
-description = """perry"""
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-println "ReleaseDocker: " + releaseDocker
+println "Release: " + isRelease
 println "Build: " + buildNumber
 println "Project Version: " + projectVersion
 println "Project Major Version: " + projectMajorVersion
@@ -120,7 +113,7 @@ dependencies {
     //h2 dev mode
     compile group: 'com.h2database', name: 'h2', version: '1.4.196'
 
-    compile group: 'com.ibm', name: 'db2jcc4', version: '4.21.29'
+    compile group: 'com.ibm', name: 'db2jcc4', version: '4.0.0'
     compile group: 'com.ibm', name: 'db2jcc_license_cisuz', version: '4.0.0'
 
     compile ('gov.ca.cwds.api:api-core:0.19.118') {
