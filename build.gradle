@@ -30,7 +30,7 @@ project.ext {
     projectGroup = 'gov.ca.cwds.api'
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
-    projectMajorVersion = '0.5.3'
+    projectMajorVersion = '0.5.4'
     mainclass = 'gov.ca.cwds.PerryApplication'
     releaseDocker = System.getProperty("ReleaseDocker")
     buildNumber = System.getProperty("BuildNumber")
