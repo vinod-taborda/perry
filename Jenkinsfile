@@ -5,7 +5,8 @@ node ('dora-slave'){
    parameters([
       string(defaultValue: 'latest', description: '', name: 'APP_VERSION'),
       string(defaultValue: 'development', description: '', name: 'branch'),
-      booleanParam(defaultValue: false, description: '', name: 'release'),
+      booleanParam(defaultValue: false, description: 'Default release version template is: <majorVersion>_<buildNumber>-RC', name: 'RELEASE_PROJECT'),
+      string(defaultValue: "", description: 'Fill this field if need to specify custom version ', name: 'OVERRIDE_VERSION'),
       booleanParam(defaultValue: true, description: 'Enable NewRelic APM', name: 'USE_NEWRELIC'),
       string(defaultValue: 'inventories/tpt2dev/hosts.yml', description: '', name: 'inventory')
       ]), pipelineTriggers([pollSCM('H/5 * * * *')])])
@@ -18,7 +19,13 @@ node ('dora-slave'){
 		  rtGradle.useWrapper = true
    }
    stage('Build'){
-		def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar'
+     if (params.RELEASE_PROJECT) {
+         echo "!!!! BUILD RELEASE VERSION"
+         def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'clean jar -DRelease=$RELEASE_PROJECT -DBuildNumber=$BUILD_NUMBER -DCustomVersion=$OVERRIDE_VERSION'
+     } else {
+         echo "!!!! BUILD SNAPSHOT VERSION"
+         def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'clean jar'
+     }
    }
    stage('Unit Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport', switches: '--info'
@@ -34,16 +41,24 @@ node ('dora-slave'){
    }
 
 	stage ('Push to artifactory'){
-	    //rtGradle.deployer repo:'libs-snapshot', server: serverArti
-	    rtGradle.deployer repo:'libs-release', server: serverArti
-	    rtGradle.deployer.deployArtifacts = true
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		rtGradle.deployer.deployArtifacts = false
+    rtGradle.deployer.deployArtifacts = true
+    if (params.RELEASE_PROJECT) {
+        echo "!!!! PUSH RELEASE VERSION ${params.VERSION}"
+        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish -DRelease=$RELEASE_PROJECT -DBuildNumber=$BUILD_NUMBER -DCustomVersion=$OVERRIDE_VERSION'
+    } else {
+        echo "!!!! PUSH SNAPSHOT VERSION"
+        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish'
+    }
+    rtGradle.deployer.deployArtifacts = false
 	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=$release -DBuildNumber=$BUILD_NUMBER'
-       }
+	       if (params.RELEASE_PROJECT) {
+             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DRelease=$RELEASE_PROJECT -DBuildNumber=$BUILD_NUMBER -DCustomVersion=$OVERRIDE_VERSION'
+         } else {
+             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DRelease=false -DBuildNumber=$BUILD_NUMBER'
+         }
+     }
 	}
 	stage('Clean Workspace') {
 		archiveArtifacts artifacts: '**/perry*.jar,readme.txt', fingerprint: true

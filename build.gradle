@@ -35,22 +35,30 @@ targetCompatibility = 1.8
 project.ext {
     configPath = "$rootProject.projectDir/config/"
     springVersion = "1.5.3.RELEASE"
-    projectMajorVersion = '0.4.5-HF12'
+    projectMajorVersion = '0.5.3'
     mainclass = 'gov.ca.cwds.PerryApplication'
-
-    releaseDocker = System.getProperty("ReleaseDocker")
-    buildNumber = System.getProperty("BuildNumber")
-    //projectVersion = projectMajorVersion + '-SNAPSHOT'
-    projectVersion = projectMajorVersion
     targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
     
     // assume that Windows users use the Docker Toolbox
     buildEnv = System.env.BUILD_ENV ?: (Os.isFamily(Os.FAMILY_WINDOWS) ? 'WIN_DEV' : 'JENKINS')
     devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
     devDockerPort = 2376
+
+    isRelease = System.getProperty("Release") == "true"
+    buildNumber = System.getProperty('BuildNumber')
+    customVersion = System.getProperty('CustomVersion')
+
+    projectSnapshotVersion = projectMajorVersion + "-SNAPSHOT"
+    projectReleaseVersion = (customVersion == null || customVersion == "" || customVersion.startsWith('$') ? projectMajorVersion + '_' + buildNumber + '-RC' : customVersion )
+    projectVersion = (isRelease ? projectReleaseVersion : projectSnapshotVersion )
+
+    // Publishing configuration
+    snapshotMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/repo"
+    releaseMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
+    artifactoryRepo = (isRelease ? releaseMavenRepo : snapshotMavenRepo)
 }
 
-println "ReleaseDocker: " + releaseDocker
+println "Release: " + isRelease
 println "Build: " + buildNumber
 println "Project Version: " + projectVersion
 println "Project Major Version: " + projectMajorVersion
