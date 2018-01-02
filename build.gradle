@@ -149,7 +149,7 @@ task smokeTest(type: Test) {
     include '**/smoketest/**'
 }
 
-publish.dependsOn ':shiro-security:publish'
+publish.dependsOn ':api-security:publish'
 
 def isPortOpen(host, port) {
     try {
