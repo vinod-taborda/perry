@@ -57,7 +57,7 @@ task dockerTagImage(type: Exec, dependsOn: project.parent.checkDockerService) {
 
 task readArguments() {
     doLast{
-        println "ReleaseDocker: " + releaseDocker
+        println "ReleaseDocker: " + isRelease
         println "Build: " + buildNumber
         println "Docker Tag: " + dockerTag
     }
