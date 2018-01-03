@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import javax.inject.Inject;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -24,7 +25,9 @@ import org.apache.shiro.authz.AuthorizationException;
 public class AbacMethodInterceptor implements MethodInterceptor {
 
   private ScriptEngine scriptEngine;
-  private Boolean enabled;
+
+  @Inject
+  private SecurityConfiguration securityConfiguration;
 
   public AbacMethodInterceptor() {
     scriptEngine = new ScriptEngineManager().getEngineByName("groovy");
@@ -32,6 +35,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
 
   @Override
   public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+    inject();
     if (!isEnabled()) {
       return methodInvocation.proceed();
     }
@@ -42,7 +46,8 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     return result;
   }
 
-  private Object checkResultPermissions(Object result, MethodInvocation methodInvocation) throws ScriptException{
+  private Object checkResultPermissions(Object result, MethodInvocation methodInvocation)
+      throws ScriptException {
     Authorize authorize = methodInvocation.getMethod().getAnnotation(Authorize.class);
     if (authorize == null) {
       return result;
@@ -55,7 +60,8 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     }
   }
 
-  private void checkParametersPermissions(MethodInvocation methodInvocation) throws ScriptException {
+  private void checkParametersPermissions(MethodInvocation methodInvocation)
+      throws ScriptException {
     Parameter[] parameters = methodInvocation.getMethod().getParameters();
     for (int i = 0; i < parameters.length; i++) {
       Authorize authorize = parameters[i].getAnnotation(Authorize.class);
@@ -85,7 +91,8 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     }
     ScriptContext scriptContext = new SimpleScriptContext();
     scriptContext.setAttribute(identifier, arg, ScriptContext.ENGINE_SCOPE);
-    for (Object o : (Collection<Object>) scriptEngine.eval("[" + selector + "].flatten()", scriptContext)) {
+    for (Object o : (Collection<Object>) scriptEngine
+        .eval("[" + selector + "].flatten()", scriptContext)) {
       abacPermission.setSecuredObject(o);
       SecurityUtils.getSubject().checkPermission(abacPermission);
     }
@@ -108,25 +115,23 @@ public class AbacMethodInterceptor implements MethodInterceptor {
   private Collection initOutput(Collection results) {
     if (results instanceof Set) {
       return new HashSet(results.size());
-    } else
+    } else {
       return new ArrayList(results.size());
+    }
+  }
+
+  private void inject() {
+    if (securityConfiguration == null) {
+      synchronized (this) {
+        if (securityConfiguration == null) {
+          SecurityModule.injector().injectMembers(this);
+        }
+      }
+    }
   }
 
   private boolean isEnabled() {
-    if (enabled == null) {
-      final SecurityConfiguration securityConfiguration = getSecurityConfigurationFromGuice();
-      final Boolean authorization = securityConfiguration.getAuthorization();
-      enabled = authorization == null || authorization;
-    }
-    return enabled;
-
-  }
-
-  private SecurityConfiguration getSecurityConfigurationFromGuice() {
-    try {
-      return SecurityModule.injector().getInstance(SecurityConfiguration.class);
-    } catch (Exception e) {
-      return new SecurityConfiguration();
-    }
+    final Boolean authorization = securityConfiguration.getAuthorization();
+    return authorization == null || authorization;
   }
 }
