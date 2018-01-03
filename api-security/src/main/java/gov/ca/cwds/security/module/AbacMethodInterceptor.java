@@ -27,7 +27,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
   private ScriptEngine scriptEngine;
 
   @Inject
-  private SecurityConfiguration securityConfiguration;
+  private volatile SecurityConfiguration securityConfiguration;
 
   public AbacMethodInterceptor() {
     scriptEngine = new ScriptEngineManager().getEngineByName("groovy");
@@ -124,7 +124,11 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     if (securityConfiguration == null) {
       synchronized (this) {
         if (securityConfiguration == null) {
-          SecurityModule.injector().injectMembers(this);
+          try {
+            SecurityModule.injector().injectMembers(this);
+          } catch (Exception e) {
+            securityConfiguration = new SecurityConfiguration();
+          }
         }
       }
     }
