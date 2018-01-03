@@ -2,7 +2,7 @@ package gov.ca.cwds.testapp.module;
 
 import com.google.inject.AbstractModule;
 import gov.ca.cwds.security.authorizer.CaseAuthorizer;
-import gov.ca.cwds.security.module.SecurityModule;
+import gov.ca.cwds.security.module.AuthorizationModule;
 import gov.ca.cwds.testapp.service.TestService;
 import gov.ca.cwds.testapp.service.TestServiceImpl;
 
@@ -13,6 +13,6 @@ public class TestModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(TestService.class).to(TestServiceImpl.class);
-    install(new SecurityModule(null).addAuthorizer("case:read", CaseAuthorizer.class));
+    install(new AuthorizationModule().addAuthorizer("case:read", CaseAuthorizer.class));
   }
 }

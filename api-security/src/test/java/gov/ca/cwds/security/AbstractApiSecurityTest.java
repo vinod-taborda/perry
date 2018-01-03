@@ -2,8 +2,7 @@ package gov.ca.cwds.security;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import gov.ca.cwds.security.module.InjectorProvider;
-import gov.ca.cwds.security.module.SecurityModule;
+import gov.ca.cwds.security.module.AuthorizationModule;
 import gov.ca.cwds.testapp.module.TestModule;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
@@ -17,8 +16,6 @@ import org.apache.shiro.util.LifecycleUtils;
 import org.apache.shiro.util.ThreadState;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-import java.lang.reflect.Field;
 
 /**
  * Created by dmitry.rudenko on 10/6/2017.
@@ -34,10 +31,7 @@ public class AbstractApiSecurityTest {
   void initInjector() throws Exception {
     Injector injector = Guice.createInjector(new TestModule());
     injector.injectMembers(this);
-    Field field = SecurityModule.class.getDeclaredField("injectorProvider");
-    field.setAccessible(true);
-    field.set(null, (InjectorProvider) () -> injector);
-    //new SecurityModule(() -> injector);
+    AuthorizationModule.setInjector(injector);
   }
 
   private static void initShiro() {

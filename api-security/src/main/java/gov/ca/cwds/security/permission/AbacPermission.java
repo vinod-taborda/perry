@@ -3,7 +3,7 @@ package gov.ca.cwds.security.permission;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 import gov.ca.cwds.security.authorizer.Authorizer;
-import gov.ca.cwds.security.module.SecurityModule;
+import gov.ca.cwds.security.module.AuthorizationModule;
 import org.apache.shiro.authz.Permission;
 
 import java.util.Optional;
@@ -62,8 +62,9 @@ public class AbacPermission implements Permission {
 
   private Optional<Authorizer> findPermissionHandler(String name) {
     try {
-      Authorizer authorizer = SecurityModule.injector().getInstance(Key.get(Authorizer.class, Names.named(name)));
-      return Optional.of(authorizer);
+      Authorizer authorizerImpl = AuthorizationModule
+          .injector().getInstance(Key.get(Authorizer.class, Names.named(name)));
+      return Optional.of(authorizerImpl);
     } catch (Exception e) {
       return Optional.empty();
     }
