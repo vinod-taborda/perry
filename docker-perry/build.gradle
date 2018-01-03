@@ -3,9 +3,9 @@ import org.apache.tools.ant.filters.FixCrLfFilter;
 def targetDockerHubRepository = rootProject.name
 
 def dockerImageName = targetDockerHubOrganization + '/' + targetDockerHubRepository
-def dockerTag = (releaseDocker == 'true' && buildNumber != null  ? projectMajorVersion + '_' + buildNumber + '-RC' : projectVersion )
+def dockerTag = projectVersion
 
-println "ReleaseDocker: " + releaseDocker
+println "Release: " + isRelease
 println "Docker Tag: " + dockerTag
 
 def perryDistFileName = "perry-${projectVersion}.jar"
@@ -57,7 +57,7 @@ task dockerTagImage(type: Exec, dependsOn: project.parent.checkDockerService) {
 
 task readArguments() {
     doLast{
-        println "ReleaseDocker: " + releaseDocker
+        println "ReleaseDocker: " + isRelease
         println "Build: " + buildNumber
         println "Docker Tag: " + dockerTag
     }
