@@ -1,24 +1,30 @@
 package gov.ca.cwds.security.module;
 
 import gov.ca.cwds.security.annotations.Authorize;
+import gov.ca.cwds.security.configuration.SecurityConfiguration;
 import gov.ca.cwds.security.permission.AbacPermission;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.AuthorizationException;
-
-import javax.script.*;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleScriptContext;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationException;
 
 /**
  * Created by dmitry.rudenko on 9/25/2017.
  */
 public class AbacMethodInterceptor implements MethodInterceptor {
+
   private ScriptEngine scriptEngine;
+  private Boolean enabled;
 
   public AbacMethodInterceptor() {
     scriptEngine = new ScriptEngineManager().getEngineByName("groovy");
@@ -26,8 +32,11 @@ public class AbacMethodInterceptor implements MethodInterceptor {
 
   @Override
   public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-    checkParametersPermissions(methodInvocation);
+    if (!isEnabled()) {
+      return methodInvocation.proceed();
+    }
 
+    checkParametersPermissions(methodInvocation);
     Object result = methodInvocation.proceed();
     result = checkResultPermissions(result, methodInvocation);
     return result;
@@ -101,5 +110,23 @@ public class AbacMethodInterceptor implements MethodInterceptor {
       return new HashSet(results.size());
     } else
       return new ArrayList(results.size());
+  }
+
+  private boolean isEnabled() {
+    if (enabled == null) {
+      final SecurityConfiguration securityConfiguration = getSecurityConfigurationFromGuice();
+      final Boolean authorization = securityConfiguration.getAuthorization();
+      enabled = authorization == null || authorization;
+    }
+    return enabled;
+
+  }
+
+  private SecurityConfiguration getSecurityConfigurationFromGuice() {
+    try {
+      return SecurityModule.injector().getInstance(SecurityConfiguration.class);
+    } catch (Exception e) {
+      return new SecurityConfiguration();
+    }
   }
 }
