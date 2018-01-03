@@ -131,7 +131,7 @@ public class AbacMethodInterceptor implements MethodInterceptor {
   }
 
   private boolean isEnabled() {
-    final Boolean authorization = securityConfiguration.getAuthorization();
+    final Boolean authorization = securityConfiguration.getAuthorizationEnabled();
     return authorization == null || authorization;
   }
 }

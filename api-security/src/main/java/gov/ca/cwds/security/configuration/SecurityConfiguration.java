@@ -8,14 +8,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SecurityConfiguration {
 
   @JsonProperty
-  private Boolean authorization = Boolean.TRUE;
+  private Boolean authorizationEnabled = Boolean.TRUE;
 
-  public Boolean getAuthorization() {
-    return authorization;
+  public Boolean getAuthorizationEnabled() {
+    return authorizationEnabled;
   }
 
-  public void setAuthorization(Boolean authorization) {
-    this.authorization = authorization;
+  public void setAuthorizationEnabled(Boolean authorizationEnabled) {
+    this.authorizationEnabled = authorizationEnabled;
   }
 
 }
