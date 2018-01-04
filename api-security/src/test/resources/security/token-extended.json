@@ -3,6 +3,7 @@
   "staffId": "34",
   "roles": ["Supervisor"],
   "county_code": "19",
+  "county_cws_code": "1086",
   "county_name": "Los Angeles",
   "privileges": [
     "Statewide Read",
