@@ -124,13 +124,17 @@ public class AbacMethodInterceptor implements MethodInterceptor {
     if (securityConfiguration == null) {
       synchronized (this) {
         if (securityConfiguration == null) {
-          try {
-            SecurityModule.injector().injectMembers(this);
-          } catch (Exception e) {
-            securityConfiguration = new SecurityConfiguration();
-          }
+          initSafely();
         }
       }
+    }
+  }
+
+  private void initSafely() {
+    try {
+      SecurityModule.injector().injectMembers(this);
+    } catch (Exception e) {
+      securityConfiguration = new SecurityConfiguration();
     }
   }
 
