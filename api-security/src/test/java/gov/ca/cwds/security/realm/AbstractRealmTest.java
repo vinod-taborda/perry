@@ -39,6 +39,7 @@ public class AbstractRealmTest {
     Assert.assertEquals("34", perryAccountExt.getStaffId());
     Assert.assertTrue(perryAccountExt.getRoles() != null && perryAccountExt.getRoles().size() == 1);
     Assert.assertEquals("19", perryAccountExt.getCountyCode());
+    Assert.assertEquals("1086", perryAccountExt.getCountyCwsCode());
     Assert.assertEquals("Los Angeles", perryAccountExt.getCountyName());
     Assert.assertTrue(
         perryAccountExt.getPrivileges() != null && perryAccountExt.getPrivileges().size() == 2);
@@ -161,6 +162,7 @@ public class AbstractRealmTest {
     Assert.assertEquals("34", perryAccountExt.getStaffId());
     Assert.assertTrue(perryAccountExt.getRoles() != null && perryAccountExt.getRoles().size() == 1);
     Assert.assertEquals("19", perryAccountExt.getCountyCode());
+    Assert.assertEquals("1086", perryAccountExt.getCountyCwsCode());
     Assert.assertEquals("Los Angeles", perryAccountExt.getCountyName());
     Assert.assertTrue(
             perryAccountExt.getPrivileges() != null && perryAccountExt.getPrivileges().size() == 2);
