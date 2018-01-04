@@ -18,6 +18,8 @@ public class PerryAccount {
     private String staffId;
     @JsonProperty("county_code")
     private String countyCode;
+    @JsonProperty("county_cws_code")
+    private String countyCwsCode;
     @JsonProperty("county_name")
     private String countyName;
     @JsonProperty("government_entity_type")
@@ -65,6 +67,14 @@ public class PerryAccount {
 
     public void setCountyCode(String countyCode) {
         this.countyCode = countyCode;
+    }
+
+    public String getCountyCwsCode() {
+        return countyCwsCode;
+    }
+
+    public void setCountyCwsCode(String countyCwsCode) {
+        this.countyCwsCode = countyCwsCode;
     }
 
     public String getCountyName() {

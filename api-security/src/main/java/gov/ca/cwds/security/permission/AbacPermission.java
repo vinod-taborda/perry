@@ -56,8 +56,9 @@ public class AbacPermission implements Permission {
   }
 
   private boolean check() {
-    return securedObject == null
-        || (authorizer != null && authorizer.check(securedObject));
+    return securedObject != null
+            && authorizer != null
+            && authorizer.check(securedObject);
   }
 
   private Optional<Authorizer> findPermissionHandler(String name) {
