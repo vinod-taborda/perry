@@ -22,10 +22,10 @@ public class SecuredMethodMatcher extends AbstractMatcher<Method> {
   @Override
   public boolean matches(Method method) {
     return method.getAnnotation(Authorize.class) != null
-            || hasAnnotatedPrameters(method);
+            || hasAnnotatedParameters(method);
   }
 
-  private boolean hasAnnotatedPrameters(Method method) {
+  private boolean hasAnnotatedParameters(Method method) {
     for (Parameter parameter : method.getParameters()) {
       if (parameter.isAnnotationPresent(Authorize.class)) {
         return true;
