@@ -3,6 +3,7 @@ package gov.ca.cwds.security.permission;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 import gov.ca.cwds.security.authorizer.Authorizer;
+import gov.ca.cwds.security.authorizer.BaseAuthorizer;
 import gov.ca.cwds.security.module.SecurityModule;
 import org.apache.shiro.authz.Permission;
 
@@ -56,8 +57,9 @@ public class AbacPermission implements Permission {
   }
 
   private boolean check() {
-    return securedObject == null
-        || (authorizer != null && authorizer.check(securedObject));
+    return securedObject != null
+            && authorizer != null
+            && authorizer.check(securedObject);
   }
 
   private Optional<Authorizer> findPermissionHandler(String name) {

@@ -30,7 +30,7 @@ public abstract class BaseAuthorizer <Type, ID>implements Authorizer {
 
   @SuppressWarnings("unchecked")
   public boolean check(Object o) {
-    if (instanceType.isAssignableFrom(o.getClass())) {
+    if (o.getClass() == instanceType) {
       return checkInstance((Type) o);
     }
     if (o.getClass() == idType) {
