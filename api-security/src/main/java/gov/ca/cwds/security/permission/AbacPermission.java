@@ -3,7 +3,6 @@ package gov.ca.cwds.security.permission;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 import gov.ca.cwds.security.authorizer.Authorizer;
-import gov.ca.cwds.security.authorizer.BaseAuthorizer;
 import gov.ca.cwds.security.module.SecurityModule;
 import org.apache.shiro.authz.Permission;
 

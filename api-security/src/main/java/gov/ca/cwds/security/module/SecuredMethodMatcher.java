@@ -3,7 +3,6 @@ package gov.ca.cwds.security.module;
 import com.google.inject.matcher.AbstractMatcher;
 import gov.ca.cwds.security.annotations.Authorize;
 
-import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
