@@ -10,12 +10,12 @@ import org.springframework.web.servlet.view.RedirectView;
  * Created by TPT2 on 1/5/2018.
  */
 @Controller
-public class TargetUrlController {
+public class HomePageUrlController {
   @Autowired
   private PerryProperties properties;
 
   @GetMapping("/")
   public RedirectView handle() {
-    return new RedirectView(properties.getTargetUrl());
+    return new RedirectView(properties.getHomePageUrl());
   }
 }
