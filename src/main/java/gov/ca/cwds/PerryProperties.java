@@ -116,6 +116,6 @@ public class PerryProperties {
     }
 
     public void setShowErrors(boolean showErrors) {
-        this.showErrors = showErrors;
+      this.showErrors = showErrors;
     }
 }
