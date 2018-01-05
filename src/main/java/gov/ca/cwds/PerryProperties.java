@@ -30,8 +30,6 @@ public class PerryProperties {
 
     private boolean showErrors;
 
-    private String targetUrl;
-
     public static class IdentityProviderConfiguration {
         private IdpMappingScript idpMapping;
 
@@ -118,14 +116,6 @@ public class PerryProperties {
     }
 
     public void setShowErrors(boolean showErrors) {
-        this.showErrors = showErrors;
-    }
-
-    public String getTargetUrl() {
-        return targetUrl;
-    }
-
-    public void setTargetUrl(String targetUrl) {
-        this.targetUrl = targetUrl;
+      this.showErrors = showErrors;
     }
 }
