@@ -3,9 +3,11 @@ node ('dora-slave'){
    def rtGradle = Artifactory.newGradleBuild()
    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), disableConcurrentBuilds(), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
    parameters([
+      string(defaultValue: 'SNAPSHOT', description: 'Release version (if not SNAPSHOT will be released to lib-release repository)', name: 'VERSION'),
       string(defaultValue: 'latest', description: '', name: 'APP_VERSION'),
-      string(defaultValue: 'master', description: '', name: 'branch'),
-      booleanParam(defaultValue: false, description: '', name: 'release'),
+      string(defaultValue: 'development', description: '', name: 'branch'),
+      //booleanParam(defaultValue: false, description: '', name: 'release'),
+      booleanParam(defaultValue: true, description: 'Enable NewRelic APM', name: 'USE_NEWRELIC'),
       string(defaultValue: 'inventories/tpt2dev/hosts.yml', description: '', name: 'inventory')
       ]), pipelineTriggers([pollSCM('H/5 * * * *')])])
   try {
@@ -17,7 +19,13 @@ node ('dora-slave'){
 		  rtGradle.useWrapper = true
    }
    stage('Build'){
-		def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'jar'
+     if (params.VERSION != "SNAPSHOT" ) {
+         echo "!!!! BUILD RELEASE VERSION ${params.VERSION}"
+         def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'clean jar -Dversion=${VERSION}'
+     } else {
+         echo "!!!! BUILD SNAPSHOT VERSION"
+         def buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'clean jar'
+     }
    }
    stage('Unit Tests') {
        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'test jacocoTestReport', switches: '--info'
@@ -27,29 +35,42 @@ node ('dora-slave'){
 			buildInfo = rtGradle.run buildFile: 'build.gradle', switches: '--info', tasks: 'sonarqube'
         }
     }
+   stage('License Report') {
+   		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'downloadLicenses'
+   		publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/license', reportFiles: 'license-dependency.html', reportName: 'License Report', reportTitles: 'License summary'])
+   }
 
 	stage ('Push to artifactory'){
-	    //rtGradle.deployer repo:'libs-snapshot', server: serverArti
-	    rtGradle.deployer repo:'libs-release', server: serverArti
-	    rtGradle.deployer.deployArtifacts = true
-		buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'artifactoryPublish'
-		rtGradle.deployer.deployArtifacts = false
+    rtGradle.deployer.deployArtifacts = true
+    if (params.VERSION != "SNAPSHOT") {
+        echo "!!!! PUSH RELEASE VERSION ${params.VERSION}"
+        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish -Dversion=${VERSION}'
+    } else {
+        echo "!!!! PUSH SNAPSHOT VERSION"
+        buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publish'
+    }
+    rtGradle.deployer.deployArtifacts = false
 	}
 	stage ('Build Docker'){
 	   withDockerRegistry([credentialsId: '6ba8d05c-ca13-4818-8329-15d41a089ec0']) {
-           buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=$release -DBuildNumber=$BUILD_NUMBER'
-       }
+	       if (params.VERSION != "SNAPSHOT") {
+             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=true -DBuildNumber=$BUILD_NUMBER -Dversion=${VERSION}'
+         } else {
+             buildInfo = rtGradle.run buildFile: 'build.gradle', tasks: 'publishDocker -DReleaseDocker=false -DBuildNumber=$BUILD_NUMBER'
+         }
+     }
 	}
 	stage('Clean Workspace') {
 		archiveArtifacts artifacts: '**/perry*.jar,readme.txt', fingerprint: true
 		cleanWs()
 	}
-	stage('Deploy Application'){
-	   checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '433ac100-b3c2-4519-b4d6-207c029a103b', url: 'git@github.com:ca-cwds/de-ansible.git']]]
-	   sh 'ansible-playbook -e VERSION_NUMBER=$APP_VERSION -i $inventory deploy-perry.yml --vault-password-file ~/.ssh/vault.txt -vv'
-  }
+//	stage('Deploy Application'){
+//	   checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '433ac100-b3c2-4519-b4d6-207c029a103b', url: 'git@github.com:ca-cwds/de-ansible.git']]]
+//	   sh 'ansible-playbook -e NEW_RELIC_AGENT=$USE_NEWRELIC -e VERSION_NUMBER=$APP_VERSION -i $inventory deploy-perry.yml --vault-password-file ~/.ssh/vault.txt -vv'
+//  }
   stage('Smoke Tests') {
       git branch: 'master', url: 'https://github.com/ca-cwds/perry.git'
+      sleep 40
       buildInfo = rtGradle.run buildFile: './build.gradle', tasks: 'smokeTest --stacktrace'
       publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'build/reports/tests/smokeTest', reportFiles: 'index.html', reportName: 'Smoke Tests Report', reportTitles: 'Smoke tests summary'])
     }

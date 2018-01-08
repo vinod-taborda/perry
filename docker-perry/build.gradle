@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.FixCrLfFilter;
 def targetDockerHubRepository = rootProject.name
 
 def dockerImageName = targetDockerHubOrganization + '/' + targetDockerHubRepository
-def dockerTag = (releaseDocker == 'true' && buildNumber != null  ? projectMajorVersion + '_' + buildNumber + '-RC' : projectVersion )
+def dockerTag = projectVersion
 
 println "ReleaseDocker: " + releaseDocker
 println "Docker Tag: " + dockerTag
@@ -42,12 +42,14 @@ task dockerfile(type: Copy) {
 }
 
 task dockerCreateImage(type: Exec, dependsOn: [project.parent.checkDockerService, dockerCopyScripts, dockerCopyConfig, dockerCopyDist, dockerfile]) {
+    environment << project.dockerEnvVars
     doFirst {
         commandLine 'docker', 'build', '-t', dockerImageName, '-f', "$dockerContextDir/Dockerfile-perry", dockerContextDir
     }
 }
 
 task dockerTagImage(type: Exec, dependsOn: project.parent.checkDockerService) {
+    environment << project.dockerEnvVars
     doFirst {
         commandLine 'docker', 'tag', dockerImageName, "$dockerImageName:$dockerTag"
     }
@@ -62,14 +64,15 @@ task readArguments() {
 }
 
 task dockerPushTaggedVersion(type: Exec, dependsOn: [project.parent.checkDockerService, dockerTagImage]) {
+    environment << project.dockerEnvVars
     doFirst {
-
         commandLine 'docker', 'push', "$dockerImageName:$dockerTag"
     }
     dockerTagImage.mustRunAfter(project.parent.checkDockerService)
 }
 
 task dockerPushLatestVersion(type: Exec, dependsOn: project.parent.checkDockerService) {
+    environment << project.dockerEnvVars
     doFirst {
         commandLine 'docker', 'push', "$dockerImageName:latest"
     }

@@ -1,5 +1,8 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
         mavenCentral()
     }
@@ -13,6 +16,7 @@ plugins {
     id 'application'
     id "org.sonarqube" version "2.5"
     id 'org.springframework.boot' version '1.5.2.RELEASE'
+    id "com.github.hierynomus.license" version "0.14.0"
 }
 
 apply plugin: 'java'
@@ -21,26 +25,45 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
 
-group = 'gov.ca.cwds.api'
+project.ext {
+    versionPropertyValue = System.properties.getProperty('version')
+    projectGroup = 'gov.ca.cwds.api'
+    configPath = "$rootProject.projectDir/config/"
+    springVersion = "1.5.3.RELEASE"
+    projectMajorVersion = '0.5.3'
+    mainclass = 'gov.ca.cwds.PerryApplication'
+    releaseDocker = System.getProperty("ReleaseDocker")
+    buildNumber = System.getProperty("BuildNumber")
+    snapshotVersion = projectMajorVersion + '-SNAPSHOT'
+    projectVersion = ((versionPropertyValue != null ) ? versionPropertyValue : snapshotVersion)
+    targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
+    
+    // assume that Windows users use the Docker Toolbox
+    buildEnv = System.env.BUILD_ENV ?: (Os.isFamily(Os.FAMILY_WINDOWS) ? 'WIN_DEV' : 'JENKINS')
+    devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
+    devDockerPort = 2376
+
+    // Publishing configuration
+    snapshotMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/repo"
+    releaseMavenRepo = "http://sonar.dev.cwds.io:8081/artifactory/libs-release"
+    artifactoryRepo = ((versionPropertyValue != null ) ? releaseMavenRepo : snapshotMavenRepo)
+
+    shiroVersion = '1.2.3'
+    guiceVersion = '4.0'
+    jacksonVersion = '2.8.7'
+    servletApiVersion = '3.1.0'
+
+    commonsLangVersion = '3.6'
+    commonsIoVersion = '2.5'
+
+}
+
+group = projectGroup
 
 description = """perry"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-project.ext {
-    configPath = "$rootProject.projectDir/config/"
-    springVersion = "1.5.3.RELEASE"
-    targetDockerHubOrganization = System.env.DOCKERHUB_ORG ?: 'cwds'
-    projectMajorVersion = '0.3.6'
-    mainclass = 'gov.ca.cwds.PerryApplication'
-    buildEnv = System.env.BUILD_ENV ?: 'JENKINS'
-    devDockerHost = System.env.DEV_DOCKER_HOST ?: '192.168.99.100'
-    devDockerPort = 2376
-    releaseDocker = System.getProperty("ReleaseDocker")
-    buildNumber = System.getProperty("BuildNumber")
-    projectVersion = projectMajorVersion
-}
 
 println "ReleaseDocker: " + releaseDocker
 println "Build: " + buildNumber
@@ -59,6 +82,8 @@ sonarqube {
     properties {
         property "sonar.jacoco.reportPath", "${buildDir}/jacoco/test.exec"
         property "sonar.jacoco.itReportPath", "${buildDir}/jacoco/integrationTest.exec"
+        //sonar doesn't recognize AOP and shiro library!!!
+        property "sonar.exclusions", "/src/main/java/gov/ca/cwds/security/**"
     }
 }
 
@@ -70,10 +95,8 @@ bootRepackage {
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
     maven {
-        url "http://maven2.cwds.tabordasolutions.net"
+        url "http://sonar.dev.cwds.io:8081/artifactory/repo"
     }
 }
 
@@ -81,9 +104,12 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:springVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:springVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:springVersion
     compile group:"org.springframework.boot", name:"spring-boot-starter-actuator", version:springVersion
+    compile group:"org.springframework.boot", name:"spring-boot-starter-data-redis", version:springVersion
 
     compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version:'2.0.13.RELEASE'
+    compile group: 'org.springframework.session', name: 'spring-session', version:'1.3.1.RELEASE'
     compile group: 'org.webjars', name: 'angularjs', version:'1.4.3'
     compile group: 'org.webjars', name: 'jquery', version:'2.1.1'
     compile group: 'org.webjars', name: 'bootstrap', version:'3.2.0'
@@ -94,7 +120,7 @@ dependencies {
     //h2 dev mode
     compile group: 'com.h2database', name: 'h2', version: '1.4.196'
 
-    compile group: 'com.ibm', name: 'db2jcc4', version: '4.0.0'
+    compile group: 'com.ibm', name: 'db2jcc4', version: '4.21.29'
     compile group: 'com.ibm', name: 'db2jcc_license_cisuz', version: '4.0.0'
 
     compile ('gov.ca.cwds.api:api-core:0.19.118') {
@@ -107,7 +133,7 @@ dependencies {
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
             exclude(module: 'commons-logging')
     }
-
+    testCompile 'org.springframework:spring-test:4.3.0.RELEASE'
     testCompile 'org.mockito:mockito-core:2.0.54-beta'
     testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
     testCompile('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.23.2') {
@@ -130,7 +156,7 @@ task smokeTest(type: Test) {
     include '**/smoketest/**'
 }
 
-publish.dependsOn ':shiro-security:publish'
+publish.dependsOn ':api-security:publish'
 
 def isPortOpen(host, port) {
     try {
@@ -142,6 +168,14 @@ def isPortOpen(host, port) {
     }
 }
 
+project.ext.dockerEnvVars = project.buildEnv != 'WIN_DEV' ? [:] : [
+        DOCKER_CERT_PATH: System.getProperty("user.home") + '/.docker/machine/machines/default',
+        DOCKER_HOST: "tcp://$project.devDockerHost:$project.devDockerPort",
+        DOCKER_MACHINE_NAME: 'default',
+        DOCKER_TLS_VERIFY: '1',
+        COMPOSE_CONVERT_WINDOWS_PATHS: 'true'
+]
+
 // reused in sub-modules
 task checkDockerService {
     enabled = project.buildEnv == 'WIN_DEV'
@@ -150,15 +184,18 @@ task checkDockerService {
             throw new GradleException('Docker service is not available. Windows users should start Docker Quickstart Terminal of Docker Toolbox')
         }
     }
-    doLast {
-        def dockerEnvVars = [:]
-        dockerEnvVars['DOCKER_CERT_PATH'] = System.getProperty("user.home") + '/.docker/machine/machines/default'
-        dockerEnvVars['DOCKER_HOST'] = "tcp://$project.devDockerHost:$project.devDockerPort"
-        dockerEnvVars['DOCKER_MACHINE_NAME'] = 'default'
-        dockerEnvVars['DOCKER_TLS_VERIFY'] = 1
+}
 
-        childProjects.each {
-            k, childProject -> childProject.tasks.withType(Exec) { environment << dockerEnvVars }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            url artifactoryRepo
         }
     }
 }

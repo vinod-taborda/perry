@@ -167,7 +167,6 @@ public final class UserAuthorization extends DomainObject implements Request, Re
   }
 
 
-
   /*
      * (non-Javadoc)
      *

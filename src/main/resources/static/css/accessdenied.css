@@ -1,0 +1,43 @@
+html {
+  background-color: #205493;
+}
+
+.panel-footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height: 70px;
+  width: 100%;
+  background: #c4c4c4;
+}
+
+.error-page-background, .error-page-panel {
+  height: 100vh;
+  float: left;
+  width: 50%;
+}
+
+.error-page-panel {
+  padding: 12.5vh;
+  background-color: #f1f1f1;
+}
+
+.error-page-background {
+  padding: 80px;
+}
+
+@media ( max-width: 768px) {
+  .error-page-background {
+    display: none;
+  }
+
+  .error-page-panel {
+    width: 100%;
+    padding: 5vh;
+  }
+}
+
+#client_logo {
+  margin-right: auto;
+  max-height: 130px;
+}

@@ -6,11 +6,10 @@ import java.util.Map;
 
 /**
  * Enumerated types for UnitAuthority
- * 
+ *
  * @author CWDS API Team
  */
 public enum UnitAuthority {
-
 
 
   /**
@@ -32,7 +31,7 @@ public enum UnitAuthority {
    * Both Approval and Assignment Transfer Authority but not a supervisor
    */
   BOTH_APPROVAL_AND_ASSIGNMENT_TRANSFER_AUTHORITY("B",
-      "Both Approval and Assignment Transfer Authority"),
+          "Both Approval and Assignment Transfer Authority"),
 
   /**
    * Unitwide Read
@@ -67,7 +66,7 @@ public enum UnitAuthority {
 
   /**
    * Description
-   * 
+   *
    * @return description
    */
   public String getDescription() {

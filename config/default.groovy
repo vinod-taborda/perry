@@ -1,3 +1,8 @@
+def authorization = user.authorization
+if (authorization == null) {
+    return [user : user.userId,
+            roles: user.roles]
+}
 privileges = []
 authorization.authorityPrivilege.findAll {
     it.authPrivilegeCode == "P" && it.endDate == null
@@ -16,9 +21,10 @@ def supervisor = authorization.unitAuthority != null && authorization.unitAuthor
 
 
 [user       : authorization.userId,
- roles      : [supervisor ? "Supervisor" : "SocialWorker"],
+ roles      : user.roles + [supervisor ? "Supervisor" : "SocialWorker"],
  staffId    : authorization.staffPersonId,
  county_name: authorization.county,
  county_code: authorization.staffPerson.countyCode,
- privileges : privileges]
+ privileges : privileges,
+ government_entity_type: authorization.cwsOffice ? authorization.cwsOffice.first().governmentEntityTypeDesc : null]
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
+    <meta charset="utf-8"/>
+    <title>Server Error</title>
+    <meta name="description" content="Access Denied"/>
+    <meta
+            content='width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1'
+            name='viewport'/>
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/accessdenied.css}" rel="stylesheet"/>
+
+</head>
+
+<body>
+<div class="error-page-background">
+</div>
+
+<div class="error-page-panel">
+
+    <img th:src="@{/images/CWDS-Logo-Login.png}" alt="CWDS Logo"
+         id="client_logo" class="img-rounded img-responsive"/>
+
+    <br/>
+
+    <div class="alert alert-warning" role="alert">
+        <b>The application has encountered an unknown error. Please try again and if error repeat inform technical support.</b>
+        <p></p>
+    </div>
+
+    <button class="btn btn-lg btn-success btn-block"
+            name="homepage" value="homepage" th:onclick="'window.location.href=\'' + ${@errorView.getProperties().getHomePageUrl()} + '\''">Back to Homepage
+    </button>
+
+    <!--id: if no stacktrace available this button should be hidden-->
+    <button th:if="${@errorView.getProperties().isShowErrors()}" class="btn btn-lg  btn-primary btn-block" data-toggle="collapse"
+            data-target="#stacktrace" aria-expanded="false" aria-controls="stacktrace"
+            name="homepage" value="homepage">Error Details
+    </button>
+
+    <br/>
+
+    <div th:if="${@errorView.getProperties().isShowErrors()}" class="collapse" id="stacktrace">
+        <pre>
+        <span th:text="${#httpServletRequest.getAttribute('javax.servlet.error.message')}"></span>
+        </pre>
+    </div>
+
+</div>
+
+
+
+<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package gov.ca.cwds.service.scripts;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.ca.cwds.UniversalUserToken;
 import gov.ca.cwds.rest.api.domain.auth.StaffAuthorityPrivilege;
 import gov.ca.cwds.rest.api.domain.auth.UserAuthorization;
 import io.dropwizard.jackson.Jackson;
@@ -18,10 +19,12 @@ public class BaseScriptTest {
   private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
   public void test(String script, String json, String userAuthorization) throws Exception {
     IdentityMappingScript identityMappingScript = loadScript(script);
+    UniversalUserToken user = new UniversalUserToken();
     UserAuthorization authorization = MAPPER.readValue(
             fixture(userAuthorization),
             UserAuthorization.class);
-    String result = identityMappingScript.map(authorization);
+    user.setAuthorization(authorization);
+    String result = identityMappingScript.map(user);
     System.out.println(result);
     String expectedResult = readResource(json);
     Assert.assertEquals(expectedResult, result);

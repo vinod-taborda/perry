@@ -1,0 +1,38 @@
+group projectGroup
+version projectVersion
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url "http://sonar.dev.cwds.io:8081/artifactory/repo"
+    }
+}
+
+dependencies {
+
+    compileOnly('com.fasterxml.jackson.core:jackson-databind:' + jacksonVersion)
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+            groupId projectGroup
+            artifactId 'api-security-common'
+            version version
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            url artifactoryRepo
+        }
+    }
+}
+

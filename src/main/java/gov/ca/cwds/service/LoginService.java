@@ -1,10 +1,14 @@
 package gov.ca.cwds.service;
 
 /**
- * Created by dmitry.rudenko on 5/23/2017.
+ * Created by TPT2 on 10/24/2017.
  */
 public interface LoginService {
-    String login(String providerId) throws Exception;
+  String issueAccessCode(String providerId);
 
-    String validate(String token) throws Exception;
+  String validate(String perryToken);
+
+  void invalidate(String perryToken);
+
+  String issueToken(String accessCode);
 }

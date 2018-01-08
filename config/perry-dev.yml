@@ -6,13 +6,17 @@ spring:
           password: test
       jpa:
           database: h2
-          show_sql: true
+          show_sql: ${SHOW_SQL:false}
           properties:
               hibernate.cache.use_query_cache: false
               hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
               hibernate.dialect: org.hibernate.dialect.DB2Dialect
               hibernate.ddl-auto: none
               hibernate.default_schema: test
+      redis:
+          host: ${REDIS_HOST:192.168.99.100}
+          password: ${REDIS_PASSWORD:}
+          port: ${REDIS_PORT:6379}
 perry:
     jwt:
       timeout: ${TOKEN_TIMEOUT:30} #minutes
@@ -27,10 +31,28 @@ perry:
         keyPassword : ${KEYSTORE_KEY_PASSWORD:test}
         encAlias:  ${KEYSTORE_ENC_ALIAS:enc128}
         encKeyPassword: ${KEYSTORE_ENC_KEY_PASSWORD:test}
+    tokenStore:
+      datasource:
+        driver-class-name: org.h2.Driver
+        url: ${TOKEN_STORE_JDBC_URL:jdbc:h2:mem:token_store}
+        username: ${TOKEN_STORE_USER:}
+        password: ${TOKEN_STORE_PASSWORD:}
+      jpa:
+        database: h2
+        show_sql: true
+        properties:
+           hibernate.cache.use_query_cache: false
+           hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
+           hibernate.dialect: org.hibernate.dialect.H2Dialect
+           hibernate.ddl-auto: create
+           hibernate.default_schema: ${TOKEN_STORE_SCHEMA:}
     serviceProviders:
       default:
-        identityMapping: 'config/default.groovy'
+        identityMapping: config/default.groovy
     users: ${USERS:}
+    whiteList: ${WHITE_LIST:*}
+    homePageUrl: ${HOME_PAGE_URL:/}
+    showErrors: ${SHOW_ERRORS:true}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}
@@ -42,12 +64,18 @@ endpoints:
   enabled: false
   health:
     enabled: true
+  info:
+    enabled: false
+  env:
+    enabled: false
+  configprops:
+    enabled: false
 server:
-  context-path: ${CONTEXT_PATH:/}
+  context-path: ${CONTEXT_PATH:/perry}
   use-forward-headers: ${USE_FORWARD_HEADERS:true}
   port: ${HTTPS_PORT:8090}
   ssl:
-    enabled: true
+    enabled: ${SSL_ENABLED:false}
     keyStoreType: JCEKS
     trustStoreType: JCEKS
     keyStore: ${KEYSTORE_PATH:config/enc.jceks}
@@ -55,3 +83,17 @@ server:
     keyPassword: ${KEYSTORE_KEY_PASSWORD:test}
   http:
     port: ${HTTP_PORT:8080}
+  error:
+    whitelabel:
+      enabled: false
+logging:
+  file: ${LOG_FILE:perry-log.txt}
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  level:
+    org:
+      springframework:
+        web: ${LOG_LEVEL:DEBUG}
+        security: ${LOG_LEVEL:DEBUG}
+      hibernate: ${LOG_LEVEL:DEBUG}

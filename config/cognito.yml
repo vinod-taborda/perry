@@ -1,0 +1,118 @@
+security:
+ oauth2:
+   client:
+     clientId: ${SAF_CLIENT_ID:} #DONE
+     clientSecret: ${SAF_CLIENT_SECRET:} #DONE
+     accessTokenUri: ${SAF_RETRIEVE_TOKEN_PATH:https://donchadtest.auth.us-east-1.amazoncognito.com/oauth2/token} #DONE
+     userAuthorizationUri: ${SAF_AUTH_PATH:https://donchadtest.auth.us-east-1.amazoncognito.com/login} #DONE
+     tokenName: {$TOKEN_NAME:access_token}  #DONE
+     authenticationScheme: ${SAF_AUTH_SCHEME:form} #DONE
+     clientAuthenticationScheme: ${SAF_CLIENT_AUTH_SCHEME:header} #DONE
+     scope: ${SAF_SCOPE:} #TODO
+   resource:
+     userInfoUri: ${SAF_VALIDATE_TOKEN_PATH:} #TODO
+     tokenInfoUri: ${SAF_VALIDATE_TOKEN_URI:} #TODO
+     revokeTokenUri: ${SAF_REVOKE_TOKEN_URI:} #TODO
+     logoutTokenUri: ${SAF_LOGOUT_URI:} #TODO
+spring:
+      datasource:
+          driver-class-name: com.ibm.db2.jcc.DB2Driver
+          url: ${DB_CMS_JDBC_URL:jdbc:db2://192.168.99.100:50000/DB0TDEV}
+          username: ${DB_CMS_USER:db2inst1}
+          password: ${DB_CMS_PASSWORD:db2inst1-pwd}
+      jpa:
+          database: db2
+          show_sql: ${SHOW_SQL:false}
+          properties:
+              hibernate.cache.use_query_cache: false
+              hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
+              hibernate.dialect: org.hibernate.dialect.DB2Dialect
+              hibernate.ddl-auto: none
+              hibernate.default_schema: ${DB_CMS_SCHEMA:CWSCMSRS}
+      redis:
+          host: ${REDIS_HOST:192.168.99.100}
+          password: ${REDIS_PASSWORD:}
+          port: ${REDIS_PORT:6379}
+perry:
+    identityProvider:
+      idpMapping: ${IDP_MAPPING_SCRIPT:config/idp.groovy} #TODO depends on "security.oauth2.resource.userInfoUri" param
+    jwt:
+      timeout: ${TOKEN_TIMEOUT:30} #minutes
+      issuer: ${TOKEN_ISSUER:perry}
+      encryptionEnabled: ${TOKEN_ENCRYPTION_ENABLED:true}
+      encryptionMethod: ${TOKEN_ENCRYPTION_METHOD:A256GCM}
+      headless: ${HEADLESS_JWT:true}
+      keyStore:
+        path: ${KEYSTORE_PATH:config/enc.jceks}
+        alias: ${KEYSTORE_ALIAS:test}
+        password: ${KEYSTORE_PASSWORD:test}
+        keyPassword : ${KEYSTORE_KEY_PASSWORD:test}
+        encAlias:  ${KEYSTORE_ENC_ALIAS:enc}
+        encKeyPassword: ${KEYSTORE_ENC_KEY_PASSWORD:test}
+    serviceProviders:
+      default:
+        identityMapping: ${SP_IDENTITY_MAPPING_SCRIPT:config/default.groovy}
+      intake:
+        identityMapping: ${SP_INTAKE_IDENTITY_MAPPING_SCRIPT:config/intake.groovy}
+    whiteList: ${WHITE_LIST:*} # urls separated by spaces.
+    homePageUrl: ${HOME_PAGE_URL:/}
+    showErrors: ${SHOW_ERRORS:true}
+    tokenStore:
+        datasource:
+            driver-class-name: org.postgresql.Driver
+            url: ${TOKEN_STORE_JDBC_URL:jdbc:postgresql://192.168.99.100:5432/postgres_data?currentSchema=perry}
+            username: ${TOKEN_STORE_DB_USER:postgres_data}
+            password: ${TOKEN_STORE_DB_PASSWORD:postgres_data}
+        jpa:
+           database: POSTGRESQL
+           show_sql: true
+           properties:
+              hibernate.cache.use_query_cache: false
+              hibernate.current_session_context_class : org.springframework.orm.hibernate5.SpringSessionContext
+              hibernate.dialect: org.hibernate.dialect.ProgressDialect
+              hibernate.ddl-auto: none
+              hibernate.default_schema: ${TOKEN_STORE_SCHEMA:perry}
+management:
+  context-path: /manage
+  port: ${ADMIN_PORT:9082}
+  security:
+    enabled: false
+  ssl:
+    enabled: false
+  endpoints:
+    enabled: false
+    health:
+      enabled: true
+    info:
+      enabled: false
+    env:
+      enabled: false
+    configprops:
+      enabled: false
+server:
+  context-path: ${CONTEXT_PATH:/perry}
+  use-forward-headers: ${USE_FORWARD_HEADERS:true}
+  port: ${HTTPS_PORT:8090}
+  ssl:
+    enabled: ${SSL_ENABLED:false}
+    keyStoreType: JCEKS
+    trustStoreType: JCEKS
+    keyStore: ${KEYSTORE_PATH:config/enc.jceks}
+    keyStorePassword: ${KEYSTORE_PASSWORD:test}
+    keyPassword: ${KEYSTORE_KEY_PASSWORD:test}
+  http:
+    port: ${HTTP_PORT:8080}
+  error:
+    whitelabel:
+      enabled: false
+logging:
+  file: ${LOG_FILE:perry-log.txt}
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  level:
+    org:
+      springframework:
+        web: ${LOG_LEVEL:DEBUG}
+        security: ${LOG_LEVEL:DEBUG}
+      hibernate: ${LOG_LEVEL:DEBUG}

@@ -1,5 +1,6 @@
 package gov.ca.cwds.data.persistence.auth;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gov.ca.cwds.data.persistence.cms.CmsPersistentObject;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
@@ -13,7 +14,7 @@ import java.util.Date;
 
 /**
  * {@link CmsPersistentObject} representing an Assignment Unit
- * 
+ *
  * @author CWDS API Team
  */
 @Entity
@@ -56,7 +57,7 @@ public class AssignmentUnit extends CmsPersistentObject {
 
   /**
    * Default constructor
-   * 
+   * <p>
    * Required for Hibernate
    */
   public AssignmentUnit() {
@@ -65,20 +66,19 @@ public class AssignmentUnit extends CmsPersistentObject {
 
 
   /**
-   * 
-   * @param phoneNo the phone number
-   * @param telExtNo the tel ext number
+   * @param phoneNo                     the phone number
+   * @param telExtNo                    the tel ext number
    * @param assignmentUnitDeskIndicator the assignmentUnitDesk Indicator
-   * @param countySpecificCode the countySpecificCode
-   * @param endDate the end date
-   * @param cwsOfficeId the cwsOfficeId
-   * @param assignmentUnitName the assignmentUnitName
-   * @param startDate the startDate
-   * @param id the id
+   * @param countySpecificCode          the countySpecificCode
+   * @param endDate                     the end date
+   * @param cwsOfficeId                 the cwsOfficeId
+   * @param assignmentUnitName          the assignmentUnitName
+   * @param startDate                   the startDate
+   * @param id                          the id
    */
   public AssignmentUnit(BigDecimal phoneNo, int telExtNo, String assignmentUnitDeskIndicator,
-      String countySpecificCode, Date endDate, String cwsOfficeId, String assignmentUnitName,
-      Date startDate, String id) {
+                        String countySpecificCode, Date endDate, String cwsOfficeId, String assignmentUnitName,
+                        Date startDate, String id) {
     super();
     this.phoneNo = phoneNo;
     this.telExtNo = telExtNo;
@@ -90,7 +90,6 @@ public class AssignmentUnit extends CmsPersistentObject {
     this.startDate = startDate;
     this.id = id;
   }
-
 
 
   /**
@@ -143,7 +142,7 @@ public class AssignmentUnit extends CmsPersistentObject {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see gov.ca.cwds.data.persistence.PersistentObject#getPrimaryKey()
    */
   @Override
@@ -184,8 +183,8 @@ public class AssignmentUnit extends CmsPersistentObject {
     final int prime = 31;
     int result = 1;
     result =
-        prime * result
-            + ((assignmentUnitDeskIndicator == null) ? 0 : assignmentUnitDeskIndicator.hashCode());
+            prime * result
+                    + ((assignmentUnitDeskIndicator == null) ? 0 : assignmentUnitDeskIndicator.hashCode());
     result = prime * result + ((assignmentUnitName == null) ? 0 : assignmentUnitName.hashCode());
     result = prime * result + ((countySpecificCode == null) ? 0 : countySpecificCode.hashCode());
     result = prime * result + ((cwsOfficeId == null) ? 0 : cwsOfficeId.hashCode());
@@ -204,6 +203,7 @@ public class AssignmentUnit extends CmsPersistentObject {
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
+  @SuppressFBWarnings("MDM_BIGDECIMAL_EQUALS") //BigDecimal.equals used for equals/hashCode only
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;

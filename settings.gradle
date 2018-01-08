@@ -1,5 +1,7 @@
 rootProject.name = 'perry'
 include 'docker-perry'
 include 'jwt-security'
-include 'shiro-security'
+include 'api-security'
+include 'api-security-test-support'
+include 'api-security-common'
 
