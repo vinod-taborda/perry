@@ -352,6 +352,10 @@ public enum GovernmentEntityType implements ApiSysCodeAware {
         : GovernmentEntityType.NONE;
   }
 
+    public static GovernmentEntityType findByCountyCd(Integer countyCd) {
+        return mapByCountyCd.containsKey(countyCd) ? mapByCountyCd.get(countyCd.toString())
+                : GovernmentEntityType.NONE;
+    }
 
   private static final Map<Integer, GovernmentEntityType> mapBySysId = new HashMap<>();
   private static final Map<String, GovernmentEntityType> mapByCountyCd = new HashMap<>();
