@@ -15,4 +15,8 @@ if [ "$REDIS_ENABLED" = true ] ; then
     JAVA_OPTS="$JAVA_OPTS,redis"
 fi
 
+if [ "$IGNORE_OAUTH2_STATE" = true ] ; then
+    JAVA_OPTS="$JAVA_OPTS,nostate"
+fi
+
 java ${CWDS_OPTS} ${JAVA_OPTS} -jar perry.jar server ${PERRY_CONFIG}
