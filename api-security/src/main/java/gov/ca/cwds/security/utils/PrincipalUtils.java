@@ -28,7 +28,7 @@ public final class PrincipalUtils {
 
   public static String getStaffPersonId() {
     PerryAccount perryAccount = getPrincipal();
-    if (perryAccount.getStaffId() != null && !perryAccount.getStaffId().isEmpty()) {
+    if (perryAccount.getStaffId() == null || perryAccount.getStaffId().isEmpty()) {
       return DEFAULT_USER_ID;
     }
     return perryAccount.getStaffId();
