@@ -4,6 +4,7 @@ import gov.ca.cwds.data.auth.*;
 import gov.ca.cwds.data.persistence.auth.StaffPerson;
 import gov.ca.cwds.data.persistence.auth.UserId;
 import gov.ca.cwds.rest.api.domain.DomainChef;
+import gov.ca.cwds.rest.api.domain.PerryException;
 import gov.ca.cwds.rest.api.domain.auth.CwsOffice;
 import gov.ca.cwds.rest.api.domain.auth.StaffAuthorityPrivilege;
 import gov.ca.cwds.rest.api.domain.auth.StaffUnitAuthority;
@@ -54,9 +55,11 @@ public class UserAuthorizationService {
    */
   public UserAuthorization find(Serializable primaryKey) {
     assert primaryKey instanceof String;
-    LOGGER.info(primaryKey.toString());
-
+    LOGGER.info("RACFID: {} ", primaryKey.toString());
     final String userId = ((String) primaryKey).trim();
+    if(StringUtils.isBlank(userId)) {
+      throw new PerryException("USER ID IS BLANK!");
+    }
     List<UserId> userList = userIdDao.findActiveByLogonId(userId);
 
 
