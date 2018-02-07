@@ -30,6 +30,8 @@ public class PerryProperties {
 
     private boolean showErrors;
 
+    private boolean suppressErrorPage;
+
     public static class IdentityProviderConfiguration {
         private IdpMappingScript idpMapping;
 
@@ -117,5 +119,13 @@ public class PerryProperties {
 
     public void setShowErrors(boolean showErrors) {
       this.showErrors = showErrors;
+    }
+
+    public boolean isSuppressErrorPage() {
+        return suppressErrorPage;
+    }
+
+    public void setSuppressErrorPage(boolean suppressErrorPage) {
+        this.suppressErrorPage = suppressErrorPage;
     }
 }

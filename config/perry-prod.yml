@@ -57,6 +57,7 @@ perry:
     whiteList: ${WHITE_LIST:*} # urls separated by spaces.
     homePageUrl: ${HOME_PAGE_URL:/}
     showErrors: ${SHOW_ERRORS:true}
+    suppressErrorPage: ${SUPPRESS_ERROR_PAGE:false}
 management:
   context-path: /manage
   port: ${ADMIN_PORT:9082}

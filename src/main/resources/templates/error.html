@@ -4,6 +4,7 @@
     <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
     <meta charset="utf-8"/>
     <title>Server Error</title>
+    <meta th:if="${@errorView.suppress(#httpServletRequest)}" http-equiv="refresh" th:content="'0;URL=\'' + ${@errorView.getProperties().getHomePageUrl()} + '\''" />
     <meta name="description" content="Access Denied"/>
     <meta
             content='width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1'
@@ -18,7 +19,7 @@
 <div class="error-page-background">
 </div>
 
-<div class="error-page-panel">
+<div th:if="${!@errorView.suppress(#httpServletRequest)}" class="error-page-panel">
 
     <img th:src="@{/images/CWDS-Logo-Login.png}" alt="CWDS Logo"
          id="client_logo" class="img-rounded img-responsive"/>
