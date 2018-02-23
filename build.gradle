@@ -24,6 +24,7 @@ apply plugin: 'application'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
+apply plugin: 'eclipse'
 
 group = 'gov.ca.cwds.api'
 
