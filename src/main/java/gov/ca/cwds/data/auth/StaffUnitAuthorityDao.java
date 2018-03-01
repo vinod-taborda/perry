@@ -18,7 +18,7 @@ import java.util.List;
 public interface StaffUnitAuthorityDao extends ReadOnlyRepository<StaffUnitAuthority, String> {
 
   @Query("SELECT S FROM StaffUnitAuthority S WHERE S.staffPersonId = :staffPersonId"
-      + " AND S.endDate is not null")
+      + " AND S.endDate is null")
   List<StaffUnitAuthority> findByStaffPersonId(@Param("staffPersonId") String staffPersonId);
 
 }

@@ -31,11 +31,11 @@ public class StaffUnitAuthorityDaoIT {
   @Test
   public void testFindByStaffPersonId() {
     String userId = "userId";
-    entityManager.merge(entity("id", userId, new Date()));
+    entityManager.merge(entity("id", userId, null));
     entityManager.merge(entity("id1", userId, new Date()));
-    entityManager.merge(entity("id2", userId, null));
+    entityManager.merge(entity("id2", userId, new Date()));
     List<StaffUnitAuthority> authorities = staffUnitAuthorityDao.findByStaffPersonId(userId);
-    assertThat(authorities.size(), is(2));
+    assertThat(authorities.size(), is(1));
 
   }
 
