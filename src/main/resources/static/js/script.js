@@ -37,6 +37,7 @@ function validateLoginString() {
         + "\t\t\"Supervisor\"\n"
         + "\t],\n"
         + "\t\"county_code\": \"56\",\n"
+        + "\t\"county_cws_code\": \"1123\",\n"
         + "\t\"county_name\": \"Ventura\",\n"
         + "\t\"privileges\": [\n"
         + "\t\t\"Countywide Read\",\n"
