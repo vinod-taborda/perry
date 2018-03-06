@@ -21,4 +21,3 @@ while (counter <= idpToken.UserAttributes.size()) {
 //    universalUserToken.roles = new HashSet<>()
 //    println "INFO: There are no IDP roles provided"
 //}
- No newline at end of file
