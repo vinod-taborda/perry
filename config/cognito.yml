@@ -1,23 +1,28 @@
+cognito:
+  host: ${COGNITO_HOST:cognito-idp.us-west-2.amazonaws.com}
+  mediaSubtype: x-amz-json-1.1
+  revokeTokenTarget: AWSCognitoIdentityProviderService.GlobalSignOut
+  getUserTarget: AWSCognitoIdentityProviderService.GetUser
 security:
  oauth2:
    client:
-     clientId: ${SAF_CLIENT_ID:} #DONE
-     clientSecret: ${SAF_CLIENT_SECRET:} #DONE
-     accessTokenUri: ${SAF_RETRIEVE_TOKEN_PATH:https://donchadtest.auth.us-east-1.amazoncognito.com/oauth2/token} #DONE
-     userAuthorizationUri: ${SAF_AUTH_PATH:https://donchadtest.auth.us-east-1.amazoncognito.com/login} #DONE
-     tokenName: {$TOKEN_NAME:access_token}  #DONE
-     authenticationScheme: ${SAF_AUTH_SCHEME:form} #DONE
-     clientAuthenticationScheme: ${SAF_CLIENT_AUTH_SCHEME:header} #DONE
-     scope: ${SAF_SCOPE:} #TODO
+     clientId: ${SAF_CLIENT_ID:1lqqkq5pgjeav8neh3ckvp1t1m} 
+     clientSecret: ${SAF_CLIENT_SECRET:1rjarks41e89runn894scaqiptrmrh00tj0pff1lc8d6g5c5brss} 
+     accessTokenUri: ${SAF_RETRIEVE_TOKEN_PATH:https://preintcwds.auth.us-west-2.amazoncognito.com/oauth2/token} 
+     userAuthorizationUri: ${SAF_AUTH_PATH:https://preintcwds.auth.us-west-2.amazoncognito.com/login} 
+     tokenName: ${TOKEN_NAME:access_token}  
+     authenticationScheme: ${SAF_AUTH_SCHEME:form} 
+     clientAuthenticationScheme: ${SAF_CLIENT_AUTH_SCHEME:header} 
+     scope: ${SAF_SCOPE:} 
    resource:
-     userInfoUri: ${SAF_VALIDATE_TOKEN_PATH:} #TODO
-     tokenInfoUri: ${SAF_VALIDATE_TOKEN_URI:} #TODO
-     revokeTokenUri: ${SAF_REVOKE_TOKEN_URI:} #TODO
-     logoutTokenUri: ${SAF_LOGOUT_URI:} #TODO
+     userInfoUri: ${SAF_VALIDATE_TOKEN_PATH:https://cognito-idp.us-west-2.amazonaws.com} 
+     tokenInfoUri: ${SAF_VALIDATE_TOKEN_URI:tokeninfo} #TODO
+     revokeTokenUri: ${SAF_REVOKE_TOKEN_URI:https://cognito-idp.us-west-2.amazonaws.com} #TODO
+     logoutTokenUri: ${SAF_LOGOUT_URI:https://preintcwds.auth.us-west-2.amazoncognito.com/logout} #TODO
 spring:
       datasource:
           driver-class-name: com.ibm.db2.jcc.DB2Driver
-          url: ${DB_CMS_JDBC_URL:jdbc:db2://192.168.99.100:50000/DB0TDEV}
+          url: ${DB_CMS_JDBC_URL:jdbc:db2://localhost:50000/DB0TDEV}
           username: ${DB_CMS_USER:db2inst1}
           password: ${DB_CMS_PASSWORD:db2inst1-pwd}
       jpa:
@@ -35,7 +40,7 @@ spring:
           port: ${REDIS_PORT:6379}
 perry:
     identityProvider:
-      idpMapping: ${IDP_MAPPING_SCRIPT:config/idp.groovy} #TODO depends on "security.oauth2.resource.userInfoUri" param
+      idpMapping: ${IDP_MAPPING_SCRIPT:config/cognito.groovy} 
     jwt:
       timeout: ${TOKEN_TIMEOUT:30} #minutes
       issuer: ${TOKEN_ISSUER:perry}
@@ -60,7 +65,7 @@ perry:
     tokenStore:
         datasource:
             driver-class-name: org.postgresql.Driver
-            url: ${TOKEN_STORE_JDBC_URL:jdbc:postgresql://192.168.99.100:5432/postgres_data?currentSchema=perry}
+            url: ${TOKEN_STORE_JDBC_URL:jdbc:postgresql://localhost:5432/postgres_data?currentSchema=perry}
             username: ${TOKEN_STORE_DB_USER:postgres_data}
             password: ${TOKEN_STORE_DB_PASSWORD:postgres_data}
         jpa:
@@ -101,7 +106,7 @@ server:
     keyStorePassword: ${KEYSTORE_PASSWORD:test}
     keyPassword: ${KEYSTORE_KEY_PASSWORD:test}
   http:
-    port: ${HTTP_PORT:8080}
+    port: ${HTTP_PORT:8088}
   error:
     whitelabel:
       enabled: false

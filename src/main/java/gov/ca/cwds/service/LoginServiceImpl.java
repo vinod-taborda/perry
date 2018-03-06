@@ -1,9 +1,6 @@
 package gov.ca.cwds.service;
 
-import gov.ca.cwds.UniversalUserToken;
-import gov.ca.cwds.config.Constants;
-import gov.ca.cwds.rest.api.domain.PerryException;
-import gov.ca.cwds.service.oauth.OAuth2RestTemplateService;
+import static gov.ca.cwds.config.Constants.IDENTITY;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -20,8 +17,10 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import static gov.ca.cwds.config.Constants.IDENTITY;
+import gov.ca.cwds.UniversalUserToken;
+import gov.ca.cwds.config.Constants;
+import gov.ca.cwds.rest.api.domain.PerryException;
+import gov.ca.cwds.service.oauth.OAuth2RestTemplateService;
 
 /**
  * Created by TPT2 on 10/24/2017.
@@ -42,7 +41,8 @@ public class LoginServiceImpl implements LoginService {
   @Override
   public String issueAccessCode(String providerId) {
     SecurityContext securityContext = SecurityContextHolder.getContext();
-    OAuth2Authentication authentication = (OAuth2Authentication) securityContext.getAuthentication();
+    OAuth2Authentication authentication =
+        (OAuth2Authentication) securityContext.getAuthentication();
     UniversalUserToken userToken = (UniversalUserToken) authentication.getPrincipal();
     OAuth2AccessToken accessToken = clientContext.getAccessToken();
     String identity = identityMappingService.map(userToken, providerId);
@@ -69,21 +69,28 @@ public class LoginServiceImpl implements LoginService {
     return identity;
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
   public void invalidate(String perryToken) {
     OAuth2AccessToken accessToken = tokenService.deleteToken(perryToken);
     try {
-      HttpHeaders headers = new HttpHeaders();
-      MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-      params.add("token", accessToken.getValue());
-      params.add("token_type_hint", "access_token");
-      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-      HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-      restClientService.clientRestTemplate().postForEntity(revokeTokenUri, request, String.class).getBody();
+      HttpEntity request = httpEntityForInvalidation(accessToken);
+      restClientService.clientRestTemplate().postForEntity(revokeTokenUri, request, String.class)
+          .getBody();
     } catch (Exception e) {
-      throw new PerryException(
-              "Token Revocation problem for revokeTokenUri = " + revokeTokenUri, e);
+      throw new PerryException("Token Revocation problem for revokeTokenUri = " + revokeTokenUri,
+          e);
     }
+  }
+
+  @SuppressWarnings("rawtypes")
+  protected HttpEntity httpEntityForInvalidation(OAuth2AccessToken accessToken) {
+    HttpHeaders headers = new HttpHeaders();
+    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    params.add("token", accessToken.getValue());
+    params.add("token_type_hint", "access_token");
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    return new HttpEntity<>(params, headers);
   }
 
   @Autowired

@@ -1,8 +1,5 @@
 package gov.ca.cwds.config;
 
-import gov.ca.cwds.service.OauthLogoutHandler;
-import gov.ca.cwds.service.oauth.SafUserInfoTokenService;
-import gov.ca.cwds.web.PerrySAFLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -13,6 +10,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import gov.ca.cwds.service.OauthLogoutHandler;
+import gov.ca.cwds.service.oauth.CognitoUserInfoTokenService;
+import gov.ca.cwds.web.PerryCognitoLogoutSuccessHandler;
 
 /**
  * Created by dmitry.rudenko on 5/23/2017.
@@ -27,29 +27,25 @@ public class OAuthConfiguration extends WebSecurityConfigurerAdapter {
   @Autowired
   private OauthLogoutHandler tokenRevocationLogoutHandler;
   @Autowired
-  private PerrySAFLogoutSuccessHandler logoutSuccessHandler;
+  private PerryCognitoLogoutSuccessHandler logoutSuccessHandler;
 
   @Bean
   @Primary
   @Autowired
-  public SafUserInfoTokenService userInfoTokenServices(ResourceServerProperties resourceServerProperties) {
-    return new SafUserInfoTokenService(resourceServerProperties);
+  public CognitoUserInfoTokenService userInfoTokenServices(
+      ResourceServerProperties resourceServerProperties) {
+    return new CognitoUserInfoTokenService(resourceServerProperties);
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    //  /authn/validate should be for backend only!
-    http.authorizeRequests()
-            .antMatchers("/authn/login").authenticated()
-            .antMatchers("/**").permitAll()
-            .and()
-            .logout()
-            .logoutUrl("/authn/logout").permitAll()
-            .addLogoutHandler(tokenRevocationLogoutHandler)
-            .logoutSuccessHandler(logoutSuccessHandler)
-            .and()
-            .addFilterBefore(loginServiceValidatorFilter, AbstractPreAuthenticatedProcessingFilter.class)
-            .csrf().disable();
+    // /authn/validate should be for backend only!
+    http.authorizeRequests().antMatchers("/authn/login").authenticated().antMatchers("/**")
+        .permitAll().and().logout().logoutUrl("/authn/logout").permitAll()
+        .addLogoutHandler(tokenRevocationLogoutHandler).logoutSuccessHandler(logoutSuccessHandler)
+        .and().addFilterBefore(loginServiceValidatorFilter,
+            AbstractPreAuthenticatedProcessingFilter.class)
+        .csrf().disable();
 
     super.configure(http);
   }
